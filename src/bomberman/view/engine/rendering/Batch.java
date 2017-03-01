@@ -1,7 +1,6 @@
 package bomberman.view.engine.rendering;
 
 import bomberman.view.engine.utility.Matrix4;
-import bomberman.view.engine.utility.OrthographicCamera;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -71,7 +70,7 @@ public class Batch {
         float right = w;
         float bottom = h;
         float top = 0;
-        this.projectionMatrix = OrthographicCamera.getOrtho(left, right, bottom, top, 0, 1);
+        this.projectionMatrix = Matrix4.getOrthographicCamera(left, right, bottom, top, 0, 1);
     }
 
     public void begin() {
