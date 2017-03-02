@@ -62,7 +62,9 @@ public class Batch {
 
         maxIdx = buffer.getVertexCount();
 
-        System.out.println("Batch created with " + size + " sprites and " + maxTextureIdx + " textures!");
+        int sizeInBytes = buffer.getTotalNumComponents() * buffer.getVertexCount() * 4;
+
+        System.out.println("Batch created with " + size + " sprites and " + maxTextureIdx + " textures (size: " + sizeInBytes + " bytes)");
     }
 
     public void resize(int w, int h) {

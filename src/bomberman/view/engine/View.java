@@ -19,9 +19,6 @@ public abstract class View {
         this.viewManager = viewManager;
     }
 
-    /**
-     * zeichnet alle ViewComponents
-     */
     public void render(float deltaTime, Batch batch) {
         for (int i = 0; i < components.size(); i++) {
             ViewComponent c = components.get(i);

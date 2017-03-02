@@ -1,6 +1,6 @@
 package bomberman;
 
-import bomberman.view.engine.TestView;
+import bomberman.view.TestView;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 
