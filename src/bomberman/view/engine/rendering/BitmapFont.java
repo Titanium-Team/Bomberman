@@ -17,6 +17,7 @@ public class BitmapFont {
     int pages;
     Glyph[] glyphs;
     TextureRegion[] texturePages;
+
     class Glyph {
         int chr;
         int x, y, width, height;
@@ -26,12 +27,12 @@ public class BitmapFont {
         TextureRegion region;
 
         public int getKerning(int c) {
-            if (kerning==null) return 0;
+            if (kerning == null) return 0;
             return kerning[c];
         }
 
         void updateRegion(TextureRegion tex) {
-            if (region==null)
+            if (region == null)
                 region = new TextureRegion(tex, 0, 0, tex.getWidth(), tex.getHeight());
             region.set(tex, x, y, width, height);
         }
@@ -50,7 +51,7 @@ public class BitmapFont {
     }
 
     public BitmapFont(InputStream fontDef, TextureRegion texture) throws IOException {
-        this(fontDef, new TextureRegion[] { texture });
+        this(fontDef, new TextureRegion[]{texture});
     }
 
     public BitmapFont(InputStream fontDef, TextureRegion[] texturePages) throws IOException {
@@ -76,39 +77,42 @@ public class BitmapFont {
 
     public void drawText(Batch batch, CharSequence text, int x, int y, int start, int end) {
         Glyph lastGlyph = null;
-        for (int i=start; i<end; i++) {
+        for (int i = start; i < end; i++) {
             char c = text.charAt(i);
 
             if (c > glyphs.length || c < 0)
                 continue;
             Glyph g = glyphs[c];
-            if (g==null)
+            if (g == null)
                 continue;
-            if (lastGlyph!=null)
+            if (lastGlyph != null)
                 x += lastGlyph.getKerning(c);
             lastGlyph = g;
             batch.draw(g.region, x + g.xoffset, y + g.yoffset, g.width, g.height);
             x += g.xadvance;
         }
     }
+
     public int getBaseline() {
         return baseLine;
     }
+
     public int getWidth(CharSequence text) {
         return getWidth(text, 0, text.length());
     }
+
     public int getWidth(CharSequence text, int start, int end) {
         Glyph lastGlyph = null;
         int width = 0;
-        for (int i=start; i<end; i++) {
+        for (int i = start; i < end; i++) {
             char c = text.charAt(i);
 //TODO: make unsupported glyphs a bit cleaner...
             if (c > glyphs.length || c < 0)
                 continue;
             Glyph g = glyphs[c];
-            if (g==null)
+            if (g == null)
                 continue;
-            if (lastGlyph!=null)
+            if (lastGlyph != null)
                 width += lastGlyph.getKerning(c);
             lastGlyph = g;
 // width += g.width + g.xoffset;
@@ -117,23 +121,26 @@ public class BitmapFont {
         }
         return width;
     }
+
     private static String parse(String line, String tag) {
         tag += "=";
         int start = line.indexOf(tag);
-        if (start==-1)
+        if (start == -1)
             return "";
-        int end = line.indexOf(' ', start+tag.length());
-        if (end==-1)
+        int end = line.indexOf(' ', start + tag.length());
+        if (end == -1)
             end = line.length();
-        return line.substring(start+tag.length(), end);
+        return line.substring(start + tag.length(), end);
     }
+
     private static int parseInt(String line, String tag) throws IOException {
         try {
             return Integer.parseInt(parse(line, tag));
         } catch (NumberFormatException e) {
-            throw new IOException("data for "+tag+" is corrupt/missing: "+parse(line, tag));
+            throw new IOException("data for " + tag + " is corrupt/missing: " + parse(line, tag));
         }
     }
+
     protected void parseFont(InputStream fontFile, Charset charset) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(fontFile, charset), 512);
         String info = br.readLine();
@@ -165,7 +172,7 @@ public class BitmapFont {
             int ch = Integer.parseInt(tokens.nextToken());
             if (ch > Character.MAX_VALUE)
                 continue;
-            if (glyphsList==null) //incase some doofus deleted a line in the font def
+            if (glyphsList == null) //incase some doofus deleted a line in the font def
                 glyphsList = new ArrayList<Glyph>();
             glyphsList.add(glyph);
             glyph.chr = ch;
@@ -189,7 +196,7 @@ public class BitmapFont {
             tokens.nextToken();
             glyph.page = Integer.parseInt(tokens.nextToken());
             if (glyph.page > texturePages.length)
-                throw new IOException("not enough texturePages supplied; glyph "+glyph.chr+" expects page index "+glyph.page);
+                throw new IOException("not enough texturePages supplied; glyph " + glyph.chr + " expects page index " + glyph.page);
             glyph.updateRegion(texturePages[glyph.page]);
             if (glyph.width > 0 && glyph.height > 0)
                 descent = Math.min(baseLine + glyph.yoffset, descent);
@@ -213,7 +220,7 @@ public class BitmapFont {
             Glyph glyph = glyphs[first];
             tokens.nextToken();
             int offset = Integer.parseInt(tokens.nextToken());
-            if (glyph.kerning==null) {
+            if (glyph.kerning == null) {
                 glyph.kerning = new int[maxCodePoint + 1];
             }
             glyph.kerning[second] = offset;
@@ -224,6 +231,7 @@ public class BitmapFont {
         } catch (IOException e) {
         }
     }
+
     /**
      * Disposes all texture pages associated with this font.
      */

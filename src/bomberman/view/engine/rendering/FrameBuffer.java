@@ -82,14 +82,14 @@ public class FrameBuffer implements ITexture {
     }
 
     public void end() {
-        if (handle ==0)
+        if (handle == 0)
             return;
         GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
     public void dispose() {
-        if (handle ==0)
+        if (handle == 0)
             return;
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         glDeleteFramebuffersEXT(handle);

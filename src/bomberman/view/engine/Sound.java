@@ -11,13 +11,13 @@ public class Sound {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(in);
             AudioFormat af = audioInputStream.getFormat();
-            int size = (int)(af.getFrameSize() * audioInputStream.getFrameLength());
+            int size = (int) (af.getFrameSize() * audioInputStream.getFrameLength());
             byte[] audio = new byte[size];
             DataLine.Info info = new DataLine.Info(Clip.class, af, size);
             audioInputStream.read(audio, 0, size);
 
             this.clip = (Clip) AudioSystem.getLine(info);
-            if(clip != null) {
+            if (clip != null) {
                 this.clip.open(af, audio, 0, size);
             }
 
@@ -26,7 +26,8 @@ public class Sound {
         } finally {
             try {
                 in.close();
-            } catch(Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 

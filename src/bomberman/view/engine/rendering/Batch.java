@@ -25,7 +25,7 @@ public class Batch {
             }
 
             return new ShaderProgram(vert, frag, map);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -51,8 +51,8 @@ public class Batch {
     }
 
     public Batch(int size) {
-        VertexAttrib[] attribs = new VertexAttrib[] {
-            new VertexAttrib(0, "position", 2),
+        VertexAttrib[] attribs = new VertexAttrib[]{
+                new VertexAttrib(0, "position", 2),
                 new VertexAttrib(1, "tid", 1),
                 new VertexAttrib(2, "color", 4),
                 new VertexAttrib(3, "texCoords", 2)
@@ -113,7 +113,7 @@ public class Batch {
 
             GL13.glActiveTexture(GL13.GL_TEXTURE0 + i);
             tex.bind();
-            shader.setUniformi(shader.getUniformLocation("texture" + i ), i);
+            shader.setUniformi(shader.getUniformLocation("texture" + i), i);
         }
         buffer.bind();
         buffer.draw(GL11.GL_TRIANGLES, 0, idx);
@@ -173,14 +173,14 @@ public class Batch {
             v2 = tex.getV2();
         }
 
-        float x1,y1, x2,y2, x3,y3, x4,y4;
+        float x1, y1, x2, y2, x3, y3, x4, y4;
 
         if (rotationRadians != 0) {
             float scaleX = 1f;//width/tex.getWidth();
             float scaleY = 1f;//height/tex.getHeight();
 
-            float cx = originX*scaleX;
-            float cy = originY*scaleY;
+            float cx = originX * scaleX;
+            float cy = originY * scaleY;
 
             float p1x = -cx;
             float p1y = -cy;
@@ -206,14 +206,14 @@ public class Batch {
             x1 = x;
             y1 = y;
 
-            x2 = x+width;
+            x2 = x + width;
             y2 = y;
 
-            x3 = x+width;
-            y3 = y+height;
+            x3 = x + width;
+            y3 = y + height;
 
             x4 = x;
-            y4 = y+height;
+            y4 = y + height;
         }
 
         // top left, top right, bottom left

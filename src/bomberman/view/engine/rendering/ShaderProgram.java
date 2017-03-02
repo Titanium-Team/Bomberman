@@ -73,7 +73,7 @@ public class ShaderProgram {
 
         String infoLog = GL20.glGetProgramInfoLog(program, GL20.glGetProgrami(program, GL20.GL_INFO_LOG_LENGTH));
 
-        if (infoLog!=null && infoLog.trim().length()!=0)
+        if (infoLog != null && infoLog.trim().length() != 0)
             log += infoLog;
 
         if (GL20.glGetProgrami(program, GL20.GL_LINK_STATUS) == GL11.GL_FALSE)
@@ -91,8 +91,8 @@ public class ShaderProgram {
         GL20.glCompileShader(shader);
 
         String infoLog = GL20.glGetShaderInfoLog(shader, GL20.glGetShaderi(shader, GL20.GL_INFO_LOG_LENGTH));
-        if (infoLog!=null && infoLog.trim().length()!=0)
-            log += getName(type) +": "+infoLog + "\n";
+        if (infoLog != null && infoLog.trim().length() != 0)
+            log += getName(type) + ": " + infoLog + "\n";
 
         if (GL20.glGetShaderi(shader, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE)
             System.err.println("Failure in compiling " + getName(type) + ". Error log:\n" + infoLog);
@@ -141,42 +141,42 @@ public class ShaderProgram {
     }
 
     public void setUniformf(int loc, float f) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform1f(loc, f);
     }
 
     public void setUniformf(int loc, float a, float b) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform2f(loc, a, b);
     }
 
     public void setUniformf(int loc, float a, float b, float c) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform3f(loc, a, b, c);
     }
 
     public void setUniformf(int loc, float a, float b, float c, float d) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform4f(loc, a, b, c, d);
     }
 
     public void setUniformi(int loc, int i) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform1i(loc, i);
     }
 
     public void setUniformi(int loc, int a, int b) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform2i(loc, a, b);
     }
 
     public void setUniformi(int loc, int a, int b, int c) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform3i(loc, a, b, c);
     }
 
     public void setUniformi(int loc, int a, int b, int c, int d) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         GL20.glUniform4i(loc, a, b, c, d);
     }
 
@@ -213,7 +213,7 @@ public class ShaderProgram {
     }
 
     public void setUniformMatrix(int loc, boolean transposed, Matrix4 mat) {
-        if (loc==-1) return;
+        if (loc == -1) return;
         if (buf16Pool == null)
             buf16Pool = BufferUtils.createFloatBuffer(16);
         buf16Pool.clear();

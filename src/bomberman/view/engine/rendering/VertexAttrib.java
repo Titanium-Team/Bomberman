@@ -13,7 +13,7 @@ public class VertexAttrib {
     }
 
     public String toString() {
-        return name +" (" + numComponents+")";
+        return name + " (" + numComponents + ")";
     }
 
 }

@@ -31,10 +31,10 @@ public class TextureRegion implements ITexture {
     }
 
     public void set(Texture texture, int x, int y, int width, int height) {
-        set(texture, x / (float)texture.getWidth(),
-                y / (float)texture.getHeight(),
-                (x + width) / (float)texture.getWidth(),
-                (y + height) / (float)texture.getHeight());
+        set(texture, x / (float) texture.getWidth(),
+                y / (float) texture.getHeight(),
+                (x + width) / (float) texture.getWidth(),
+                (y + height) / (float) texture.getHeight());
         regionWidth = Math.round(width);
         regionHeight = Math.round(height);
     }
@@ -53,15 +53,15 @@ public class TextureRegion implements ITexture {
         set(region.texture, x + region.getRegionX(), y + region.getRegionY(), width, height);
     }
 
-    public int getRegionX () {
+    public int getRegionX() {
         return Math.round(u * texture.getWidth());
     }
 
-    public int getRegionY () {
+    public int getRegionY() {
         return Math.round(v * texture.getHeight());
     }
 
-    public void flip (boolean x, boolean y) {
+    public void flip(boolean x, boolean y) {
         if (x) {
             float temp = u;
             u = u2;

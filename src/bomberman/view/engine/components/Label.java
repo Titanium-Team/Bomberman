@@ -5,7 +5,7 @@ import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
 
 
-public class Label extends ViewComponent{
+public class Label extends ViewComponent {
 
     private String text;
 
@@ -16,14 +16,14 @@ public class Label extends ViewComponent{
 
     @Override
     public void draw(Batch batch) {
-        ViewManager.font.drawText(batch, text , (int)((getX())+ (getWidth())/2 - ViewManager.font.getWidth(text)/2),(int) ((getY()) + (getHeight())/2- ViewManager.font.getLineHeight()/2));
+        ViewManager.font.drawText(batch, text, (int) ((getX()) + (getWidth()) / 2 - ViewManager.font.getWidth(text) / 2), (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
     }
 
-    public String getText(){
+    public String getText() {
         return text;
     }
 
-    public void setText(String text){
+    public void setText(String text) {
         this.text = text;
     }
 

@@ -104,7 +104,7 @@ public class Texture implements ITexture {
             if (genMipmap) {
                 EXTFramebufferObject.glGenerateMipmapEXT(getTarget());
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (input != null) {

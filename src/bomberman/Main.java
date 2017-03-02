@@ -18,7 +18,7 @@ public class Main {
     public void mainLoop() {
         viewManager = new ViewManager();
 
-        View view = new TestView(viewManager.getViewportWidth(),viewManager.getViewportHeight(), viewManager);
+        View view = new TestView(viewManager.getViewportWidth(), viewManager.getViewportHeight(), viewManager);
         viewManager.setCurrentView(view);
 
         float deltaTime;

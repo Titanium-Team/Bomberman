@@ -16,7 +16,7 @@ public class VertexBuffer implements VertexData {
     private FloatBuffer buffer;
     private int vertCount;
 
-    public VertexBuffer(int vertCount, VertexAttrib ... attributes) {
+    public VertexBuffer(int vertCount, VertexAttrib... attributes) {
         this.attributes = attributes;
         for (VertexAttrib a : attributes)
             totalNumComponents += a.numComponents;
