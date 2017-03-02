@@ -15,12 +15,15 @@ public class TestView extends View {
     public void render(float deltaTime, Batch batch) {
         batch.draw(ViewManager.getTexture("test0.png"), 100, 100, 100, 100);
 
-        for (int i = 100; i < 600; i += 50) {
-            batch.draw(ViewManager.getTexture("test0.png"), (i), (450), (25), (25), 12, 12, rotationRadians, 1f, 1f, 1f, 1f);
+        int size = 20;
+        for (int y = 450; y < getHeight() - size; y += size) {
+            for (int x = 0; x < getWidth() - size; x += size) {
+                batch.draw(ViewManager.getTexture("test0.png"), x, y, size, size, size / 2, size / 2, rotationRadians, 1f, 1f, 1f, 1f);
+            }
         }
         ViewManager.font.drawText(batch, "Hallo Bomberman!     abcdefghijklmnopqrstuvwxyzß", 100, 400);
 
-        rotationRadians += Math.toRadians(deltaTime * 50);
+        rotationRadians += Math.toRadians(deltaTime * 90);
 
         super.render(deltaTime, batch);
     }

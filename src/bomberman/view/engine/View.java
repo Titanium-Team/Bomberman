@@ -9,13 +9,13 @@ import java.util.List;
 public abstract class View {
 
     protected List<ViewComponent> components;
-    protected float originWidth, originHeight;
+    protected float width, height;
     protected final ViewManager viewManager;
 
     public View(float width, float height, ViewManager viewManager) {
         components = new ArrayList<ViewComponent>();
-        originHeight = height;
-        originWidth = width;
+        this.height = height;
+        this.width = width;
         this.viewManager = viewManager;
     }
 
@@ -31,10 +31,17 @@ public abstract class View {
 
 
     public void layout(float width, float height) {
-        originHeight = height;
-        originWidth = width;
+        this.height = height;
+        this.width = width;
     }
 
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
 
     public List<ViewComponent> getComponents() {
         return components;

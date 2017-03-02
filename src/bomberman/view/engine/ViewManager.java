@@ -16,11 +16,14 @@ import java.util.HashMap;
 
 public class ViewManager {
 
+    public static BitmapFont font;
+    public static final HashMap<String, ITexture> textureMap = new HashMap<>();
+
     private Batch batch;
 
-    public static BitmapFont font;
-
-    public static final HashMap<String, ITexture> textureMap = new HashMap<>();
+    private boolean vSync = false;
+    private MSMode msMode = MSMode.MSAAx8;
+    private boolean enableFpsCounter = true;
 
     public static void load() {
         try {
@@ -56,7 +59,7 @@ public class ViewManager {
         try {
             setDisplayMode(800, 600, false);
 
-            Display.create(new PixelFormat(8, 0, 0, 4));
+            Display.create(new PixelFormat(8, 0, 0, msMode.samples));
 
             System.out.println("OpenGL context created! Version: " + GL11.glGetString(GL11.GL_VERSION) + ", Vendor: " + GL11.glGetString(GL11.GL_VENDOR) + ", Renderer: " + GL11.glGetString(GL11.GL_RENDERER));
         } catch (LWJGLException e) {
@@ -120,13 +123,13 @@ public class ViewManager {
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
             Display.setTitle("Bomberman");
-            Display.setVSyncEnabled(true);
+            Display.setVSyncEnabled(this.vSync);
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
     }
 
-    public void render(float deltaTime) {
+    public void render(float deltaTime, int fpsCount) {
         if (Display.wasResized()) {
             onResize(Display.getWidth(), Display.getHeight());
         }
@@ -134,6 +137,25 @@ public class ViewManager {
         GL11.glClearColor(0f, 0f, 0f, 1f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
+        processInput();
+
+        batch.begin();
+
+        if (currentView != null) {
+            currentView.render(deltaTime, batch);
+        }
+        if (enableFpsCounter) {
+            ViewManager.font.drawText(batch, "FPS: " + fpsCount, 5, 5);
+        }
+
+        batch.end();
+
+        Display.update();
+        if (this.vSync)
+            Display.sync(60);
+    }
+
+    private void processInput() {
         while (Mouse.next()) {
             if (Mouse.getEventButtonState()) {
                 int button = Mouse.getEventButton();
@@ -181,17 +203,6 @@ public class ViewManager {
                 currentView.onKeyUp(key, c);
             }
         }
-
-        batch.begin();
-
-        if (currentView != null) {
-            currentView.render(deltaTime, batch);
-        }
-
-        batch.end();
-
-        Display.update();
-        Display.sync(60);
     }
 
     private void onResize(int width, int height) {

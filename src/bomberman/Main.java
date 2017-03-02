@@ -25,19 +25,20 @@ public class Main {
         long startTime = System.nanoTime();
         long totalTime = startTime;
         int frames = 0;
+        int fpsCounter = 0;
         while (!viewManager.isCloseRequested()) {
             long currentTime = System.nanoTime();
             deltaTime = (float) ((currentTime - startTime) / 1000000000D);
             startTime = currentTime;
             frames++;
             if (currentTime - totalTime > 1000000000) {
-                System.out.println("fps: " + frames);
+                fpsCounter = frames;
                 frames = 0;
 
                 totalTime = currentTime;
             }
 
-            viewManager.render(deltaTime);
+            viewManager.render(deltaTime, fpsCounter);
         }
 
         viewManager.dispose();
