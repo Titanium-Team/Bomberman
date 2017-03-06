@@ -4,33 +4,38 @@ import java.util.Arrays;
 
 public class Vector2 {
 
-    private float[] coords;
+    private float x;
+    private float y;
 
     public Vector2(float x, float y) {
-        coords = new float[2];
-        coords[0] = x;
-        coords[1] = y;
+        this.x = x;
+        this.y = y;
     }
 
     public float getLength() {
-        return (float) Math.abs(Math.sqrt((coords[0] * coords[0]) + (coords[1] * coords[1])));
+        return (float) Math.abs(Math.sqrt((x * x) + (y * y)));
     }
 
-    public float[] getCoords() {
-        return coords;
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
     }
 
     public void normalize() {
         float r = 1 / this.getLength();
 
-        coords[0] *= r;
-        coords[1] *= r;
-    }
-
-    @Override
-    public String toString() {
-        return "Vector2{" +
-                "coords=" + Arrays.toString(coords) +
-                '}';
+        x *= r;
+        y *= r;
     }
 }

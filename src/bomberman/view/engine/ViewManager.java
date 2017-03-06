@@ -75,7 +75,6 @@ public class ViewManager {
         load();
 
         this.batch = new Batch();
-        batch.resize(Display.getWidth(), Display.getHeight());
     }
 
     public void setDisplayMode(int width, int height, boolean fullscreen) {
@@ -142,7 +141,8 @@ public class ViewManager {
         batch.begin();
 
         if (currentView != null) {
-            currentView.render(deltaTime, batch);
+            currentView.update(deltaTime);
+            currentView.render(batch);
         }
         if (enableFpsCounter) {
             ViewManager.font.drawText(batch, "FPS: " + fpsCount, 5, 5);
@@ -207,7 +207,6 @@ public class ViewManager {
 
     private void onResize(int width, int height) {
         GL11.glViewport(0, 0, Display.getWidth(), Display.getHeight());
-        batch.resize(Display.getWidth(), Display.getHeight());
 
         if (currentView != null)
             currentView.layout(Display.getWidth(), Display.getHeight());

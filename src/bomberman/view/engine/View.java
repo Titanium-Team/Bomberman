@@ -2,6 +2,8 @@ package bomberman.view.engine;
 
 import bomberman.view.engine.components.ViewComponent;
 import bomberman.view.engine.rendering.Batch;
+import bomberman.view.engine.utility.Camera;
+import bomberman.view.engine.utility.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,34 +11,58 @@ import java.util.List;
 public abstract class View {
 
     protected List<ViewComponent> components;
-    protected float width, height;
+    protected int width, height;
     protected final ViewManager viewManager;
 
-    public View(float width, float height, ViewManager viewManager) {
+    private Camera uiCamera;
+    private Camera sceneCamera;
+
+    public View(int width, int height, ViewManager viewManager) {
         components = new ArrayList<ViewComponent>();
         this.height = height;
         this.width = width;
         this.viewManager = viewManager;
+
+        this.sceneCamera = new Camera(width, height);
+        this.uiCamera = new Camera(width, height);
+        this.uiCamera.setTranslation(new Vector2(width / 2, height / 2));
     }
 
-    public void render(float deltaTime, Batch batch) {
-        for (int i = 0; i < components.size(); i++) {
-            ViewComponent c = components.get(i);
-            c.draw(batch);
-        }
+    public void update(float deltaTime) {
     }
 
+    public final void render(Batch batch) {
+        batch.setCombinedMatrix(sceneCamera.getCombined());
+        renderScene(batch);
 
-    public void layout(float width, float height) {
+        batch.setCombinedMatrix(uiCamera.getCombined());
+        renderUI(batch);
+    }
+
+    public void renderUI(Batch batch) {
+    }
+
+    public void renderScene(Batch batch) {
+    }
+
+    public void layout(int width, int height) {
         this.height = height;
         this.width = width;
+
+        this.sceneCamera.resize(width, height);
+        this.uiCamera.resize(width, height);
+        this.uiCamera.setTranslation(new Vector2(width / 2, height / 2));
     }
 
-    public float getWidth() {
+    public Camera getSceneCamera() {
+        return sceneCamera;
+    }
+
+    public int getWidth() {
         return width;
     }
 
-    public float getHeight() {
+    public int getHeight() {
         return height;
     }
 
@@ -71,6 +97,4 @@ public abstract class View {
             v.onMouseUp(button, mouseX, mouseY);
         }
     }
-
-
 }

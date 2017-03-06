@@ -1,33 +1,72 @@
 package bomberman.view;
 
 
-import bomberman.view.engine.View;
+import bomberman.view.engine.Light;
+import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
+import bomberman.view.engine.utility.Vector2;
 
-public class TestView extends View {
+import java.util.Random;
 
-    public TestView(float width, float height, ViewManager viewManager) {
+public class TestView extends LightingView {
+
+    private static final Random random = new Random();
+
+    private Light draggingLight;
+
+    private float time = 0f;
+
+    public TestView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
     }
 
-    @Override
-    public void render(float deltaTime, Batch batch) {
-        ViewManager.font.drawText(batch, "Hallo Bomberman!     abcdefghijklmnopqrstuvwxyzß", 300, 5);
+    public void update(float deltaTime) {
+        time += deltaTime;
 
+        this.getSceneCamera().setTranslation(new Vector2(getWidth() / 2, getHeight() / 2));
+    }
+
+    @Override
+    public void renderOccluders(Batch batch) {
         int size = 50;
         for (int y = 50; y < getHeight(); y += size * 3) {
             for (int x = 0; x < getWidth(); x += size * 3) {
                 batch.draw(null, x, y, size, size, size / 2, size / 2, 0f, 1f, 1f, 1f, 1f);
             }
         }
-
-        super.render(deltaTime, batch);
     }
 
     @Override
-    public void layout(float width, float height) {
+    public void renderNonOccluders(Batch batch) {
+        //ViewManager.font.drawText(batch, "Hallo Bomberman!     abcdefghijklmnopqrstuvwxyzß", 300, 5);
+    }
+
+    @Override
+    public void layout(int width, int height) {
         super.layout(width, height);
+    }
+
+    public void onMouseDown(int button, int mouseX, int mouseY) {
+        if (button == 0) {
+            this.draggingLight = randomLight(getSceneCamera().getTranslation().getX() - (getSceneCamera().getWidth() / 2) + mouseX, getSceneCamera().getTranslation().getY() - (getSceneCamera().getHeight() / 2) + mouseY);
+
+            this.addLight(draggingLight);
+        }
+    }
+
+    public void onMouseUp(int button, int mouseX, int mouseY) {
+        if (button == 0) {
+            this.draggingLight = null;
+        }
+    }
+
+    private Light randomLight(float x, float y) {
+        float r = random.nextFloat();
+        float g = random.nextFloat();
+        float b = random.nextFloat();
+
+        return new Light(x, y, 300, r, g, b);
     }
 
 }
