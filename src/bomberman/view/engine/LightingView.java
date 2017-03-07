@@ -162,5 +162,9 @@ public abstract class LightingView extends View {
         this.lights.add(light);
     }
 
+    public void removeAllLights(){
+        lights = new ArrayList<Light>();
+    }
+
 
 }

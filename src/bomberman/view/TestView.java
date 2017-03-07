@@ -53,6 +53,9 @@ public class TestView extends LightingView {
 
             this.addLight(draggingLight);
         }
+        if(button == 1){
+            this.removeAllLights();
+        }
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
