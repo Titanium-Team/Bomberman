@@ -19,22 +19,10 @@ public abstract class LightingView extends View {
     private ShaderProgram lightingShader;
     private ShaderProgram shadowMapRenderShader;
 
-    private FrameBuffer overlayFramebuffer;
-
     public LightingView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
         createShaders();
-
-        createFramebuffer();
-    }
-
-    private void createFramebuffer() {
-        try {
-            this.overlayFramebuffer = new FrameBuffer(new Texture(getWidth(), getHeight()), true);
-        } catch (LWJGLException e) {
-            e.printStackTrace();
-        }
     }
 
     private void createShaders() {
@@ -62,9 +50,6 @@ public abstract class LightingView extends View {
     @Override
     public void layout(int width, int height) {
         super.layout(width, height);
-
-        this.overlayFramebuffer.dispose();
-        createFramebuffer();
     }
 
     public abstract void renderOccluders(Batch batch);
@@ -89,7 +74,6 @@ public abstract class LightingView extends View {
 
         updateShadowMaps(batch);
 
-        overlayFramebuffer.begin();
         batch.begin(lightingShader);
         batch.setCombinedMatrix(getSceneCamera().getCombined());
 
@@ -109,14 +93,11 @@ public abstract class LightingView extends View {
         }
 
         batch.end();
-        overlayFramebuffer.end();
 
         batch.begin();
         batch.setCombinedMatrix(getSceneCamera().getCombined());
 
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        batch.draw(overlayFramebuffer, getSceneCamera().getTranslation().getX() - (getWidth() / 2), getSceneCamera().getTranslation().getY() - (getHeight() / 2), getWidth(), getHeight());
 
         renderOccluders(batch);
     }
