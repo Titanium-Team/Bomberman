@@ -8,6 +8,9 @@
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
 
+.idea/copyright/
+.idea/inspectionProfiles/
+
 # Sensitive or high-churn files:
 .idea/dataSources.ids
 .idea/dataSources.xml
