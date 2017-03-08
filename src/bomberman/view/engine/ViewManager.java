@@ -22,7 +22,7 @@ public class ViewManager {
     private Batch batch;
 
     private boolean vSync = false;
-    private MSMode msMode = MSMode.MSAAx8;
+    private MSMode msMode = MSMode.OFF;
     private boolean enableFpsCounter = true;
 
     public static void load() {

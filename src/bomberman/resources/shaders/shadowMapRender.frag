@@ -22,11 +22,12 @@ void main() {
 
         vec4 data = texture2D(texture0, coord);
 
-        float dst = y / u_resolution;
+        float dst = (y / u_resolution) * 2.0;
 
         float caster = data.a;
         if (caster > THRESHOLD) {
             distance = min(distance, dst);
+            break;
         }
     }
 

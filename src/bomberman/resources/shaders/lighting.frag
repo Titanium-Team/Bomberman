@@ -18,7 +18,7 @@ void main() {
 	float r = length(coords);
 	float intensity = smoothstep(1.0, 0.0, r);
 
-	float theta = atan(coords.y, coords.x);
+	float theta = -atan(coords.y, coords.x);
 	vec2 tc = vec2((theta + PI) / (2.0 * PI), 0.0);
 
 	float shadowFactor = sampleShadowMap(tc, r);

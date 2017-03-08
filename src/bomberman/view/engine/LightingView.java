@@ -149,7 +149,7 @@ public abstract class LightingView extends View {
 
             batch.begin(shadowMapRenderShader);
             batch.setCombinedMatrix(lightCamera.getCombined());
-            shadowMapRenderShader.setUniformf("u_resolution", light.getRadius() * 2);
+            shadowMapRenderShader.setUniformf("u_resolution", light.getRadius());
 
             batch.draw(occludersMap, light.getX() - light.getRadius(), light.getY() - light.getRadius(), light.getRadius() * 2, light.getRadius() * 2);
 
@@ -160,6 +160,18 @@ public abstract class LightingView extends View {
 
     public void addLight(Light light) {
         this.lights.add(light);
+    }
+
+    public void removeLight(Light light) {
+        light.cleanUp();
+        this.lights.remove(light);
+    }
+
+    public void clearLights() {
+        for (int i = 0; i < lights.size(); i++) {
+            lights.get(i).cleanUp();
+        }
+        lights.clear();
     }
 
 

@@ -13,19 +13,19 @@ public class Level {
 
     }
 
-    public void onMouseDown(){
+    public void onMouseDown(int button, int mouseX, int mouseY){
 
     }
 
-    public void onMouseUp(){
+    public void onMouseUp(int button, int mouseX, int mouseY){
 
     }
 
-    public void onKeyDown(){
+    public void onKeyDown(int key, char c){
 
     }
 
-    public void onKeyUp(){
+    public void onKeyUp(int key, char c){
 
     }
 
