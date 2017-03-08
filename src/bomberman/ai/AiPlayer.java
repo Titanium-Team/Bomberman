@@ -7,11 +7,12 @@ import bomberman.gameplay.*;
  */
 public class AiPlayer extends Player {
 
-    public AiPlayer(float x, float y, int hp, Level level) {
-        super(x, y, hp, level);
+    public AiPlayer(String name, Location center, GameMap map) {
+        super(name,center);
+
     }
 
-    @Override
+    //@Override
     public void update(float delta) {
 
     }

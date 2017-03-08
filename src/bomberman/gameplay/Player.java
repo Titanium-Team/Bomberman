@@ -1,50 +1,48 @@
 package bomberman.gameplay;
 
-import java.util.ArrayList;
+import bomberman.view.engine.utility.Vector2;
 
-/**
- * Created by Daniel on 05.03.2017.
- */
-public abstract class Player {
-    protected float x,y;
-    protected int hp;
-    protected ArrayList<Item> items;
-    protected Level level;
+public class Player {
 
-    protected boolean placeBomb(){
-        return false;
-    }
+    private final static double COLLISION_WIDTH = .8;
+    private final static double COLLISION_HEIGHT = .8;
 
-    protected boolean move(float x,float y){
-        return false;
-    }
+    private final String name;
+    private final BoundingBox boundingBox;
 
-    public float getX() {
-        return x;
-    }
+    private double health;
 
-    public float getY() {
-        return y;
-    }
+    private final Vector2 vector = new Vector2(0, 0);
 
-    public int getHp() {
-        return hp;
-    }
+    private double speedFactor = 1.0D;
 
-    public ArrayList<Item> getItems() {
-        return items;
-    }
+    public Player(String name, Location center) {
+        this.name = name;
 
-    public void collectItem(Item item){
+        this.boundingBox = new BoundingBox(
+            new Location(center.getX() - COLLISION_WIDTH, center.getY() - COLLISION_HEIGHT),
+            new Location(center.getX() + COLLISION_WIDTH, center.getY() + COLLISION_HEIGHT)
+        );
 
     }
 
-    public Player(float x, float y, int hp, Level level) {
-        this.x = x;
-        this.y = y;
-        this.hp = hp;
-        this.level = level;
+    public String getName() {
+        return this.name;
     }
 
-    public abstract void update(float delta);
+    public Vector2 getVector() {
+        return this.vector;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return this.boundingBox;
+    }
+
+    public double getHealth() {
+        return health;
+    }
+
+    public void setHealth(double health) {
+        this.health = health;
+    }
 }

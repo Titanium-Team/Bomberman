@@ -1,26 +1,44 @@
 package bomberman.gameplay;
 
-/**
- * Created by Daniel on 05.03.2017.
- */
 public class Tile {
-    private Item item;
 
-    public Tile(Item item) {
-        this.item = item;
+    private final TileType tileType;
+
+    private TileObject tileObject;
+    private double explodingTime = -1D;
+
+    public Tile(TileType tileType) {
+
+        assert !(tileType == null);
+        this.tileType = tileType;
+
     }
 
-    public Item getItem() {
-        return item;
+    public TileType getTileType() {
+        return this.tileType;
     }
 
-    public Item collectItem(){
-        if(item != null) {
-            Item item = this.item;
-            this.item = null;
-            return item;
-        }else{
-            return null;
-        }
+    public TileObject getTileObject() {
+        return this.tileObject;
     }
+
+    public double getExplodingTime() {
+        return this.explodingTime;
+    }
+
+    public boolean isExploding() {
+        return this.explodingTime > 0;
+    }
+
+    public void setExplodingTime(double explodingTime) {
+        this.explodingTime = explodingTime;
+    }
+
+    public void spawn(TileObject tileObject) {
+
+        assert !(tileObject == null);
+
+        this.tileObject = tileObject;
+    }
+
 }

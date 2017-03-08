@@ -7,11 +7,12 @@ import bomberman.gameplay.*;
  */
 public class NetworkPlayer extends Player {
 
-    public NetworkPlayer(float x, float y, int hp, Level level) {
-        super(x, y, hp, level);
+    public NetworkPlayer(String name, Location center, GameMap map) {
+        //super(x, y, hp, level);
+        super(name, center);
     }
 
-    @Override
+    //@Override
     public void update(float delta) {
 
     }
