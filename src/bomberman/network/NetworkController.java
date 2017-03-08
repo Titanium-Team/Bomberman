@@ -24,8 +24,8 @@ public class NetworkController {
         byte[] receiveData = new byte[1024];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         socket.receive(receivePacket);
-        String modifiedSentence = new String(receivePacket.getData());
-        System.out.println(modifiedSentence);
+        String modifiedSentence = new String(receivePacket.getData(), 0, receivePacket.getData().length);
+        System.out.println(modifiedSentence + " \nIP: " + receivePacket.getAddress() + " Port: " + receivePacket.getPort());
         socket.close();
     }
 }
