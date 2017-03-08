@@ -172,7 +172,6 @@ public abstract class LightingView extends View {
             lights.get(i).cleanUp();
         }
         lights.clear();
-    }
-
+	}
 
 }
