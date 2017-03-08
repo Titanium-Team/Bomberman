@@ -10,16 +10,8 @@ public class NetworkController {
     }
 
     public NetworkController() throws IOException {
-        InetAddress ia = InetAddress.getByName( "localhost" );
-
         String s = new Date().toString();
         byte[] raw = s.getBytes();
-
-        DatagramPacket packet = new DatagramPacket(raw, raw.length, ia, 1638);
-
-        DatagramSocket dSocket = new DatagramSocket();
-
-        dSocket.send(packet);
 
         //Alle IPs
         InetAddress inetAddress = InetAddress.getByName("255.255.255.255");
@@ -31,15 +23,8 @@ public class NetworkController {
         //Get
         byte[] receiveData = new byte[1024];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-        dSocket.receive(receivePacket);
-        String modifiedSentence = new String(receivePacket.getData());
-        System.out.println(modifiedSentence);
-        dSocket.close();
-
-        receiveData = new byte[1024];
-        receivePacket = new DatagramPacket(receiveData, receiveData.length);
         socket.receive(receivePacket);
-        modifiedSentence = new String(receivePacket.getData());
+        String modifiedSentence = new String(receivePacket.getData());
         System.out.println(modifiedSentence);
         socket.close();
     }
