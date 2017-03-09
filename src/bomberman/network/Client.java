@@ -6,18 +6,14 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Date;
 
-public class Client implements Connection{
+public class Client extends Connection{
 
-    private DatagramSocket socket;
+    public Client(NetworkController controller) throws IOException {
+        super(controller);
 
-    public Client() throws IOException {
-        socket = new DatagramSocket();
-        socket.setBroadcast(true);
-    }
-
-    @Override
-    public void close() {
-        socket.close();
+        setSocket(new DatagramSocket());
+        getSocket().setBroadcast(true);
+        getListener().start();
     }
 
     @Override
@@ -31,18 +27,32 @@ public class Client implements Connection{
             InetAddress inetAddress = InetAddress.getByName("255.255.255.255");
 
             DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, inetAddress, 1638);
-            socket.send(packet);
+            getSocket().send(packet);
 
 
-            //Get
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            socket.receive(receivePacket);
-            String modifiedSentence = new String(receivePacket.getData(), 0, receivePacket.getData().length);
-            System.out.println(modifiedSentence + " \nIP: " + receivePacket.getAddress() + " Port: " + receivePacket.getPort());
         } catch (IOException e){
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    void listen() {
+        DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+
+        try {
+            getSocket().receive(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        InetAddress address = packet.getAddress();
+        int port = packet.getPort();
+        int len = packet.getLength();
+        byte[] data = packet.getData();
+
+        getController().getNetworkPlayerMap().putIfAbsent(address.getHostAddress() + port, new NetworkPlayer(0, 0, 0, null, new ConnectionData(address, port)));
+
+        System.out.printf("Anfrage von %s vom Port %d mit der Länge %d:%n%s%n", address, port, len, new String(data, 0, len));
     }
 }

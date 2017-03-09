@@ -5,33 +5,15 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.List;
 
-public class Server implements Connection {
+public class Server extends Connection {
 
-    public Server() throws IOException {
-        DatagramSocket socket = null;
-        socket = new DatagramSocket(1638);
+    public Server(NetworkController controller) throws IOException {
+        super(controller);
 
-        while (true){
-            DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
-            socket.receive(packet);
-
-            InetAddress address = packet.getAddress();
-            int port = packet.getPort();
-            int len = packet.getLength();
-            byte[] data = packet.getData();
-
-            System.out.printf("Anfrage von %s vom Port %d mit der Länge %d:%n%s%n", address, port, len, new String(data, 0, len));
-
-            byte[] send = "Thx".getBytes();
-            DatagramPacket sendBack = new DatagramPacket(send, send.length, address, port);
-            socket.send(sendBack);
-        }
-    }
-
-    @Override
-    public void close() {
-
+        setSocket(new DatagramSocket(1638));
+        getListener().start();
     }
 
     @Override
@@ -41,6 +23,38 @@ public class Server implements Connection {
 
     @Override
     public void message(String message) {
+        getController().getNetworkPlayerMap().forEach((key, value) -> {
+            try {
 
+                byte[] messageBytes = message.getBytes();
+                DatagramPacket send = new DatagramPacket(messageBytes, messageBytes.length, value.getConnectionData().getIp(), value.getConnectionData().getPort());
+
+                getSocket().send(send);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    void listen() {
+        DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+
+        try {
+            getSocket().receive(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        InetAddress address = packet.getAddress();
+        int port = packet.getPort();
+        int len = packet.getLength();
+        byte[] data = packet.getData();
+
+        getController().getNetworkPlayerMap().putIfAbsent(address.getHostAddress() + port, new NetworkPlayer(0, 0, 0, null, new ConnectionData(address, port)));
+
+        System.out.printf("Anfrage von %s vom Port %d mit der Länge %d:%n%s%n", address, port, len, new String(data, 0, len));
+
+        message("THX");
     }
 }
