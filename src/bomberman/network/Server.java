@@ -6,23 +6,15 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-public class Server {
+public class Server implements Connection {
 
-    public Server() {
+    public Server() throws IOException {
         DatagramSocket socket = null;
-        try {
-            socket = new DatagramSocket(1638);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+        socket = new DatagramSocket(1638);
 
         while (true){
             DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
-            try {
-                socket.receive(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            socket.receive(packet);
 
             InetAddress address = packet.getAddress();
             int port = packet.getPort();
@@ -33,15 +25,22 @@ public class Server {
 
             byte[] send = "Thx".getBytes();
             DatagramPacket sendBack = new DatagramPacket(send, send.length, address, port);
-            try {
-                socket.send(sendBack);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            socket.send(sendBack);
         }
     }
 
-    public static void main(String[] args){
-        new Server();
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void message(String message) {
+
     }
 }

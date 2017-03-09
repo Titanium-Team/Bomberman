@@ -4,28 +4,23 @@ import java.io.IOException;
 import java.net.*;
 import java.util.Date;
 
-public class NetworkController {
-    public static void main(String[] args) throws IOException {
-        new NetworkController();
+public class NetworkController implements Runnable{
+
+    private boolean hosting = false;
+    private Connection connection;
+
+    public NetworkController(boolean hosting) throws IOException {
+        this.hosting = hosting;
+
+        if (hosting){
+            connection = new Server();
+        }else {
+            connection = new Client();
+        }
     }
 
-    public NetworkController() throws IOException {
-        String s = new Date().toString();
-        byte[] raw = s.getBytes();
-
-        //Alle IPs
-        InetAddress inetAddress = InetAddress.getByName("255.255.255.255");
-        DatagramPacket packetB = new DatagramPacket(raw, raw.length, inetAddress, 1638);
-        DatagramSocket socket = new DatagramSocket();
-        socket.setBroadcast(true);
-        socket.send(packetB);
-
-        //Get
-        byte[] receiveData = new byte[1024];
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-        socket.receive(receivePacket);
-        String modifiedSentence = new String(receivePacket.getData(), 0, receivePacket.getData().length);
-        System.out.println(modifiedSentence + " \nIP: " + receivePacket.getAddress() + " Port: " + receivePacket.getPort());
-        socket.close();
+    @Override
+    public void run() {
+        connection.message("Test");
     }
 }
