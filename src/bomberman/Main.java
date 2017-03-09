@@ -1,7 +1,7 @@
 package bomberman;
 
-import bomberman.view.TestView;
-import bomberman.view.engine.View;
+import bomberman.view.views.TestView;
+import bomberman.view.views.View;
 import bomberman.view.engine.ViewManager;
 
 public class Main {

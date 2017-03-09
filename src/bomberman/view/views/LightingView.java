@@ -1,8 +1,9 @@
-package bomberman.view.engine;
+package bomberman.view.views;
 
+import bomberman.view.engine.Light;
+import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.*;
 import bomberman.view.engine.utility.Camera;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;

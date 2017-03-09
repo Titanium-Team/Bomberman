@@ -1,5 +1,6 @@
-package bomberman.view.engine;
+package bomberman.view.views;
 
+import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.ViewComponent;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;

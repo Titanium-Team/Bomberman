@@ -1,10 +1,8 @@
-package bomberman.view;
+package bomberman.view.views;
 
 
 import bomberman.view.engine.Light;
-import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.components.Label;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.input.Mouse;
