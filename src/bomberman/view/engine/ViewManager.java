@@ -21,7 +21,7 @@ public class ViewManager {
 
     private Batch batch;
 
-    private boolean vSync = false;
+    private boolean vSync = false
     private MSMode msMode = MSMode.OFF;
     private boolean enableFpsCounter = true;
 
