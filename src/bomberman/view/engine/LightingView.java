@@ -1,9 +1,10 @@
-package bomberman.view.views;
+package bomberman.view.engine;
 
 import bomberman.view.engine.Light;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.*;
 import bomberman.view.engine.utility.Camera;
+import bomberman.view.views.View;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;

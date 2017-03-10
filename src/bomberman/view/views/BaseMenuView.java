@@ -4,11 +4,9 @@ import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
 
-/**Ingame View **/
-public class GameView extends LightingView {
+public class BaseMenuView extends LightingView {
 
-
-    public GameView(int width, int height, ViewManager viewManager) {
+    public BaseMenuView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
     }
 
