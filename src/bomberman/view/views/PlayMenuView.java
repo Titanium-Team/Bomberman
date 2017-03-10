@@ -1,9 +1,11 @@
 package bomberman.view.views;
 
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.rendering.Batch;
 
-/** Choose character and "host game" or "join game" **/
+/**
+ * Choose character and "host game" or "join game"
+ **/
+
 /** leads to LobbyView**/
 public class PlayMenuView extends BaseMenuView {
 

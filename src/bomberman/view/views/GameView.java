@@ -4,7 +4,9 @@ import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
 
-/**Ingame View **/
+/**
+ * Ingame View
+ **/
 public class GameView extends LightingView {
 
 

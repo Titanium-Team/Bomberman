@@ -4,7 +4,6 @@ import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
-import bomberman.view.views.View;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -33,6 +32,9 @@ public class ViewManager {
             loadTexture("test0.png");
             loadTexture("test1.png");
             loadTexture("test2.png");
+
+            loadTexture("button.png");
+            loadTexture("buttonPressed.png");
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
@@ -234,8 +236,12 @@ public class ViewManager {
         return currentView;
     }
 
-    public void setCurrentView(View currentView) {
-        this.currentView = currentView;
+    public void setCurrentView(Class<? extends View> clazz) {
+        setCurrentView(ViewFactory.instance().createView(clazz, this));
+    }
+
+    public void setCurrentView(View newView) {
+        this.currentView = newView;
         this.currentView.layout(Display.getWidth(), Display.getHeight());
     }
 }

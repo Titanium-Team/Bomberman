@@ -1,7 +1,7 @@
 package bomberman;
 
-import bomberman.view.views.TestView;
-import bomberman.view.views.View;
+import bomberman.view.views.HomeView;
+import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 
 public class Main {
@@ -18,8 +18,7 @@ public class Main {
     public void mainLoop() {
         viewManager = new ViewManager();
 
-        View view = new TestView(viewManager.getViewportWidth(), viewManager.getViewportHeight(), viewManager);
-        viewManager.setCurrentView(view);
+        viewManager.setCurrentView(HomeView.class);
 
         float deltaTime;
         long startTime = System.nanoTime();

@@ -1,7 +1,7 @@
 package bomberman.view.engine.components;
 
 
-import bomberman.view.views.View;
+import bomberman.view.engine.View;
 import bomberman.view.engine.rendering.Batch;
 
 public abstract class ViewComponent {

@@ -1,7 +1,5 @@
 package bomberman.view.engine.utility;
 
-import java.util.Arrays;
-
 public class Vector2 {
 
     private float x;

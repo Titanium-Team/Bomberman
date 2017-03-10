@@ -1,10 +1,10 @@
 package bomberman.view.engine;
 
-import bomberman.view.engine.Light;
-import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.rendering.*;
+import bomberman.view.engine.rendering.Batch;
+import bomberman.view.engine.rendering.FrameBuffer;
+import bomberman.view.engine.rendering.ShaderProgram;
+import bomberman.view.engine.rendering.VertexAttrib;
 import bomberman.view.engine.utility.Camera;
-import bomberman.view.views.View;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
@@ -60,6 +60,8 @@ public abstract class LightingView extends View {
 
     @Override
     public void renderUI(Batch batch) {
+        super.renderUI(batch);
+
         // debug
         /*for (int i = 0; i < lights.size(); i++) {
             Light light = lights.get(i);
@@ -155,6 +157,6 @@ public abstract class LightingView extends View {
             lights.get(i).cleanUp();
         }
         lights.clear();
-	}
+    }
 
 }

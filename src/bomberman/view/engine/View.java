@@ -1,6 +1,5 @@
-package bomberman.view.views;
+package bomberman.view.engine;
 
-import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.ViewComponent;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
@@ -14,6 +13,7 @@ public abstract class View {
     protected List<ViewComponent> components;
     protected int width, height;
     protected final ViewManager viewManager;
+    private View parentView = null;
 
     private Camera uiCamera;
     private Camera sceneCamera;
@@ -26,7 +26,6 @@ public abstract class View {
 
         this.sceneCamera = new Camera(width, height);
         this.uiCamera = new Camera(width, height);
-        this.uiCamera.setTranslation(new Vector2(width / 2, height / 2));
     }
 
     public void update(float deltaTime) {
@@ -41,6 +40,9 @@ public abstract class View {
     }
 
     public void renderUI(Batch batch) {
+        for (int i = 0; i < this.components.size(); i++) {
+            this.components.get(i).draw(batch);
+        }
     }
 
     public void renderScene(Batch batch) {
@@ -71,8 +73,40 @@ public abstract class View {
         return components;
     }
 
+    public void addComponent(ViewComponent component) {
+        this.components.add(component);
+    }
+
     public ViewManager getViewManager() {
         return viewManager;
+    }
+
+    public View getParentView() {
+        return parentView;
+    }
+
+    public void setParentView(View parentView) {
+        this.parentView = parentView;
+    }
+
+    public void changeView(Class<? extends View> clazz) {
+        changeView(ViewFactory.instance().createView(clazz, viewManager));
+    }
+
+    public void changeView(View newView) {
+        if (newView != null) {
+            newView.setParentView(this);
+
+            viewManager.setCurrentView(newView);
+        }
+    }
+
+    public void navigateBack() {
+        View parent = this.getParentView();
+
+        if (parent != null) {
+            viewManager.setCurrentView(parent);
+        }
     }
 
     public void onKeyDown(int key, char c) {
