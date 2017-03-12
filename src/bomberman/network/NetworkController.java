@@ -29,6 +29,13 @@ public class NetworkController implements Runnable{
 
     @Override
     public void run() {
-        connection.message("Test");
+        while (true){
+            Scanner scanner = new Scanner(System.in);
+            chatMessage(scanner.nextLine());
+        }
+    }
+
+    public void chatMessage(String message){
+        connection.message(message);
     }
 }

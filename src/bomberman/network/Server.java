@@ -1,10 +1,9 @@
 package bomberman.network;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.List;
 
 public class Server extends Connection {
@@ -13,7 +12,10 @@ public class Server extends Connection {
         super(controller);
 
         setSocket(new DatagramSocket(1638));
-        getListener().start();
+
+        init();
+
+        System.out.println("Server initialized");
     }
 
     @Override
@@ -22,17 +24,9 @@ public class Server extends Connection {
     }
 
     @Override
-    public void message(String message) {
+    public void message(String message ) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
-            try {
-
-                byte[] messageBytes = message.getBytes();
-                DatagramPacket send = new DatagramPacket(messageBytes, messageBytes.length, value.getConnectionData().getIp(), value.getConnectionData().getPort());
-
-                getSocket().send(send);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getIp(), value.getConnectionData().getPort());
         });
     }
 
@@ -46,15 +40,41 @@ public class Server extends Connection {
             e.printStackTrace();
         }
 
-        InetAddress address = packet.getAddress();
-        int port = packet.getPort();
-        int len = packet.getLength();
-        byte[] data = packet.getData();
+        String message = new String(packet.getData(), 0, packet.getLength());
 
-        getController().getNetworkPlayerMap().putIfAbsent(address.getHostAddress() + port, new NetworkPlayer(0, 0, 0, null, new ConnectionData(address, port)));
+        String[] splittedMessage = message.split("§");
 
-        System.out.printf("Anfrage von %s vom Port %d mit der Länge %d:%n%s%n", address, port, len, new String(data, 0, len));
+        Gson gson = new Gson();
 
-        message("THX");
+        switch (splittedMessage[0]){
+            case "hello":
+                ConnectionData connectionData = new ConnectionData(packet.getAddress(), packet.getPort(), splittedMessage[1]);
+
+                if (!getController().getNetworkPlayerMap().containsKey(packet.getAddress().getHostAddress() + packet.getPort())) {
+                    getController().getNetworkPlayerMap().put(packet.getAddress().getHostAddress() + packet.getPort(), new NetworkPlayer(0, 0, 0, null, connectionData));
+
+                    send("hello§" + getMyData().toJson(), packet.getAddress(), packet.getPort());
+
+                    System.out.println("ConnectionData from " + packet.getAddress() + " " + packet.getPort());
+                }
+
+                break;
+            case "message":
+                String stringMessage = decrypt(splittedMessage[1]);
+
+                sendToAll("message§" + message, packet.getAddress(), packet.getPort());
+
+                System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
+
+                break;
+        }
+    }
+
+    private void sendToAll(String message, InetAddress address, int port){
+        getController().getNetworkPlayerMap().forEach((key, value) -> {
+            if (value.getConnectionData().getIp() != address && value.getConnectionData().getPort() != port) {
+                send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getIp(), value.getConnectionData().getPort());
+            }
+        });
     }
 }
