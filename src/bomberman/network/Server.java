@@ -62,7 +62,7 @@ public class Server extends Connection {
             case "message":
                 String stringMessage = decrypt(splittedMessage[1]);
 
-                sendToAll("message§" + message, packet.getAddress(), packet.getPort());
+                sendToAll("message§" + stringMessage, packet.getAddress(), packet.getPort());
 
                 System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
 
