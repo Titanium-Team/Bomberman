@@ -9,7 +9,7 @@ public class NetworkPlayer extends Player {
 
     public NetworkPlayer(String name, Location center, GameMap map) {
         //super(x, y, hp, level);
-        super(name, center);
+        super(map, name, center);
     }
 
     //@Override

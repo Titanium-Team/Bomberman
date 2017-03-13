@@ -10,7 +10,7 @@ public class GameplayManager {
 
     public GameplayManager() {
 
-        this.maps.add(
+        this.add(
             GameMap.builder()
                 .dimension(11, 11)
                 .verticalRow(TileTypes.WALL, 0)

@@ -32,8 +32,8 @@ public class GameMap {
 
     public Tile get(int x, int y) {
 
-        assert x > 0 && x < this.width;
-        assert y > 0 && y < this.height;
+        assert x >= 0 && x < this.width;
+        assert y >= 0 && y < this.height;
 
         return this.tiles[x][y];
 
@@ -41,8 +41,8 @@ public class GameMap {
 
     public void spawn(TileObject tileObject, int x, int y) {
 
-        assert x > 0 && x < this.width;
-        assert y > 0 && y < this.height;
+        assert x >= 0 && x < this.width;
+        assert y >= 0 && y < this.height;
 
         this.tiles[x][y].spawn(tileObject);
 
@@ -66,7 +66,7 @@ public class GameMap {
         public Builder verticalRow(TileType tileType, int y) {
 
             assert !(tileType == null);
-            assert y > 0 && y < this.tiles[0].length;
+            assert y >= 0 && y < this.tiles[0].length;
 
             for(int x = 0; x < this.tiles[0].length; x++) {
                 this.tiles[x][y] = new Tile(tileType);
@@ -79,7 +79,7 @@ public class GameMap {
         public Builder horizontalRow(TileType tileType, int x) {
 
             assert !(tileType == null);
-            assert x > 0 && x < this.tiles.length;
+            assert x >= 0 && x < this.tiles.length;
 
             for(int y = 0; y < this.tiles.length; y++) {
                 this.tiles[x][y] = new Tile(tileType);
@@ -107,8 +107,10 @@ public class GameMap {
         public Builder at(TileType tileType, int x, int y) {
 
             assert !(tileType == null);
+
             this.tiles[x][y] = new Tile(tileType);
             return this;
+
         }
 
         public GameMap build() {

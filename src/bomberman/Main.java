@@ -1,5 +1,6 @@
 package bomberman;
 
+import bomberman.gameplay.GameplayManager;
 import bomberman.view.views.HomeView;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
@@ -9,6 +10,8 @@ public class Main {
     public static Main instance;
 
     public static void main(String[] args) {
+
+        new GameplayManager();
         instance = new Main();
         instance.mainLoop();
     }
