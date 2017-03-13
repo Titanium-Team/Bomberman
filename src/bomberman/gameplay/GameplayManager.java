@@ -1,5 +1,6 @@
 package bomberman.gameplay;
 
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.BoundingBox;
 
@@ -15,12 +16,9 @@ public class GameplayManager {
 
         this.add(
             GameMap.builder()
-                .dimension(11, 11)
-                .verticalRow(TileTypes.WALL, 0)
-                .horizontalRow(TileTypes.WALL, 0)
-                .horizontalRow(TileTypes.WALL, 10)
-                .verticalRow(TileTypes.WALL, 10)
-                .fill(TileTypes.GROUND, new BoundingBox(1, 1, 9, 9))
+                .dimension(16, 12)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
             .build()
         );
 
