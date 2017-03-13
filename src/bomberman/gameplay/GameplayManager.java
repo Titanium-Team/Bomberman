@@ -22,6 +22,8 @@ public class GameplayManager {
                 .verticalRow(TileTypes.WALL, 10)
                 .fill(TileTypes.GROUND, new BoundingBox(1, 1, 9, 9))
             .build()
+        );
+
     }
 
     public void add(Player player) {
