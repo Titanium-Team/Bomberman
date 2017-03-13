@@ -1,5 +1,10 @@
 package bomberman.gameplay;
 
+import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.statistic.GameStatistic;
+import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.utils.BoundingBox;
+import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 
 import java.awt.event.KeyEvent;
@@ -9,6 +14,7 @@ public class Player {
     private final static double COLLISION_WIDTH = .8;
     private final static double COLLISION_HEIGHT = .8;
 
+    private final GameStatistic gameStatistic = new GameStatistic();
     private final GameMap gameMap;
 
     private final String name;
@@ -42,6 +48,10 @@ public class Player {
 
     public Vector2 getVector() {
         return this.vector;
+    }
+
+    public GameStatistic getGameStatistic() {
+        return this.gameStatistic;
     }
 
     public BoundingBox getBoundingBox() {

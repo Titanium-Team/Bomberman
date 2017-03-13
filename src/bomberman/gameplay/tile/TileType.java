@@ -1,4 +1,4 @@
-package bomberman.gameplay;
+package bomberman.gameplay.tile;
 
 public interface TileType {
 

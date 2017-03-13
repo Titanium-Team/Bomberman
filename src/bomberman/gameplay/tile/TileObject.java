@@ -1,4 +1,6 @@
-package bomberman.gameplay;
+package bomberman.gameplay.tile;
+
+import bomberman.gameplay.Player;
 
 public abstract class TileObject {
 

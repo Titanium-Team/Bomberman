@@ -1,6 +1,7 @@
 package bomberman.ai;
 
 import bomberman.gameplay.*;
+import bomberman.gameplay.utils.Location;
 
 /**
  * Created by Daniel on 05.03.2017.

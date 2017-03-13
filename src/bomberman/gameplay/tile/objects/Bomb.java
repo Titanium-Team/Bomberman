@@ -1,4 +1,8 @@
-package bomberman.gameplay;
+package bomberman.gameplay.tile.objects;
+
+import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileObject;
 
 public class Bomb extends TileObject {
 

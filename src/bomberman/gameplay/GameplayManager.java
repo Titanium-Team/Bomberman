@@ -1,5 +1,8 @@
 package bomberman.gameplay;
 
+import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.utils.BoundingBox;
+
 import java.util.LinkedList;
 import java.util.List;
 

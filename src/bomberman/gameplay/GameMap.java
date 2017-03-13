@@ -1,5 +1,10 @@
 package bomberman.gameplay;
 
+import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileObject;
+import bomberman.gameplay.tile.TileType;
+import bomberman.gameplay.utils.BoundingBox;
+
 public class GameMap {
 
     private final Tile[][] tiles;
