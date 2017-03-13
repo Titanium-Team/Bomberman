@@ -4,21 +4,21 @@ import bomberman.gameplay.Player;
 
 public abstract class TileObject {
 
-    private final Tile parent;
-    private int lifespan;
+	private final Tile parent;
+	private int lifespan;
 
-    public TileObject(Tile parent, int lifespan) {
+	public TileObject(Tile parent, int lifespan) {
 
-        assert !(parent == null);
+		assert !(parent == null);
 
-        this.parent = parent;
-        this.lifespan = lifespan;
+		this.parent = parent;
+		this.lifespan = lifespan;
 
-    }
+	}
 
 
-    public abstract void execute();
+	public abstract void execute();
 
-    public abstract void interact(Player player);
+	public abstract void interact(Player player);
 
 }

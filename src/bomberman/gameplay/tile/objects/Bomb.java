@@ -6,16 +6,17 @@ import bomberman.gameplay.tile.TileObject;
 
 public class Bomb extends TileObject {
 
-    public Bomb(Tile parent, int lifespan) {
-        super(parent, lifespan);
-    }
+	public Bomb(Tile parent, int lifespan) {
+		super(parent, lifespan);
+	}
 
-    @Override
-    public void execute() {
-        //@TODO Implement
-    }
+	@Override
+	public void execute() {
+		//@TODO Implement
+	}
 
-    @Override
-    public void interact(Player player) {}
+	@Override
+	public void interact(Player player) {
+	}
 
 }

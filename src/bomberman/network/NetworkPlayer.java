@@ -8,13 +8,13 @@ import bomberman.gameplay.utils.Location;
  */
 public class NetworkPlayer extends Player {
 
-    public NetworkPlayer(String name, Location center, GameMap map) {
-        //super(x, y, hp, level);
-        super(map, name, center);
-    }
+	public NetworkPlayer(String name, Location center, GameMap map) {
+		//super(x, y, hp, level);
+		super(map, name, center);
+	}
 
-    //@Override
-    public void update(float delta) {
+	//@Override
+	public void update(float delta) {
 
-    }
+	}
 }

@@ -11,8 +11,8 @@ import bomberman.view.engine.ViewManager;
  **/
 public class PlayMenuView extends BaseMenuView {
 
-    public PlayMenuView(int width, int height, ViewManager viewManager) {
-        super(width, height, viewManager);
-    }
+	public PlayMenuView(int width, int height, ViewManager viewManager) {
+		super(width, height, viewManager);
+	}
 
 }

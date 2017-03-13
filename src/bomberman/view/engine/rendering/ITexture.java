@@ -2,18 +2,18 @@ package bomberman.view.engine.rendering;
 
 public interface ITexture {
 
-    Texture getTexture();
+	Texture getTexture();
 
-    int getWidth();
+	int getWidth();
 
-    int getHeight();
+	int getHeight();
 
-    float getU();
+	float getU();
 
-    float getV();
+	float getV();
 
-    float getU2();
+	float getU2();
 
-    float getV2();
+	float getV2();
 
 }
