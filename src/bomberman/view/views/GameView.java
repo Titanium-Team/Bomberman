@@ -2,8 +2,7 @@ package bomberman.view.views;
 
 import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
-import bomberman.gameplay.Tile;
-import bomberman.gameplay.TileType;
+import bomberman.gameplay.tile.Tile;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;

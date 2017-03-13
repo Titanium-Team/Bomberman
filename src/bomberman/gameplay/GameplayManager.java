@@ -32,7 +32,7 @@ public class GameplayManager {
 
     public GameMap get(int index) {
 
-        assert index > 0 && index < this.maps.size();
+        assert index >= 0 && index < this.maps.size();
         return this.maps.get(index);
 
     }

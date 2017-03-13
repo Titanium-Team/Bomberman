@@ -3,6 +3,7 @@ package bomberman.gameplay;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileType;
+import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.BoundingBox;
 
 public class GameMap {
@@ -66,6 +67,11 @@ public class GameMap {
 
         public Builder dimension(int width, int height) {
             this.tiles = new Tile[width][height];
+            /*for(int x = 0; x < width; x++) {
+                for(int y = 0; y < height; y++) {
+                    this.tiles[x][y] = new Tile(TileTypes.GROUND);
+                }
+            }*/
             return this;
         }
 
@@ -100,8 +106,8 @@ public class GameMap {
             assert !(tileType == null);
             assert !(area == null);
 
-            for (int x = 0; x < area.getWidth(); x++) {
-                for (int y = 0; y < area.getHeight(); y++) {
+            for (int x = (int) area.getMin().getX(); x <= area.getMax().getX(); x++) {
+                for (int y = (int) area.getMin().getY(); y <= area.getMax().getY(); y++) {
                     this.tiles[x][y] = new Tile(tileType);
                 }
             }
