@@ -61,7 +61,8 @@ public class GameMap {
 
         private Tile[][] tiles;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public Builder dimension(int width, int height) {
             this.tiles = new Tile[width][height];
@@ -73,7 +74,7 @@ public class GameMap {
             assert !(tileType == null);
             assert y >= 0 && y < this.tiles[0].length;
 
-            for(int x = 0; x < this.tiles[0].length; x++) {
+            for (int x = 0; x < this.tiles[0].length; x++) {
                 this.tiles[x][y] = new Tile(tileType);
             }
 
@@ -86,7 +87,7 @@ public class GameMap {
             assert !(tileType == null);
             assert x >= 0 && x < this.tiles.length;
 
-            for(int y = 0; y < this.tiles.length; y++) {
+            for (int y = 0; y < this.tiles.length; y++) {
                 this.tiles[x][y] = new Tile(tileType);
             }
 
@@ -99,8 +100,8 @@ public class GameMap {
             assert !(tileType == null);
             assert !(area == null);
 
-            for(int x = 0; x < area.getWidth(); x++) {
-                for(int y = 0; y < area.getHeight(); y++) {
+            for (int x = 0; x < area.getWidth(); x++) {
+                for (int y = 0; y < area.getHeight(); y++) {
                     this.tiles[x][y] = new Tile(tileType);
                 }
             }

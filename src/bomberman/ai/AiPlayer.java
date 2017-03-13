@@ -10,7 +10,6 @@ public class AiPlayer extends Player {
 
     public AiPlayer(String name, Location center, GameMap map) {
         super(map, name,center);
-
     }
 
     //@Override

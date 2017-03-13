@@ -5,6 +5,7 @@ import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
+import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.input.Mouse;
 
@@ -34,7 +35,7 @@ public class TestView extends LightingView {
     }
 
     @Override
-    public void renderOccluders(Batch batch) {
+    public void renderOccluders(Batch batch,Camera camera) {
         /*int size = 50;
         for (int y = 50; y < getHeight(); y += size * 3) {
             for (int x = 0; x < getWidth(); x += size * 3) {

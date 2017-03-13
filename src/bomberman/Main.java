@@ -17,9 +17,11 @@ public class Main {
     }
 
     private ViewManager viewManager;
+    private GameplayManager gameplayManager;
 
     public void mainLoop() {
-        viewManager = new ViewManager();
+        this.gameplayManager = new GameplayManager();
+        viewManager = new ViewManager(this.gameplayManager);
 
         viewManager.setCurrentView(HomeView.class);
 

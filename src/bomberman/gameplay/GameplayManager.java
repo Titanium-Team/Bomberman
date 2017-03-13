@@ -22,8 +22,6 @@ public class GameplayManager {
                 .verticalRow(TileTypes.WALL, 10)
                 .fill(TileTypes.GROUND, new BoundingBox(1, 1, 9, 9))
             .build()
-        );
-
     }
 
     public void add(Player player) {
@@ -42,6 +40,18 @@ public class GameplayManager {
         assert !(this.maps.contains(map));
         this.maps.add(map);
 
+    }
+
+    public void onKeyDown(int key, char c) {
+    }
+
+    public void onKeyUp(int key, char c) {
+    }
+
+    public void onMouseDown(int button, int mouseX, int mouseY) {
+    }
+
+    public void onMouseUp(int button, int mouseX, int mouseY) {
     }
 
 }
