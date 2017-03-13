@@ -77,6 +77,10 @@ public abstract class View {
         this.components.add(component);
     }
 
+    public void removeComponent(ViewComponent component) {
+        this.components.remove(component);
+    }
+
     public ViewManager getViewManager() {
         return viewManager;
     }

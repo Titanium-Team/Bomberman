@@ -1,9 +1,11 @@
 package bomberman.view.engine;
 
+import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
+import bomberman.view.views.GameView;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -56,9 +58,12 @@ public class ViewManager {
     }
 
     private View currentView;
+    private GameplayManager gameplayManager;
     private boolean fullscreen = false;
 
-    public ViewManager() {
+    public ViewManager(GameplayManager gameplayManager) {
+        this.gameplayManager = gameplayManager;
+
         try {
             setDisplayMode(800, 600, false);
 
@@ -166,6 +171,7 @@ public class ViewManager {
                 int mouseY = Display.getHeight() - Mouse.getEventY();
 
                 currentView.onMouseDown(button, mouseX, mouseY);
+                gameplayManager.onMouseDown(button, mouseX, mouseY);
             } else {
                 int button = Mouse.getEventButton();
                 int mouseX = Mouse.getEventX();
@@ -173,6 +179,7 @@ public class ViewManager {
 
                 if (button != -1) {
                     currentView.onMouseUp(button, mouseX, mouseY);
+                    gameplayManager.onMouseUp(button, mouseX, mouseY);
                 }
             }
         }
@@ -182,6 +189,7 @@ public class ViewManager {
                 char c = Keyboard.getEventCharacter();
 
                 currentView.onKeyDown(key, c);
+                gameplayManager.onKeyDown(key, c);
 
                 if (key == Keyboard.KEY_F11) {
                     fullscreen = !fullscreen;
@@ -204,6 +212,7 @@ public class ViewManager {
                 char c = Keyboard.getEventCharacter();
 
                 currentView.onKeyUp(key, c);
+                gameplayManager.onKeyUp(key, c);
             }
         }
     }
@@ -238,6 +247,11 @@ public class ViewManager {
 
     public void setCurrentView(Class<? extends View> clazz) {
         setCurrentView(ViewFactory.instance().createView(clazz, this));
+
+        if (currentView instanceof GameView) {
+            GameView gameView = (GameView) currentView;
+            gameView.setGameplayManager(this.gameplayManager);
+        }
     }
 
     public void setCurrentView(View newView) {

@@ -41,4 +41,16 @@ public class GameplayManager {
 
     }
 
+    public void onKeyDown(int key, char c) {
+    }
+
+    public void onKeyUp(int key, char c) {
+    }
+
+    public void onMouseDown(int button, int mouseX, int mouseY) {
+    }
+
+    public void onMouseUp(int button, int mouseX, int mouseY) {
+    }
+
 }

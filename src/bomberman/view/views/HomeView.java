@@ -16,6 +16,8 @@ public class HomeView extends BaseMenuView {
     public HomeView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
+        this.removeComponent(this.backButton);
+
         this.optionsButton = new Button(400, 100, 200, 50, this, "Options");
         this.optionsButton.setListener(new ButtonListener() {
             @Override
