@@ -8,7 +8,7 @@ import bomberman.gameplay.*;
 public class AiPlayer extends Player {
 
     public AiPlayer(String name, Location center, GameMap map) {
-        super(name,center);
+        super(name, center);
 
     }
 

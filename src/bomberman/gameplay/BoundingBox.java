@@ -75,10 +75,10 @@ public class BoundingBox {
 
     public boolean intersects(BoundingBox other) {
         return (
-            this.getMin().getX() < other.getMax().getX() &&
-            this.getMax().getX() > other.getMin().getX() &&
-            this.getMin().getY() < other.getMax().getY() &&
-            this.getMax().getY() > other.getMin().getY()
+                this.getMin().getX() < other.getMax().getX() &&
+                        this.getMax().getX() > other.getMin().getX() &&
+                        this.getMin().getY() < other.getMax().getY() &&
+                        this.getMax().getY() > other.getMin().getY()
         );
     }
 
@@ -86,9 +86,9 @@ public class BoundingBox {
     public boolean contains(Location location) {
         return (
                 location.getX() >= this.min.getX() &&
-                location.getX() <= this.max.getX() &&
-                location.getY() >= this.min.getY() &&
-                location.getY() <= this.max.getY()
+                        location.getX() <= this.max.getX() &&
+                        location.getY() >= this.min.getY() &&
+                        location.getY() <= this.max.getY()
         );
     }
 

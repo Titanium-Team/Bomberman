@@ -15,7 +15,6 @@ public abstract class TileObject {
     }
 
 
-
     public abstract void execute();
 
     public abstract void interact(Player player);

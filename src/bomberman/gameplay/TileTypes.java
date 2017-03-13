@@ -3,7 +3,6 @@ package bomberman.gameplay;
 public enum TileTypes implements TileType {
 
     GROUND {
-
         @Override
         public boolean isWalkable() {
             return true;
@@ -16,7 +15,6 @@ public enum TileTypes implements TileType {
 
     },
     WALL {
-
         @Override
         public boolean isWalkable() {
             return false;
@@ -29,7 +27,6 @@ public enum TileTypes implements TileType {
 
     },
     WALL_BREAKABLE {
-
         @Override
         public boolean isWalkable() {
             return false;

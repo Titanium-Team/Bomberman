@@ -20,8 +20,8 @@ public class Player {
         this.name = name;
 
         this.boundingBox = new BoundingBox(
-            new Location(center.getX() - COLLISION_WIDTH, center.getY() - COLLISION_HEIGHT),
-            new Location(center.getX() + COLLISION_WIDTH, center.getY() + COLLISION_HEIGHT)
+                new Location(center.getX() - COLLISION_WIDTH, center.getY() - COLLISION_HEIGHT),
+                new Location(center.getX() + COLLISION_WIDTH, center.getY() + COLLISION_HEIGHT)
         );
 
     }

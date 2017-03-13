@@ -247,15 +247,15 @@ public class ViewManager {
 
     public void setCurrentView(Class<? extends View> clazz) {
         setCurrentView(ViewFactory.instance().createView(clazz, this));
-
-        if (currentView instanceof GameView) {
-            GameView gameView = (GameView) currentView;
-            gameView.setGameplayManager(this.gameplayManager);
-        }
     }
 
     public void setCurrentView(View newView) {
         this.currentView = newView;
         this.currentView.layout(Display.getWidth(), Display.getHeight());
+
+        if (currentView instanceof GameView) {
+            GameView gameView = (GameView) currentView;
+            gameView.setGameplayManager(this.gameplayManager);
+        }
     }
 }

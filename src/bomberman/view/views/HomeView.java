@@ -8,10 +8,12 @@ import bomberman.view.engine.components.ButtonListener;
  * View for Start
  **/
 
-/** leads to OptionsView & PlayMenuView**/
+/**
+ * leads to OptionsView & PlayMenuView
+ **/
 public class HomeView extends BaseMenuView {
 
-    private Button optionsButton;
+    private Button optionsButton, playButton;
 
     public HomeView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
@@ -26,6 +28,15 @@ public class HomeView extends BaseMenuView {
             }
         });
         this.addComponent(optionsButton);
+
+        this.playButton = new Button(400, 200, 200, 50, this, "Ploay");
+        this.playButton.setListener(new ButtonListener() {
+            @Override
+            public void onClick() {
+                HomeView.this.changeView(GameView.class);
+            }
+        });
+        this.addComponent(playButton);
     }
 
 }
