@@ -6,6 +6,7 @@ import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.event.KeyEvent;
 
@@ -91,21 +92,21 @@ public class Player {
 
         switch (keyCode) {
 
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_S:
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:
+            case Keyboard.KEY_DOWN:
+            case Keyboard.KEY_S:
+            case Keyboard.KEY_UP:
+            case Keyboard.KEY_W:
                 this.vector.setY(0);
                 break;
 
-            case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_D:
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_A:
+            case Keyboard.KEY_RIGHT:
+            case Keyboard.KEY_D:
+            case Keyboard.KEY_LEFT:
+            case Keyboard.KEY_A:
                 this.vector.setX(0);
                 break;
 
-            case KeyEvent.VK_SPACE:
+            case Keyboard.KEY_SPACE:
                 break;
 
         }
@@ -116,35 +117,35 @@ public class Player {
 
         switch (keyCode) {
 
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_W:
+            case Keyboard.KEY_UP:
+            case Keyboard.KEY_W:
                 this.vector.setY(
                         range(0, this.vector.getY() - .2F, 3)
                 );
                 break;
 
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_A:
+            case Keyboard.KEY_LEFT:
+            case Keyboard.KEY_A:
                 this.vector.setX(
                         range(0, this.vector.getX() - .2F, 3)
                 );
                 break;
 
-            case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_D:
+            case Keyboard.KEY_RIGHT:
+            case Keyboard.KEY_D:
                 this.vector.setX(
                         range(0, this.vector.getX() + .2F, 3)
                 );
                 break;
 
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_S:
+            case Keyboard.KEY_DOWN:
+            case Keyboard.KEY_S:
                 this.vector.setY(
                         range(0, this.vector.getY() + .2F, 3)
                 );
                 break;
 
-            case KeyEvent.VK_SPACE: {
+            case Keyboard.KEY_SPACE: {
 
                 Tile tile = this.getTile();
                 //@TODO
