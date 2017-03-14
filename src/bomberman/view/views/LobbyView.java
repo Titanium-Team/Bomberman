@@ -11,8 +11,8 @@ import bomberman.view.engine.ViewManager;
  **/
 public class LobbyView extends BaseMenuView {
 
-	public LobbyView(int width, int height, ViewManager viewManager) {
-		super(width, height, viewManager);
-	}
+    public LobbyView(int width, int height, ViewManager viewManager) {
+        super(width, height, viewManager);
+    }
 
 }

@@ -1,6 +1,7 @@
 package bomberman.ai;
 
-import bomberman.gameplay.*;
+import bomberman.gameplay.GameMap;
+import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
 
 /**
@@ -8,12 +9,12 @@ import bomberman.gameplay.utils.Location;
  */
 public class AiPlayer extends Player {
 
-	public AiPlayer(String name, Location center, GameMap map) {
-		super(map, name, center);
-	}
+    public AiPlayer(String name, Location center, GameMap map) {
+        super(map, name, center);
+    }
 
-	//@Override
-	public void update(float delta) {
+    //@Override
+    public void update(float delta) {
 
-	}
+    }
 }

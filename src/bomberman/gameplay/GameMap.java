@@ -8,208 +8,208 @@ import bomberman.gameplay.utils.BoundingBox;
 
 public class GameMap {
 
-	private final Tile[][] tiles;
+    private final Tile[][] tiles;
 
-	private final int width;
-	private final int height;
+    private final int width;
+    private final int height;
 
 
-	public GameMap(Tile[][] tiles) {
+    public GameMap(Tile[][] tiles) {
 
-		assert tiles.length > 0 && tiles[0].length > 0;
+        assert tiles.length > 0 && tiles[0].length > 0;
 
-		this.tiles = tiles;
-		this.width = tiles.length;
-		this.height = tiles[0].length;
+        this.tiles = tiles;
+        this.width = tiles.length;
+        this.height = tiles[0].length;
 
-	}
+    }
 
-	public Tile[][] getTiles() {
-		return this.tiles;
-	}
+    public Tile[][] getTiles() {
+        return this.tiles;
+    }
 
-	public int getWidth() {
-		return this.width;
-	}
+    public int getWidth() {
+        return this.width;
+    }
 
-	public int getHeight() {
-		return this.height;
-	}
+    public int getHeight() {
+        return this.height;
+    }
 
-	public Tile get(int x, int y) {
+    public Tile get(int x, int y) {
 
-		assert x >= 0 && x < this.width;
-		assert y >= 0 && y < this.height;
+        assert x >= 0 && x < this.width;
+        assert y >= 0 && y < this.height;
 
-		return this.tiles[x][y];
+        return this.tiles[x][y];
 
-	}
+    }
 
-	public void spawn(TileObject tileObject, int x, int y) {
+    public void spawn(TileObject tileObject, int x, int y) {
 
-		assert x >= 0 && x < this.width;
-		assert y >= 0 && y < this.height;
+        assert x >= 0 && x < this.width;
+        assert y >= 0 && y < this.height;
 
-		this.tiles[x][y].spawn(tileObject);
+        this.tiles[x][y].spawn(tileObject);
 
-	}
+    }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	public static class Builder {
+    public static class Builder {
 
-		private Tile[][] tiles;
+        private Tile[][] tiles;
 
-		public Builder() {
-		}
+        public Builder() {
+        }
 
-		public int width() {
-			return this.tiles.length;
-		}
+        public int width() {
+            return this.tiles.length;
+        }
 
-		public int height() {
-			return this.tiles[0].length;
-		}
+        public int height() {
+            return this.tiles[0].length;
+        }
 
-		public Builder dimension(int width, int height) {
+        public Builder dimension(int width, int height) {
 
-			assert width > 0 && height > 0;
+            assert width > 0 && height > 0;
 
-			this.tiles = new Tile[width][height];
-			return this;
+            this.tiles = new Tile[width][height];
+            return this;
 
-		}
+        }
 
-		public Builder frame(TileType tileType) {
+        public Builder frame(TileType tileType) {
 
-			assert !(tileType == null);
+            assert !(tileType == null);
 
-			this.verticalRow(TileTypes.WALL, 0);
-			this.verticalRow(TileTypes.WALL, this.width() - 1);
-			this.horizontalRow(TileTypes.WALL, 0);
-			this.horizontalRow(TileTypes.WALL, this.height() - 1);
+            this.verticalRow(TileTypes.WALL, 0);
+            this.verticalRow(TileTypes.WALL, this.width() - 1);
+            this.horizontalRow(TileTypes.WALL, 0);
+            this.horizontalRow(TileTypes.WALL, this.height() - 1);
 
-			return this;
+            return this;
 
-		}
+        }
 
-		public Builder verticalRow(TileType tileType, int x) {
+        public Builder verticalRow(TileType tileType, int x) {
 
-			assert !(tileType == null);
-			assert x >= 0 && x < this.width();
+            assert !(tileType == null);
+            assert x >= 0 && x < this.width();
 
-			for (int y = 0; y < this.height(); y++) {
-				this.at(tileType, x, y);
-			}
+            for (int y = 0; y < this.height(); y++) {
+                this.at(tileType, x, y);
+            }
 
-			return this;
+            return this;
 
-		}
+        }
 
-		public Builder verticalPattern(String pattern, int x) {
+        public Builder verticalPattern(String pattern, int x) {
 
-			assert !(pattern == null);
-			assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
-			assert x >= 0 && x < this.width();
+            assert !(pattern == null);
+            assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
+            assert x >= 0 && x < this.width();
 
-			for (int y = 0; y < this.height(); y++) {
-				this.at(Builder.tileTypeByChar(pattern.charAt(y)), x, y);
-			}
+            for (int y = 0; y < this.height(); y++) {
+                this.at(Builder.tileTypeByChar(pattern.charAt(y)), x, y);
+            }
 
-			return this;
+            return this;
 
-		}
+        }
 
-		public Builder horizontalRow(TileType tileType, int y) {
+        public Builder horizontalRow(TileType tileType, int y) {
 
-			assert !(tileType == null);
-			assert y >= 0 && y < this.height();
+            assert !(tileType == null);
+            assert y >= 0 && y < this.height();
 
-			for (int x = 0; x < this.width(); x++) {
-				this.at(tileType, x, y);
-			}
+            for (int x = 0; x < this.width(); x++) {
+                this.at(tileType, x, y);
+            }
 
-			return this;
+            return this;
 
-		}
+        }
 
-		public Builder horizontalPattern(String pattern, int y) {
+        public Builder horizontalPattern(String pattern, int y) {
 
-			assert !(pattern == null);
-			assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
-			assert y >= 0 && y < this.height();
+            assert !(pattern == null);
+            assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
+            assert y >= 0 && y < this.height();
 
-			for (int x = 0; x < this.width(); x++) {
-				this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
-			}
+            for (int x = 0; x < this.width(); x++) {
+                this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
+            }
 
-			return this;
+            return this;
 
-		}
+        }
 
-		public Builder fill(TileType tileType, BoundingBox area) {
+        public Builder fill(TileType tileType, BoundingBox area) {
 
-			assert !(tileType == null);
-			assert !(area == null);
+            assert !(tileType == null);
+            assert !(area == null);
 
-			for (int x = (int) area.getMin().getX(); x <= area.getMax().getX(); x++) {
-				for (int y = (int) area.getMin().getY(); y <= area.getMax().getY(); y++) {
-					this.at(tileType, x, y);
-				}
-			}
+            for (int x = (int) area.getMin().getX(); x <= area.getMax().getX(); x++) {
+                for (int y = (int) area.getMin().getY(); y <= area.getMax().getY(); y++) {
+                    this.at(tileType, x, y);
+                }
+            }
 
-			return this;
+            return this;
 
-		}
+        }
 
-		public Builder fillEmpty(TileType tileType) {
+        public Builder fillEmpty(TileType tileType) {
 
-			assert !(tileType == null);
+            assert !(tileType == null);
 
-			for (int x = 0; x < this.width(); x++) {
-				for (int y = 0; y < this.height(); y++) {
-					if (this.tiles[x][y] == null) {
-						this.at(tileType, x, y);
-					}
-				}
-			}
+            for (int x = 0; x < this.width(); x++) {
+                for (int y = 0; y < this.height(); y++) {
+                    if (this.tiles[x][y] == null) {
+                        this.at(tileType, x, y);
+                    }
+                }
+            }
 
-			return this;
+            return this;
 
-		}
+        }
 
-		public Builder at(TileType tileType, int x, int y) {
+        public Builder at(TileType tileType, int x, int y) {
 
-			assert !(tileType == null);
+            assert !(tileType == null);
 
-			this.tiles[x][y] = new Tile(tileType);
-			return this;
+            this.tiles[x][y] = new Tile(tileType);
+            return this;
 
-		}
+        }
 
-		public GameMap build() {
-			return new GameMap(this.tiles);
-		}
+        public GameMap build() {
+            return new GameMap(this.tiles);
+        }
 
-		private static TileType tileTypeByChar(char c) {
-			switch (c) {
+        private static TileType tileTypeByChar(char c) {
+            switch (c) {
 
-				case 'G':
-					return TileTypes.GROUND;
-				case 'W':
-					return TileTypes.WALL;
-				case 'B':
-					return TileTypes.WALL_BREAKABLE;
+                case 'G':
+                    return TileTypes.GROUND;
+                case 'W':
+                    return TileTypes.WALL;
+                case 'B':
+                    return TileTypes.WALL_BREAKABLE;
 
-				default:
-					throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall) " +
-							"B (WALL_BREAKABLE).");
+                default:
+                    throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall) " +
+                            "B (WALL_BREAKABLE).");
 
-			}
-		}
+            }
+        }
 
-	}
+    }
 
 }

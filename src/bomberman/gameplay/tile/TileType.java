@@ -2,8 +2,8 @@ package bomberman.gameplay.tile;
 
 public interface TileType {
 
-	boolean isWalkable();
+    boolean isWalkable();
 
-	double getHealth();
+    double getHealth();
 
 }

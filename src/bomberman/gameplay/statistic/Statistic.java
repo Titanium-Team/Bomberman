@@ -2,12 +2,12 @@ package bomberman.gameplay.statistic;
 
 public interface Statistic {
 
-	String getName();
+    String getName();
 
-	boolean isMax();
+    boolean isMax();
 
-	boolean isAdd();
+    boolean isAdd();
 
-	double defaultValue();
+    double defaultValue();
 
 }
