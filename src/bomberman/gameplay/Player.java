@@ -24,13 +24,17 @@ public class Player {
 
     private final Vector2 vector = new Vector2(0, 0);
 
+    private final PlayerType playerType;
+
+
     //--- Stats
     private double PLAYER_speedFactor = 1.0D;
     private int BOMB_blastRadius = 1;
     private int BOMB_amount = 1;
 
-    public Player(GameMap gameMap, String name, Location center) {
+    public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
+        this.playerType = playerType;
 
         this.gameMap = gameMap;
         this.name = name;
@@ -48,6 +52,10 @@ public class Player {
 
     public Vector2 getVector() {
         return this.vector;
+    }
+
+    public PlayerType getPlayerType() {
+        return playerType;
     }
 
     public GameStatistic getGameStatistic() {
@@ -150,6 +158,15 @@ public class Player {
 
     private static float range(float min, float value, float max) {
         return Math.min(Math.max(value, min), max);
+    }
+
+    public enum PlayerType {
+
+        LOCAL,
+        AI,
+        NETWORK;
+
+
     }
 
 }
