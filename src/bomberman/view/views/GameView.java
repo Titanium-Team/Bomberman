@@ -2,7 +2,9 @@ package bomberman.view.views;
 
 import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
+import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
@@ -19,7 +21,6 @@ import java.util.Random;
 public class GameView extends LightingView {
 
     private GameplayManager gameplayManager;
-    private Light draggingLight;
     private float time = 0f;
     private static final Random random = new Random();
     private int tileSize = 50;
@@ -39,12 +40,9 @@ public class GameView extends LightingView {
     public void update(float deltaTime) {
         time += deltaTime;
 
-        if (draggingLight != null) {
-            this.draggingLight.setX(Mouse.getX());
-            this.draggingLight.setY(-Mouse.getY() + getHeight());
-        }
-
-        this.getSceneCamera().setTranslation(new Vector2(getWidth() / 2, getHeight() / 2));
+        Player localPlayer = gameplayManager.getLocalPlayer();
+        Location center = localPlayer.getBoundingBox().getCenter();
+        this.getSceneCamera().setTranslation(new Vector2((float) center.getX(), (float) center.getY()));
     }
 
     @Override
@@ -73,20 +71,14 @@ public class GameView extends LightingView {
 
     public void onMouseDown(int button, int mouseX, int mouseY) {
         if (button == 0) {
-            this.draggingLight = randomLight(getSceneCamera().getTranslation().getX() - (getSceneCamera().getWidth() / 2) + mouseX, getSceneCamera().getTranslation().getY() - (getSceneCamera().getHeight() / 2) + mouseY);
-
-            this.addLight(draggingLight);
+            this.addLight(randomLight(getSceneCamera().getTranslation().getX() - (getSceneCamera().getWidth() / 2) + mouseX, getSceneCamera().getTranslation().getY() - (getSceneCamera().getHeight() / 2) + mouseY));
         }
         if (button == 1) {
-            this.draggingLight = null;
             this.clearLights();
         }
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
-        if (button == 0) {
-            this.draggingLight = null;
-        }
     }
 
     private Light randomLight(float x, float y) {
