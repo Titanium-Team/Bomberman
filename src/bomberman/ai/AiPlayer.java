@@ -10,7 +10,7 @@ import bomberman.gameplay.utils.Location;
 public class AiPlayer extends Player {
 
     public AiPlayer(String name, Location center, GameMap map) {
-        super(map, name, center);
+        super(PlayerType.AI, map, name,center);
     }
 
     //@Override

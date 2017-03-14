@@ -11,7 +11,7 @@ public class NetworkPlayer extends Player {
 
     public NetworkPlayer(String name, Location center, GameMap map) {
         //super(x, y, hp, level);
-        super(map, name, center);
+        super(PlayerType.NETWORK, map, name, center);
     }
 
     //@Override

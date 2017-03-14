@@ -1,6 +1,7 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,13 +21,28 @@ public class GameplayManager {
                         .build()
         );
 
+        //@TODO
+        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(3, 3)));
+
     }
 
     public void add(Player player) {
         this.players.add(player);
     }
 
-    public GameMap get(int index) {
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public Player getLocalPlayer() {
+        return this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).findAny().orElseGet(null);
+    }
+
+    public Player getPlayer(int index) {
+        return this.players.get(index);
+    }
+
+    public GameMap getMap(int index) {
 
         assert index >= 0 && index < this.maps.size();
         return this.maps.get(index);

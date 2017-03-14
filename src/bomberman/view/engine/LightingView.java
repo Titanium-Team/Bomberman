@@ -64,7 +64,7 @@ public abstract class LightingView extends View {
 
         // debug
         /*for (int i = 0; i < lights.size(); i++) {
-            Light light = lights.get(i);
+            Light light = lights.getMap(i);
 
             batch.draw(light.getShadowMap(), 0, 100 + i * 100, 100, 100);
         }*/
