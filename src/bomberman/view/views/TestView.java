@@ -35,7 +35,7 @@ public class TestView extends LightingView {
     }
 
     @Override
-    public void renderOccluders(Batch batch,Camera camera) {
+    public void renderOccluders(Batch batch, Camera camera) {
         /*int size = 50;
         for (int y = 50; y < getHeight(); y += size * 3) {
             for (int x = 0; x < getWidth(); x += size * 3) {

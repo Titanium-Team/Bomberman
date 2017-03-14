@@ -1,8 +1,8 @@
 package bomberman.gameplay;
 
-import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
@@ -73,8 +73,8 @@ public class Player {
     public Tile getTile() {
 
         return this.gameMap.get(
-            (int) Math.round(this.boundingBox.getCenter().getX()),
-            (int) Math.round(this.boundingBox.getCenter().getY())
+                (int) Math.round(this.boundingBox.getCenter().getX()),
+                (int) Math.round(this.boundingBox.getCenter().getY())
         );
 
     }
@@ -105,7 +105,8 @@ public class Player {
                 this.vector.setX(0);
                 break;
 
-            case KeyEvent.VK_SPACE: break;
+            case KeyEvent.VK_SPACE:
+                break;
 
         }
 
@@ -118,28 +119,28 @@ public class Player {
             case KeyEvent.VK_UP:
             case KeyEvent.VK_W:
                 this.vector.setY(
-                    range(0, this.vector.getY() - .2F, 3)
+                        range(0, this.vector.getY() - .2F, 3)
                 );
                 break;
 
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_A:
                 this.vector.setX(
-                    range(0, this.vector.getX() - .2F, 3)
+                        range(0, this.vector.getX() - .2F, 3)
                 );
                 break;
 
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:
                 this.vector.setX(
-                    range(0, this.vector.getX() + .2F, 3)
+                        range(0, this.vector.getX() + .2F, 3)
                 );
                 break;
 
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_S:
                 this.vector.setY(
-                    range(0, this.vector.getY() + .2F, 3)
+                        range(0, this.vector.getY() + .2F, 3)
                 );
                 break;
 

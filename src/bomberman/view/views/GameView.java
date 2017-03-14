@@ -22,6 +22,7 @@ public class GameView extends LightingView {
     private Light draggingLight;
     private float time = 0f;
     private static final Random random = new Random();
+    private int tileSize = 50;
 
     public GameView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
@@ -50,19 +51,24 @@ public class GameView extends LightingView {
     public void renderOccluders(Batch batch, Camera camera) {
         GameMap map = gameplayManager.getMap(0);
         Tile[][] tiles = map.getTiles();
-        for (int i = Math.max(0,(int)(camera.getTranslation().getX()-camera.getWidth()/2)/50); i < tiles.length &&
-                i*50<camera.getTranslation().getX()+camera.getWidth()/2; i++) {
+        for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
+                i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
             if (tiles[i] != null) {
-                for (int j =Math.max(0,(int) (camera.getTranslation().getY()-camera.getHeight()/2)/50); j < tiles[i].length &&
-                        j*50<camera.getTranslation().getY()+camera.getHeight()/2; j++) {
+                for (int j = Math.max(0, (int) (camera.getTranslation().getY() - camera.getHeight() / 2) / this.tileSize); j < tiles[i].length &&
+                        j * this.tileSize < camera.getTranslation().getY() + camera.getHeight() / 2; j++) {
                     if (tiles[i][j] != null) {
                         if (!tiles[i][j].getTileType().isWalkable()) {
-                            batch.draw(null, i * 50, j * 50, 50, 50, 0.5f, 0.5f, 0.5f, 1);
+                            batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
                         }
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public void renderNonOccluders(Batch batch) {
+
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {
@@ -92,8 +98,4 @@ public class GameView extends LightingView {
     }
 
 
-    @Override
-    public void renderNonOccluders(Batch batch) {
-
-    }
 }

@@ -62,7 +62,8 @@ public class GameMap {
 
         private Tile[][] tiles;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public int width() {
             return this.tiles.length;
@@ -169,7 +170,7 @@ public class GameMap {
 
             for (int x = 0; x < this.width(); x++) {
                 for (int y = 0; y < this.height(); y++) {
-                    if(this.tiles[x][y] == null) {
+                    if (this.tiles[x][y] == null) {
                         this.at(tileType, x, y);
                     }
                 }
@@ -195,12 +196,16 @@ public class GameMap {
         private static TileType tileTypeByChar(char c) {
             switch (c) {
 
-                case 'G': return TileTypes.GROUND;
-                case 'W': return TileTypes.WALL;
-                case 'B': return TileTypes.WALL_BREAKABLE;
+                case 'G':
+                    return TileTypes.GROUND;
+                case 'W':
+                    return TileTypes.WALL;
+                case 'B':
+                    return TileTypes.WALL_BREAKABLE;
 
-                default: throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall) " +
-                        "B (WALL_BREAKABLE).");
+                default:
+                    throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall) " +
+                            "B (WALL_BREAKABLE).");
 
             }
         }

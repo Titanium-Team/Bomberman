@@ -19,10 +19,10 @@ public class GameStatistic {
     }
 
     public void update(Statistic key, double value) {
-        if(this.values.containsKey(key)) {
-            if(key.isMax()) {
+        if (this.values.containsKey(key)) {
+            if (key.isMax()) {
                 this.values.put(key, Math.max(this.values.get(key), value));
-            } else if(key.isAdd()) {
+            } else if (key.isAdd()) {
                 this.values.put(key, this.values.get(key) + value);
             } else {
                 throw new IllegalStateException();

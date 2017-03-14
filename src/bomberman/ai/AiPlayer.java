@@ -1,6 +1,7 @@
 package bomberman.ai;
 
-import bomberman.gameplay.*;
+import bomberman.gameplay.GameMap;
+import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
 
 /**

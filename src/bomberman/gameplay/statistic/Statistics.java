@@ -3,7 +3,6 @@ package bomberman.gameplay.statistic;
 public enum Statistics implements Statistic {
 
     KILLS {
-
         @Override
         public String getName() {
             return "Kills";

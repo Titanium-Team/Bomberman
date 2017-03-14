@@ -16,6 +16,7 @@ public class Bomb extends TileObject {
     }
 
     @Override
-    public void interact(Player player) {}
+    public void interact(Player player) {
+    }
 
 }

@@ -54,7 +54,7 @@ public abstract class LightingView extends View {
         super.layout(width, height);
     }
 
-    public abstract void renderOccluders(Batch batch,Camera camera);
+    public abstract void renderOccluders(Batch batch, Camera camera);
 
     public abstract void renderNonOccluders(Batch batch);
 
@@ -101,7 +101,7 @@ public abstract class LightingView extends View {
 
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        renderOccluders(batch,this.getSceneCamera());
+        renderOccluders(batch, this.getSceneCamera());
 
         renderNonOccluders(batch);
     }
@@ -119,7 +119,7 @@ public abstract class LightingView extends View {
             batch.begin();
             batch.setCombinedMatrix(lightCamera.getCombined());//
 
-            renderOccluders(batch,lightCamera);
+            renderOccluders(batch, lightCamera);
 
             batch.end();
             occludersMap.end();

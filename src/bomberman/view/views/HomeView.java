@@ -29,7 +29,7 @@ public class HomeView extends BaseMenuView {
         });
         this.addComponent(optionsButton);
 
-        this.playButton = new Button(400, 200, 200, 50, this, "Ploay");
+        this.playButton = new Button(400, 200, 200, 50, this, "Play");
         this.playButton.setListener(new ButtonListener() {
             @Override
             public void onClick() {

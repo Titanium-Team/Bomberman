@@ -14,11 +14,11 @@ public class GameplayManager {
     public GameplayManager() {
 
         this.add(
-            GameMap.builder()
-                .dimension(16, 12)
-                .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND)
-            .build()
+                GameMap.builder()
+                        .dimension(16, 12)
+                        .frame(TileTypes.WALL)
+                        .fillEmpty(TileTypes.GROUND)
+                        .build()
         );
 
         //@TODO
