@@ -4,6 +4,7 @@ import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
@@ -42,7 +43,7 @@ public class GameView extends LightingView {
 
         Player localPlayer = gameplayManager.getLocalPlayer();
         Location center = localPlayer.getBoundingBox().getCenter();
-        this.getSceneCamera().setTranslation(new Vector2((float) center.getX(), (float) center.getY()));
+        this.getSceneCamera().setTranslation(new Vector2((float) center.getX() * tileSize, (float) center.getY() * tileSize));
     }
 
     @Override
@@ -66,7 +67,12 @@ public class GameView extends LightingView {
 
     @Override
     public void renderNonOccluders(Batch batch) {
+        for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
+            Player player = gameplayManager.getPlayer(i);
+            BoundingBox b = player.getBoundingBox();
 
+            batch.draw(ViewManager.getTexture("test0.png"), (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize);
+        }
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {

@@ -41,8 +41,8 @@ public class Player {
         this.name = name;
 
         this.boundingBox = new BoundingBox(
-                new Location(center.getX() - COLLISION_WIDTH, center.getY() - COLLISION_HEIGHT),
-                new Location(center.getX() + COLLISION_WIDTH, center.getY() + COLLISION_HEIGHT)
+                new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
+                new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
 
     }
@@ -85,7 +85,7 @@ public class Player {
     }
 
     public void update(float delta) {
-
+        boundingBox.move(vector.getX() * delta, vector.getY() * delta);
     }
 
     public void keyUp(int keyCode, char c) {
