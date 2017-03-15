@@ -14,6 +14,8 @@ import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.input.Mouse;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -25,6 +27,7 @@ public class GameView extends LightingView {
     private float time = 0f;
     private static final Random random = new Random();
     private int tileSize = 50;
+    private HashMap<Player, Light> playerLightMap = new HashMap<>();
 
     public GameView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
@@ -36,6 +39,13 @@ public class GameView extends LightingView {
 
     public void setGameplayManager(GameplayManager gameplayManager) {
         this.gameplayManager = gameplayManager;
+        playerLightMap.clear();
+        for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
+            Location playerLocation = gameplayManager.getPlayer(i).getBoundingBox().getCenter();
+            Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize);
+            playerLightMap.put(gameplayManager.getPlayer(i), playerLight);
+            this.addLight(playerLight);
+        }
     }
 
     public void update(float deltaTime) {
@@ -44,6 +54,13 @@ public class GameView extends LightingView {
         Player localPlayer = gameplayManager.getLocalPlayer();
         Location center = localPlayer.getBoundingBox().getCenter();
         this.getSceneCamera().setTranslation(new Vector2((float) center.getX() * tileSize, (float) center.getY() * tileSize));
+
+        for (Map.Entry<Player, Light> e : playerLightMap.entrySet()) {
+            Light playerLight = e.getValue();
+            Location playerLocation = e.getKey().getBoundingBox().getCenter();
+            playerLight.setX(((float) playerLocation.getX()) * tileSize);
+            playerLight.setY(((float) playerLocation.getY()) * tileSize);
+        }
     }
 
     @Override
@@ -73,18 +90,6 @@ public class GameView extends LightingView {
 
             batch.draw(ViewManager.getTexture("test0.png"), (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize);
         }
-    }
-
-    public void onMouseDown(int button, int mouseX, int mouseY) {
-        if (button == 0) {
-            this.addLight(randomLight(getSceneCamera().getTranslation().getX() - (getSceneCamera().getWidth() / 2) + mouseX, getSceneCamera().getTranslation().getY() - (getSceneCamera().getHeight() / 2) + mouseY));
-        }
-        if (button == 1) {
-            this.clearLights();
-        }
-    }
-
-    public void onMouseUp(int button, int mouseX, int mouseY) {
     }
 
     private Light randomLight(float x, float y) {
