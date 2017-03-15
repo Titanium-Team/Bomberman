@@ -49,7 +49,7 @@ public class TestView extends LightingView {
     }
 
     @Override
-    public void renderNonOccluders(Batch batch) {
+    public void renderNonOccluders(Batch batch, Camera camera) {
         //ViewManager.font.drawText(batch, "Hallo Bomberman!     abcdefghijklmnopqrstuvwxyzß", 300, 5);
     }
 

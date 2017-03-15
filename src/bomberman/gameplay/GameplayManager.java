@@ -64,10 +64,22 @@ public class GameplayManager {
 
     }
 
+    public void update(float delta) {
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).update(delta);
+        }
+    }
+
     public void onKeyDown(int key, char c) {
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).keyDown(key, c);
+        }
     }
 
     public void onKeyUp(int key, char c) {
+        for (int i = 0; i < players.size(); i++) {
+            players.get(i).keyUp(key, c);
+        }
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {

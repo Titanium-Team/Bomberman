@@ -39,6 +39,8 @@ public class Main {
                 totalTime = currentTime;
             }
 
+            gameplayManager.update(deltaTime);
+
             viewManager.render(deltaTime, fpsCounter);
         }
 

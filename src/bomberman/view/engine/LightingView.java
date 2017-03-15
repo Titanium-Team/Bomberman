@@ -56,7 +56,7 @@ public abstract class LightingView extends View {
 
     public abstract void renderOccluders(Batch batch, Camera camera);
 
-    public abstract void renderNonOccluders(Batch batch);
+    public abstract void renderNonOccluders(Batch batch,Camera camera);
 
     @Override
     public void renderUI(Batch batch) {
@@ -103,7 +103,7 @@ public abstract class LightingView extends View {
 
         renderOccluders(batch, this.getSceneCamera());
 
-        renderNonOccluders(batch);
+        renderNonOccluders(batch, this.getSceneCamera());
     }
 
     private void updateShadowMaps(Batch batch) {
