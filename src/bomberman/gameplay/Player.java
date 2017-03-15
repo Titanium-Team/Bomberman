@@ -29,7 +29,7 @@ public class Player {
 
 
     //--- Stats
-    private double PLAYER_speedFactor = 1.0D;
+    private float PLAYER_speedFactor = 1.0F;
     private int BOMB_blastRadius = 1;
     private int BOMB_amount = 1;
 
@@ -96,14 +96,14 @@ public class Player {
             case Keyboard.KEY_S:
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
-                this.vector.setY(0);
+                this.move(Direction.STOP_HORIZONTAL_MOVEMENT);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                this.vector.setX(0);
+                this.move(Direction.STOP_VERTICAL_MOVEMENT);
                 break;
 
             case Keyboard.KEY_SPACE:
@@ -119,30 +119,22 @@ public class Player {
 
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
-                this.vector.setY(
-                        range(0, this.vector.getY() - .2F, 3)
-                );
+                this.move(Direction.UP);
                 break;
 
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                this.vector.setX(
-                        range(0, this.vector.getX() - .2F, 3)
-                );
+                this.move(Direction.LEFT);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
-                this.vector.setX(
-                        range(0, this.vector.getX() + .2F, 3)
-                );
+                this.move(Direction.RIGHT);
                 break;
 
             case Keyboard.KEY_DOWN:
             case Keyboard.KEY_S:
-                this.vector.setY(
-                        range(0, this.vector.getY() + .2F, 3)
-                );
+                this.move(Direction.DOWN);
                 break;
 
             case Keyboard.KEY_SPACE: {
@@ -158,6 +150,45 @@ public class Player {
 
     }
 
+    public void move(Direction d) {
+
+        switch (d) {
+
+            case UP:
+                this.vector.setY(
+                        range(0, -(this.vector.getY() + .2F), 3 * this.PLAYER_speedFactor)
+                );
+                break;
+
+            case LEFT:
+                this.vector.setX(
+                        range(0, -(this.vector.getX() + .2F), 3 * this.PLAYER_speedFactor)
+                );
+                break;
+
+            case RIGHT:
+                this.vector.setX(
+                        range(0, this.vector.getX() + .2F, 3 * this.PLAYER_speedFactor)
+                );
+                break;
+
+            case DOWN:
+                this.vector.setY(
+                        range(0, this.vector.getY() + .2F, 3 * this.PLAYER_speedFactor)
+                );
+                break;
+
+            case STOP_HORIZONTAL_MOVEMENT:
+                this.vector.setY(0);
+                break;
+
+            case STOP_VERTICAL_MOVEMENT:
+                this.vector.setX(0);
+                break;
+
+        }
+    }
+
     private static float range(float min, float value, float max) {
         return Math.min(Math.max(value, min), max);
     }
@@ -168,6 +199,18 @@ public class Player {
         AI,
         NETWORK;
 
+
+    }
+
+    public enum Direction {
+
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN,
+
+        STOP_VERTICAL_MOVEMENT,
+        STOP_HORIZONTAL_MOVEMENT
 
     }
 

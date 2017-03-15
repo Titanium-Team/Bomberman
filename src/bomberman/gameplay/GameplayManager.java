@@ -14,15 +14,23 @@ public class GameplayManager {
     public GameplayManager() {
 
         this.add(
-                GameMap.builder()
-                        .dimension(16, 12)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+            .build()
+        );
+
+        this.add(
+            GameMap.builder()
+                .dimension(11, 9)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+            .build()
         );
 
         //@TODO
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(3, 3)));
+        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(1, 1)));
 
     }
 
