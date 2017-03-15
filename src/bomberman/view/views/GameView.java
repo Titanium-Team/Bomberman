@@ -4,6 +4,7 @@ import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.Light;
@@ -14,9 +15,7 @@ import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.input.Mouse;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Ingame View
@@ -28,6 +27,7 @@ public class GameView extends LightingView {
     private static final Random random = new Random();
     private int tileSize = 50;
     private HashMap<Player, Light> playerLightMap = new HashMap<>();
+	private List<Light> explosions = new ArrayList<>();
 
     public GameView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
@@ -75,6 +75,13 @@ public class GameView extends LightingView {
                     if (tiles[i][j] != null) {
                         if (!tiles[i][j].getTileType().isWalkable()) {
                             batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
+                        }else {
+	                        if (tiles[i][j].getTileObject() != null){
+		                        if(tiles[i][j].getTileObject() instanceof Bomb){
+			                        //TODO: bomb texture
+			                        batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
+		                        }
+	                        }
                         }
                     }
                 }
@@ -83,8 +90,24 @@ public class GameView extends LightingView {
     }
 
     @Override
-    public void renderNonOccluders(Batch batch) {
-        for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
+    public void renderNonOccluders(Batch batch, Camera camera) {
+        GameMap map = gameplayManager.getMap(0);
+        Tile[][] tiles = map.getTiles();
+        for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
+                i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
+            if (tiles[i] != null) {
+                for (int j = Math.max(0, (int) (camera.getTranslation().getY() - camera.getHeight() / 2) / this.tileSize); j < tiles[i].length &&
+                        j * this.tileSize < camera.getTranslation().getY() + camera.getHeight() / 2; j++) {
+                    if (tiles[i][j] != null) {
+                        if (tiles[i][j].getTileType().isWalkable()) {
+                            //batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.25f, 0.5f, 0.75f, 1);
+                        }
+                    }
+                }
+            }
+        }
+
+       for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
             Player player = gameplayManager.getPlayer(i);
             BoundingBox b = player.getBoundingBox();
 
@@ -99,6 +122,5 @@ public class GameView extends LightingView {
 
         return new Light(x, y, 400, r, g, b);
     }
-
 
 }
