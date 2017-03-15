@@ -1,8 +1,9 @@
 package bomberman.ai;
 
 import bomberman.ai.utility.PlayerRelevance;
+import bomberman.gameplay.GameMap;
+import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.*;
-import bomberman.gameplay.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -33,7 +34,7 @@ public class AiManager {
     }
 
     public Player createAi(String name, Location center){
-        AiPlayer aiPlayer = new AiPlayer(name,center,map.getTiles(),players);
+        AiPlayer aiPlayer = new AiPlayer(name,center,map,players);
         aiPlayers.add(aiPlayer);
         players.add(new PlayerRelevance(aiPlayer));
         return aiPlayer;

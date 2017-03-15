@@ -1,7 +1,7 @@
 package bomberman.ai.utility;
 
+import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.*;
-import bomberman.gameplay.*;
 
 /**
  * Created by 204g12 on 13.03.2017.

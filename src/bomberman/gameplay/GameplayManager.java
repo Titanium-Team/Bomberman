@@ -31,7 +31,7 @@ public class GameplayManager {
         );
 
         //@TODO
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(2, 2)));
+        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(1.5, 1.5)));
 
     }
 

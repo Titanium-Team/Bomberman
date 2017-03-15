@@ -3,8 +3,9 @@ package bomberman.ai;
 import bomberman.ai.utility.NavigationNode;
 import bomberman.ai.utility.PlayerRelevance;
 import bomberman.ai.utility.Stack;
+import bomberman.gameplay.GameMap;
+import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.*;
-import bomberman.gameplay.*;
 
 import java.util.ArrayList;
 
@@ -24,7 +25,7 @@ public class AiPlayer extends Player {
     private final static int wallDistBase = 20;
 
     public AiPlayer(String name, Location center, GameMap map, ArrayList<PlayerRelevance> playerRelevances) {
-        super(PlayerType.AI,map,name,center);
+        super(Player.PlayerType.AI,map,name,center);
         this.playerRelevances = playerRelevances;
         playerRelevances.sort((o1, o2) -> (int)Math.round(o1.getRelevance(this.getBoundingBox().getCenter())-o2.getRelevance(this.getBoundingBox().getCenter())));
         target = playerRelevances.get(0);

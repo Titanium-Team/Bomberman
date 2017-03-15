@@ -77,8 +77,7 @@ public class GameMap {
 
         private Tile[][] tiles;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public int width() {
             return this.tiles.length;
@@ -199,7 +198,7 @@ public class GameMap {
 
             assert !(tileType == null);
 
-            this.tiles[x][y] = new Tile(tileType, new BoundingBox(x, y, x + 1, y + 1));
+            this.tiles[x][y] = new Tile(tileType, new BoundingBox(x, y, x + .9999D, y + .9999D));
             return this;
 
         }
