@@ -1,21 +1,31 @@
 package bomberman.gameplay.tile;
 
+import bomberman.gameplay.utils.BoundingBox;
+
 public class Tile {
 
     private final TileType tileType;
+    private final BoundingBox boundingBox;
 
     private TileObject tileObject;
     private double explodingTime = -1D;
 
-    public Tile(TileType tileType) {
+    public Tile(TileType tileType, BoundingBox boundingBox) {
 
         assert !(tileType == null);
+        assert !(boundingBox == null);
+
         this.tileType = tileType;
+        this.boundingBox = boundingBox;
 
     }
 
     public TileType getTileType() {
         return this.tileType;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return this.boundingBox;
     }
 
     public TileObject getTileObject() {

@@ -54,6 +54,21 @@ public class GameMap {
 
     }
 
+    public boolean tileCollision(BoundingBox boundingBox) {
+        for(int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
+            for(int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
+
+                Tile tile = this.tiles[x][y];
+
+                if(!(tile.getTileType().isWalkable()) && tile.getBoundingBox().intersects(boundingBox)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -184,7 +199,7 @@ public class GameMap {
 
             assert !(tileType == null);
 
-            this.tiles[x][y] = new Tile(tileType);
+            this.tiles[x][y] = new Tile(tileType, new BoundingBox(x, y, x + 1, y + 1));
             return this;
 
         }

@@ -18,6 +18,7 @@ public class GameplayManager {
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
+                .at(TileTypes.WALL, 5, 5)
             .build()
         );
 
@@ -30,7 +31,7 @@ public class GameplayManager {
         );
 
         //@TODO
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(1, 1)));
+        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(2, 2)));
 
     }
 
@@ -65,21 +66,15 @@ public class GameplayManager {
     }
 
     public void update(float delta) {
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).update(delta);
-        }
+        this.players.forEach(e -> e.update(delta));
     }
 
     public void onKeyDown(int key, char c) {
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).keyDown(key, c);
-        }
+        this.players.forEach(e -> e.keyDown(key, c));
     }
 
     public void onKeyUp(int key, char c) {
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).keyUp(key, c);
-        }
+        this.players.forEach(e -> e.keyUp(key, c));
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {

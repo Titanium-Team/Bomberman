@@ -85,7 +85,15 @@ public class Player {
     }
 
     public void update(float delta) {
-        boundingBox.move(vector.getX() * delta, vector.getY() * delta);
+
+        Location location = this.boundingBox.getCenter();
+
+        this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
+
+        if(this.gameMap.tileCollision(this.boundingBox)) {
+            this.boundingBox.setCenter(location);
+        }
+
     }
 
     public void keyUp(int keyCode, char c) {
@@ -156,26 +164,27 @@ public class Player {
 
             case UP:
                 this.vector.setY(
-                        range(0, -(this.vector.getY() + .2F), 3 * this.PLAYER_speedFactor)
+                        range(-3 * this.PLAYER_speedFactor, -(this.vector.getY() + .6F), 0)
                 );
                 break;
 
             case LEFT:
                 this.vector.setX(
-                        range(0, -(this.vector.getX() + .2F), 3 * this.PLAYER_speedFactor)
+                        range(-3 * this.PLAYER_speedFactor, -(this.vector.getX() + .6F), 0)
                 );
                 break;
 
             case RIGHT:
                 this.vector.setX(
-                        range(0, this.vector.getX() + .2F, 3 * this.PLAYER_speedFactor)
+                        range(0, this.vector.getX() + .6F, 3 * this.PLAYER_speedFactor)
                 );
                 break;
 
             case DOWN:
                 this.vector.setY(
-                        range(0, this.vector.getY() + .2F, 3 * this.PLAYER_speedFactor)
+                        range(0, this.vector.getY() + .6F, 3 * this.PLAYER_speedFactor)
                 );
+                System.out.println(this.vector.getY());
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
