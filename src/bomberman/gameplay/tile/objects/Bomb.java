@@ -8,8 +8,8 @@ public class Bomb extends TileObject {
 
     private float triggerTimer;
 
-    public Bomb(Player owner, Tile parent, float lifespan, float triggerTimer) {
-        super(owner, parent, lifespan);
+    public Bomb(Tile parent, float lifespan, float triggerTimer) {
+        super(parent, lifespan);
 
         this.triggerTimer = triggerTimer;
     }

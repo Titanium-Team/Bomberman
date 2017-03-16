@@ -4,24 +4,17 @@ import bomberman.gameplay.Player;
 
 public abstract class TileObject {
 
-    private final Player owner;
     private final Tile parent;
 
     private float lifespan;
 
-    public TileObject(Player owner, Tile parent, float lifespan) {
+    public TileObject(Tile parent, float lifespan) {
 
-        assert !(owner == null);
         assert !(parent == null);
 
-        this.owner = owner;
         this.parent = parent;
         this.lifespan = lifespan;
 
-    }
-
-    public Player getOwner() {
-        return this.owner;
     }
 
     public Tile getParent() {
