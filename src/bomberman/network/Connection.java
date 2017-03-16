@@ -88,6 +88,9 @@ public abstract class Connection {
     public void send(String message, InetAddress address, int port){
         try {
             DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, address, port);
+
+
+
             getSocket().send(packet);
 
         } catch (IOException e){
