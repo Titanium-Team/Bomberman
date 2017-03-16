@@ -295,6 +295,9 @@ public class ViewManager {
     }
 
     public void setCurrentView(View newView) {
+        if (this.currentView != null)
+            this.currentView.onDestroy();
+
         this.currentView = newView;
         this.currentView.layout(Display.getWidth(), Display.getHeight());
 

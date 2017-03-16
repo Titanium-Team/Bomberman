@@ -52,6 +52,10 @@ public abstract class LightingView extends View {
     @Override
     public void layout(int width, int height) {
         super.layout(width, height);
+
+        for (Light light : lights) {
+            light.createFrameBuffersIfNecessary();
+        }
     }
 
     public abstract void renderOccluders(Batch batch, Camera camera);
@@ -158,6 +162,12 @@ public abstract class LightingView extends View {
             lights.get(i).cleanUp();
         }
         lights.clear();
+    }
+
+    public void onDestroy() {
+        for (int i = 0; i < lights.size(); i++) {
+            lights.get(i).cleanUp();
+        }
     }
 
 }

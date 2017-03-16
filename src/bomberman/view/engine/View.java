@@ -106,6 +106,9 @@ public abstract class View {
         }
     }
 
+    public void onDestroy() {
+    }
+
     public void onKeyDown(int key, char c) {
         root.onKeyDown(key, c);
     }
