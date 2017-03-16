@@ -59,18 +59,18 @@ public class GameMap {
 
         BoundingBox boundingBox = player.getBoundingBox();
 
-        for(int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
-            for(int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
+        for (int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
+            for (int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
 
                 Tile tile = this.tiles[x][y];
 
-                if(
-                    tile.getBoundingBox().intersects(boundingBox) &&
-                    (
-                        !(tile.getTileType().isWalkable()) ||
-                        (tile.getTileObject() instanceof Bomb && ((Bomb) tile.getTileObject()).isTriggered())
-                    )
-                ) {
+                if (
+                        tile.getBoundingBox().intersects(boundingBox) &&
+                                (
+                                        !(tile.getTileType().isWalkable()) ||
+                                                (tile.getTileObject() instanceof Bomb && ((Bomb) tile.getTileObject()).isTriggered())
+                                )
+                        ) {
                     return true;
                 }
             }
@@ -83,14 +83,14 @@ public class GameMap {
 
         BoundingBox boundingBox = player.getBoundingBox();
 
-        for(int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
-            for(int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
+        for (int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
+            for (int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
 
                 Tile tile = this.tiles[x][y];
 
-                if(tile.getTileType().isWalkable() && !(tile.getTileObject() == null)) {
+                if (tile.getTileType().isWalkable() && !(tile.getTileObject() == null)) {
 
-                    if(tile.getTileObject() instanceof Bomb && !(((Bomb) tile.getTileObject()).isTriggered())) {
+                    if (tile.getTileObject() instanceof Bomb && !(((Bomb) tile.getTileObject()).isTriggered())) {
                         continue;
                     }
 
@@ -110,7 +110,8 @@ public class GameMap {
 
         private Tile[][] tiles;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public int width() {
             return this.tiles.length;

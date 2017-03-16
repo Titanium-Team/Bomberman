@@ -9,8 +9,8 @@ public class Label extends ViewComponent {
 
     private String text;
 
-    public Label(float x, float y, float width, float height, View v, String text) {
-        super(x, y, width, height, v);
+    public Label(LayoutParams params, View v, String text) {
+        super(params, v);
         this.text = text;
     }
 
