@@ -44,7 +44,7 @@ public class AiPlayer extends Player {
 
     public void update(float delta) {
         timeTillUpdate =- delta;
-        if(target.getPlayer().getBoundingBox().getCenter().distanceTo(this.getBoundingBox().getCenter()) > updateDistance && timeTillUpdate < 0){
+        if(timeTillUpdate < 0 && target.getPlayer().getBoundingBox().getCenter().distanceTo(this.getBoundingBox().getCenter()) > updateDistance){
             playerRelevances.sort((o1, o2) -> (int)Math.round(o1.getRelevance(this.getBoundingBox().getCenter())-o2.getRelevance(this.getBoundingBox().getCenter())));
             target = playerRelevances.get(0);
             //TODO: Gegner greift sich selber an
@@ -52,6 +52,16 @@ public class AiPlayer extends Player {
                 target = playerRelevances.get(1);
             }
             timeTillUpdate = updateTime;
+        }
+
+        if(steps.isEmpty()){
+            if(target != null){
+                findPath();
+            }else{
+
+            }
+        }else{
+
         }
     }
 
@@ -124,12 +134,21 @@ public class AiPlayer extends Player {
         }
     }
 
+    private void evade(){
+
+    }
+
+    private void flee(){
+
+    }
+
     private enum Step{
         MOVEUP, //Ai bewegt sich nach negativ Y
         MOVEDOWN, //Ai bewegt sich nach positiv Y
         MOVELEFT, //Ai bewegt sich nach negativ X
         MOVERIGHT, //Ai bewegt sich nach positiv X
         PLACEBOMB, //Ai platziert eine Bombe
-        EVADE, //Ai plant Ausweichen vor Bombe/Explosion/Spieler
+        EVADE, //Ai plant Ausweichen vor Bombe
+        FLEE, //Ai flieht vor anderen Spielern
     }
 }
