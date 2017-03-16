@@ -102,12 +102,10 @@ public class Player {
 
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
-        if(this.gameMap.checkCollision(this.boundingBox)) {
+        this.gameMap.checkInteraction(this);
+        if(this.gameMap.checkCollision(this)) {
             this.boundingBox.setCenter(location);
         }
-
-        //--- TileObject interaction
-        this.gameMap.checkInteraction(this);
 
     }
 
@@ -164,7 +162,7 @@ public class Player {
 
                 Tile tile = this.getTile();
                 //@TODO
-                tile.spawn(new Bomb(this, tile, 6));
+                tile.spawn(new Bomb(this, tile, 6, 2));
 
             }
             break;
@@ -199,7 +197,6 @@ public class Player {
                 this.vector.setY(
                         range(0, this.vector.getY() + .6F, 3 * this.PLAYER_speedFactor)
                 );
-                System.out.println(this.vector.getY());
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:

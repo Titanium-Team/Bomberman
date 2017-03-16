@@ -55,7 +55,10 @@ public class GameMap {
 
     }
 
-    public boolean checkCollision(BoundingBox boundingBox) {
+    public boolean checkCollision(Player player) {
+
+        BoundingBox boundingBox = player.getBoundingBox();
+
         for(int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
             for(int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
 
@@ -65,7 +68,7 @@ public class GameMap {
                     tile.getBoundingBox().intersects(boundingBox) &&
                     (
                         !(tile.getTileType().isWalkable()) ||
-                        (tile.getTileObject() instanceof Bomb) //@TODO Stuck in bomb...
+                        (tile.getTileObject() instanceof Bomb && ((Bomb) tile.getTileObject()).isTriggered())
                     )
                 ) {
                     return true;
@@ -85,11 +88,12 @@ public class GameMap {
 
                 Tile tile = this.tiles[x][y];
 
-                if(
-                    tile.getTileType().isWalkable() &&
-                    !(tile.getTileObject() == null) &&
-                    !(tile.getTileObject().getOwner() == player)
-                ) {
+                if(tile.getTileType().isWalkable() && !(tile.getTileObject() == null)) {
+
+                    if(tile.getTileObject() instanceof Bomb && !(((Bomb) tile.getTileObject()).isTriggered())) {
+                        continue;
+                    }
+
                     tile.getTileObject().interact(player);
                     tile.destroyObject();
                 }

@@ -61,16 +61,7 @@ public class Tile {
            return;
         }
 
-        //--- Execute, if it runs out of time
-        this.tileObject.setLifespan(this.tileObject.getLifespan() - delta);
-
-        if(this.tileObject.getLifespan() <= 0) {
-            this.tileObject.execute();
-
-            //--- destroy
-            this.destroyObject();
-        }
-
+        this.tileObject.update(delta);
 
     }
 
