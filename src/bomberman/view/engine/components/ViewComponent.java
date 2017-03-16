@@ -6,22 +6,37 @@ import bomberman.view.engine.rendering.Batch;
 
 public abstract class ViewComponent {
 
-    protected View view;
+    private View view;
+    private LayoutParams params;
     private float x, y, width, height;
 
-    public ViewComponent(float x, float y, float width, float height, View v) {
+    public ViewComponent(LayoutParams params, View v) {
+        this.params = params;
         this.view = v;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
     }
 
-    public void draw(Batch batch) {
+    public abstract void draw(Batch batch);
+
+    public void layout(ViewComponent parent) {
+        if (parent == null) {
+            this.x = 0;
+            this.y = 0;
+            this.width = view.getWidth();
+            this.height = view.getHeight();
+        } else {
+            this.x = parent.getX() + (parent.getWidth() * params.x);
+            this.y = parent.getY() + (parent.getHeight() * params.y);
+            this.width = parent.getWidth() * params.w;
+            this.height = parent.getHeight() * params.h;
+        }
     }
 
     public View getView() {
         return view;
+    }
+
+    public LayoutParams getParams() {
+        return params;
     }
 
     public float getX() {
@@ -40,21 +55,7 @@ public abstract class ViewComponent {
         return height;
     }
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
-    }
+    // callbacks
 
     public void onKeyDown(int key, char c) {
     }

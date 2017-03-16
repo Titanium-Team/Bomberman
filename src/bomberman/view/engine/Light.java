@@ -26,9 +26,15 @@ public class Light {
         this.g = g;
         this.b = b;
 
+        createFrameBuffersIfNecessary();
+    }
+    
+    public void createFrameBuffersIfNecessary() {
         try {
-            this.shadowMap = new FrameBuffer(300, 1, GL11.GL_NEAREST);
-            this.occludersMap = new FrameBuffer(radius * 2, radius * 2, GL11.GL_LINEAR);
+            if (this.shadowMap == null)
+                this.shadowMap = new FrameBuffer(300, 1, GL11.GL_NEAREST);
+            if (this.occludersMap == null)
+                this.occludersMap = new FrameBuffer(radius * 2, radius * 2, GL11.GL_LINEAR);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }
@@ -37,6 +43,9 @@ public class Light {
     public void cleanUp() {
         this.shadowMap.dispose();
         this.occludersMap.dispose();
+
+        this.shadowMap = null;
+        this.occludersMap = null;
     }
 
     public FrameBuffer getShadowMap() {

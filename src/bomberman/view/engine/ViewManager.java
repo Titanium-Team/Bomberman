@@ -33,12 +33,8 @@ public class ViewManager {
         try {
             font = new BitmapFont(ViewManager.class.getResource("/bomberman/resources/font/font.fnt"), ViewManager.class.getResource("/bomberman/resources/font/font.png"));
 
-            loadTexture("test0.png");
-            loadTexture("test1.png");
-            loadTexture("test2.png");
+            // loadTexture here
 
-            loadTexture("button.png");
-            loadTexture("buttonPressed.png");
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
@@ -299,6 +295,9 @@ public class ViewManager {
     }
 
     public void setCurrentView(View newView) {
+        if (this.currentView != null)
+            this.currentView.onDestroy();
+
         this.currentView = newView;
         this.currentView.layout(Display.getWidth(), Display.getHeight());
 

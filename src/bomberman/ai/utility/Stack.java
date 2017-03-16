@@ -49,7 +49,6 @@ public class Stack<ContentType> {
         }
 
         /**
-         *
          * @return das Objekt, auf das der aktuelle Verweis zeigt
          */
         public StackNode getNext() {
@@ -90,8 +89,7 @@ public class Stack<ContentType> {
      * Das Objekt pContentType wird oben auf den Stapel gelegt. Falls
      * pContentType gleich null ist, bleibt der Stapel unveraendert.
      *
-     * @param pContent
-     *        das einzufuegende Objekt vom Typ ContentType
+     * @param pContent das einzufuegende Objekt vom Typ ContentType
      */
     public void push(ContentType pContent) {
         if (pContent != null) {
@@ -116,7 +114,7 @@ public class Stack<ContentType> {
      * unveraendert. Falls der Stapel leer ist, wird null zurueckgegeben.
      *
      * @return das oberste Stackelement vom Typ ContentType oder null, falls
-     *         der Stack leer ist
+     * der Stack leer ist
      */
     public ContentType top() {
         if (!this.isEmpty()) {

@@ -3,6 +3,7 @@ package bomberman.view.views;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.Button;
 import bomberman.view.engine.components.ButtonListener;
+import bomberman.view.engine.components.LayoutParams;
 
 /**
  * View for Start
@@ -18,25 +19,15 @@ public class HomeView extends BaseMenuView {
     public HomeView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
-        this.removeComponent(this.backButton);
+        this.getRoot().removeChild(this.backButton);
 
-        this.optionsButton = new Button(400, 100, 200, 50, this, "Options");
-        this.optionsButton.setListener(new ButtonListener() {
-            @Override
-            public void onClick() {
-                HomeView.this.changeView(OptionsView.class);
-            }
-        });
-        this.addComponent(optionsButton);
+        this.playButton = new Button(LayoutParams.obtain(0.4f, 0.4f, 0.2f, 0.1f), this, "Play");
+        this.playButton.setListener(() -> HomeView.this.changeView(PlayMenuView.class));
+        this.getRoot().addChild(playButton);
 
-        this.playButton = new Button(400, 200, 200, 50, this, "Play");
-        this.playButton.setListener(new ButtonListener() {
-            @Override
-            public void onClick() {
-                HomeView.this.changeView(GameView.class);
-            }
-        });
-        this.addComponent(playButton);
+        this.optionsButton = new Button(LayoutParams.obtain(0.4f, 0.6f, 0.2f, 0.1f), this, "Options");
+        this.optionsButton.setListener(() -> HomeView.this.changeView(OptionsView.class));
+        this.getRoot().addChild(optionsButton);
     }
 
 }

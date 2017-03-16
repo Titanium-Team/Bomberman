@@ -52,11 +52,15 @@ public abstract class LightingView extends View {
     @Override
     public void layout(int width, int height) {
         super.layout(width, height);
+
+        for (Light light : lights) {
+            light.createFrameBuffersIfNecessary();
+        }
     }
 
     public abstract void renderOccluders(Batch batch, Camera camera);
 
-    public abstract void renderNonOccluders(Batch batch,Camera camera);
+    public abstract void renderNonOccluders(Batch batch, Camera camera);
 
     @Override
     public void renderUI(Batch batch) {
@@ -90,6 +94,7 @@ public abstract class LightingView extends View {
             int r = light.getRadius();
             int r2 = r / 2;
 
+            lightingShader.setUniformf("u_resolution", light.getRadius() * 2);
             batch.draw(light.getShadowMap(), x - r2, y - r2, r, r, light.getR(), light.getG(), light.getB(), 1.0f);
             batch.flush();
         }
@@ -157,6 +162,12 @@ public abstract class LightingView extends View {
             lights.get(i).cleanUp();
         }
         lights.clear();
+    }
+
+    public void onDestroy() {
+        for (int i = 0; i < lights.size(); i++) {
+            lights.get(i).cleanUp();
+        }
     }
 
 }
