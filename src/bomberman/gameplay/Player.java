@@ -102,9 +102,12 @@ public class Player {
 
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
-        if(this.gameMap.tileCollision(this.boundingBox)) {
+        if(this.gameMap.checkCollision(this.boundingBox)) {
             this.boundingBox.setCenter(location);
         }
+
+        //--- TileObject interaction
+        this.gameMap.checkInteraction(this);
 
     }
 
@@ -161,7 +164,7 @@ public class Player {
 
                 Tile tile = this.getTile();
                 //@TODO
-                tile.spawn(new Bomb(tile, 10));
+                tile.spawn(new Bomb(this, tile, 6));
 
             }
             break;

@@ -5,6 +5,7 @@ import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class GameplayManager {
 
@@ -51,6 +52,10 @@ public class GameplayManager {
         return this.players.get(index);
     }
 
+    public GameMap getCurrentMap() {
+        return this.getMap(0); //@TODO
+    }
+
     public GameMap getMap(int index) {
 
         assert index >= 0 && index < this.maps.size();
@@ -67,6 +72,7 @@ public class GameplayManager {
 
     public void update(float delta) {
         this.players.forEach(e -> e.update(delta));
+        Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
     }
 
     public void onKeyDown(int key, char c) {

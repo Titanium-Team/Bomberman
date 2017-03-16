@@ -4,6 +4,7 @@ import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 
 public class GameMap {
@@ -54,19 +55,47 @@ public class GameMap {
 
     }
 
-    public boolean tileCollision(BoundingBox boundingBox) {
+    public boolean checkCollision(BoundingBox boundingBox) {
         for(int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
             for(int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
 
                 Tile tile = this.tiles[x][y];
 
-                if(!(tile.getTileType().isWalkable()) && tile.getBoundingBox().intersects(boundingBox)) {
+                if(
+                    tile.getBoundingBox().intersects(boundingBox) &&
+                    (
+                        !(tile.getTileType().isWalkable()) ||
+                        (tile.getTileObject() instanceof Bomb) //@TODO Stuck in bomb...
+                    )
+                ) {
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    public void checkInteraction(Player player) {
+
+        BoundingBox boundingBox = player.getBoundingBox();
+
+        for(int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
+            for(int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
+
+                Tile tile = this.tiles[x][y];
+
+                if(
+                    tile.getTileType().isWalkable() &&
+                    !(tile.getTileObject() == null) &&
+                    !(tile.getTileObject().getOwner() == player)
+                ) {
+                    tile.getTileObject().interact(player);
+                    tile.destroyObject();
+                }
+            }
+        }
+
     }
 
     public static Builder builder() {

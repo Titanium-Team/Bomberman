@@ -51,4 +51,27 @@ public class Tile {
         this.tileObject = tileObject;
     }
 
+    public void destroyObject() {
+        this.tileObject = null;
+    }
+
+    public void update(float delta) {
+
+        if(this.tileObject == null) {
+           return;
+        }
+
+        //--- Execute, if it runs out of time
+        this.tileObject.setLifespan(this.tileObject.getLifespan() - delta);
+
+        if(this.tileObject.getLifespan() <= 0) {
+            this.tileObject.execute();
+
+            //--- destroy
+            this.destroyObject();
+        }
+
+
+    }
+
 }
