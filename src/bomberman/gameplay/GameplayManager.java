@@ -68,7 +68,7 @@ public class GameplayManager {
     }
 
     public GameMap getCurrentMap() {
-        return this.getMap(0); //@TODO
+        return this.getMap(1); //@TODO
     }
 
     public GameMap getMap(int index) {
