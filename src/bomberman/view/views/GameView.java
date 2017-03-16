@@ -64,7 +64,7 @@ public class GameView extends LightingView {
 
     @Override
     public void renderOccluders(Batch batch, Camera camera) {
-        GameMap map = gameplayManager.getMap(0);
+        GameMap map = gameplayManager.getCurrentMap();
         Tile[][] tiles = map.getTiles();
         for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
                 i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
@@ -90,7 +90,7 @@ public class GameView extends LightingView {
 
     @Override
     public void renderNonOccluders(Batch batch, Camera camera) {
-        GameMap map = gameplayManager.getMap(0);
+        GameMap map = gameplayManager.getCurrentMap();
         Tile[][] tiles = map.getTiles();
         for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
                 i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
