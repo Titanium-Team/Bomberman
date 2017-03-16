@@ -57,8 +57,8 @@ public class Tile {
 
     public void update(float delta) {
 
-        if(this.tileObject == null) {
-           return;
+        if (this.tileObject == null) {
+            return;
         }
 
         this.tileObject.update(delta);

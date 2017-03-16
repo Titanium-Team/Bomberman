@@ -103,7 +103,7 @@ public class Player {
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
         this.gameMap.checkInteraction(this);
-        if(this.gameMap.checkCollision(this)) {
+        if (this.gameMap.checkCollision(this)) {
             this.boundingBox.setCenter(location);
         }
 
@@ -253,21 +253,21 @@ public class Player {
             float vX = vector.getX();
             float vY = vector.getY();
 
-            if(vY < 0 && vX == 0) {
+            if (vY < 0 && vX == 0) {
                 return FacingDirection.NORTH;
-            } else if(vY < 0 && vX > 0) {
+            } else if (vY < 0 && vX > 0) {
                 return FacingDirection.NORTH_EAST;
-            } else if(vY == 0 && vX > 0) {
+            } else if (vY == 0 && vX > 0) {
                 return FacingDirection.EAST;
-            } else if(vY > 0 && vX > 0) {
+            } else if (vY > 0 && vX > 0) {
                 return FacingDirection.SOUTH_EAST;
-            } else if(vY > 0 && vX == 0) {
+            } else if (vY > 0 && vX == 0) {
                 return FacingDirection.SOUTH;
-            } else if(vY > 0 && vX < 0) {
+            } else if (vY > 0 && vX < 0) {
                 return FacingDirection.SOUTH_WEST;
-            } else if(vY == 0 && vX < 0) {
+            } else if (vY == 0 && vX < 0) {
                 return FacingDirection.WEST;
-            } else if(vY < 0 && vX < 0) {
+            } else if (vY < 0 && vX < 0) {
                 return FacingDirection.NORTH_WEST;
             }
 

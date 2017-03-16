@@ -56,7 +56,7 @@ public abstract class LightingView extends View {
 
     public abstract void renderOccluders(Batch batch, Camera camera);
 
-    public abstract void renderNonOccluders(Batch batch,Camera camera);
+    public abstract void renderNonOccluders(Batch batch, Camera camera);
 
     @Override
     public void renderUI(Batch batch) {

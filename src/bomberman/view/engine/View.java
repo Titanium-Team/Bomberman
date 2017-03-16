@@ -1,16 +1,14 @@
 package bomberman.view.engine;
 
-import bomberman.view.engine.components.ViewComponent;
+import bomberman.view.engine.components.LayoutParams;
+import bomberman.view.engine.components.Panel;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class View {
 
-    protected List<ViewComponent> components;
+    protected Panel root;
     protected int width, height;
     protected final ViewManager viewManager;
     private View parentView = null;
@@ -19,10 +17,12 @@ public abstract class View {
     private Camera sceneCamera;
 
     public View(int width, int height, ViewManager viewManager) {
-        components = new ArrayList<ViewComponent>();
-        this.height = height;
         this.width = width;
+        this.height = height;
         this.viewManager = viewManager;
+
+        this.root = new Panel(LayoutParams.obtain(0, 0, 1, 1), this);
+        this.root.layout(null);
 
         this.sceneCamera = new Camera(width, height);
         this.uiCamera = new Camera(width, height);
@@ -40,9 +40,7 @@ public abstract class View {
     }
 
     public void renderUI(Batch batch) {
-        for (int i = 0; i < this.components.size(); i++) {
-            this.components.get(i).draw(batch);
-        }
+        root.draw(batch);
     }
 
     public void renderScene(Batch batch) {
@@ -51,6 +49,9 @@ public abstract class View {
     public void layout(int width, int height) {
         this.height = height;
         this.width = width;
+
+        // this will relayout everything
+        this.root.layout(null);
 
         this.sceneCamera.resize(width, height);
         this.uiCamera.resize(width, height);
@@ -69,16 +70,8 @@ public abstract class View {
         return height;
     }
 
-    public List<ViewComponent> getComponents() {
-        return components;
-    }
-
-    public void addComponent(ViewComponent component) {
-        this.components.add(component);
-    }
-
-    public void removeComponent(ViewComponent component) {
-        this.components.remove(component);
+    public Panel getRoot() {
+        return root;
     }
 
     public ViewManager getViewManager() {
@@ -114,26 +107,18 @@ public abstract class View {
     }
 
     public void onKeyDown(int key, char c) {
-        for (ViewComponent v : components) {
-            v.onKeyDown(key, c);
-        }
+        root.onKeyDown(key, c);
     }
 
     public void onKeyUp(int key, char c) {
-        for (ViewComponent v : components) {
-            v.onKeyUp(key, c);
-        }
+        root.onKeyUp(key, c);
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {
-        for (ViewComponent v : components) {
-            v.onMouseDown(button, mouseX, mouseY);
-        }
+        root.onMouseDown(button, mouseX, mouseY);
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
-        for (ViewComponent v : components) {
-            v.onMouseUp(button, mouseX, mouseY);
-        }
+        root.onMouseUp(button, mouseX, mouseY);
     }
 }

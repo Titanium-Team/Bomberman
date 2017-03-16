@@ -44,7 +44,7 @@ public abstract class TileObject {
         //--- Execute, if it runs out of time
         this.lifespan -= delta;
 
-        if(this.lifespan <= 0) {
+        if (this.lifespan <= 0) {
             this.execute();
 
             //--- destroy

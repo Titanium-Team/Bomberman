@@ -9,7 +9,7 @@ public class NavigationNode {
     private Tile tile;
     private boolean marked;
     private int dist;
-    private int prevX,prevY;
+    private int prevX, prevY;
 
     public NavigationNode(Tile tile) {
         this.tile = tile;

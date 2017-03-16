@@ -33,7 +33,7 @@ public class Bomb extends TileObject {
     public void update(float delta) {
 
         //--- unlock timer
-        if(this.triggerTimer > 0) {
+        if (this.triggerTimer > 0) {
             this.triggerTimer -= delta;
             return;
         }
