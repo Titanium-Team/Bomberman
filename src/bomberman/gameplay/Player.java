@@ -8,24 +8,27 @@ import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.event.KeyEvent;
-
 public class Player {
 
+    //--- Settings
     private final static double COLLISION_WIDTH = .8;
     private final static double COLLISION_HEIGHT = .8;
 
+    //--- Game
     private final GameStatistic gameStatistic = new GameStatistic();
     private final GameMap gameMap;
 
+    //--- Properties
     private final String name;
-    private final BoundingBox boundingBox;
-
     private double health;
 
-    private final Vector2 vector = new Vector2(0, 0);
-
     private final PlayerType playerType;
+
+
+    //--- Position
+    private final Vector2 vector = new Vector2(0, 0);
+    private final BoundingBox boundingBox;
+    private FacingDirection facingDirection = FacingDirection.NORTH;
 
 
     //--- Stats
@@ -51,8 +54,20 @@ public class Player {
         return this.name;
     }
 
+    public double getHealth() {
+        return health;
+    }
+
+    public FacingDirection getFacingDirection() {
+        return this.facingDirection;
+    }
+
     public Vector2 getVector() {
         return this.vector;
+    }
+
+    public BoundingBox getBoundingBox() {
+        return this.boundingBox;
     }
 
     public PlayerType getPlayerType() {
@@ -61,14 +76,6 @@ public class Player {
 
     public GameStatistic getGameStatistic() {
         return this.gameStatistic;
-    }
-
-    public BoundingBox getBoundingBox() {
-        return this.boundingBox;
-    }
-
-    public double getHealth() {
-        return health;
     }
 
     public Tile getTile() {
@@ -86,6 +93,11 @@ public class Player {
 
     public void update(float delta) {
 
+        //--- Facing Direction
+        FacingDirection facing = FacingDirection.from(this.vector);
+        this.facingDirection = (facing == FacingDirection.DEFAULT ? this.facingDirection : facing);
+
+        //--- Collision
         Location location = this.boundingBox.getCenter();
 
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
@@ -220,6 +232,48 @@ public class Player {
 
         STOP_VERTICAL_MOVEMENT,
         STOP_HORIZONTAL_MOVEMENT
+
+    }
+
+    public enum FacingDirection {
+
+        NORTH,
+        NORTH_EAST,
+        EAST,
+        SOUTH_EAST,
+        SOUTH,
+        SOUTH_WEST,
+        WEST,
+        NORTH_WEST,
+
+        DEFAULT;
+
+        public static FacingDirection from(Vector2 vector) {
+
+            float vX = vector.getX();
+            float vY = vector.getY();
+
+            if(vY < 0 && vX == 0) {
+                return FacingDirection.NORTH;
+            } else if(vY < 0 && vX > 0) {
+                return FacingDirection.NORTH_EAST;
+            } else if(vY == 0 && vX > 0) {
+                return FacingDirection.EAST;
+            } else if(vY > 0 && vX > 0) {
+                return FacingDirection.SOUTH_EAST;
+            } else if(vY > 0 && vX == 0) {
+                return FacingDirection.SOUTH;
+            } else if(vY > 0 && vX < 0) {
+                return FacingDirection.SOUTH_WEST;
+            } else if(vY == 0 && vX < 0) {
+                return FacingDirection.WEST;
+            } else if(vY < 0 && vX < 0) {
+                return FacingDirection.NORTH_WEST;
+            }
+
+            return FacingDirection.DEFAULT;
+
+        }
 
     }
 
