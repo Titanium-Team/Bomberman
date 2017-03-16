@@ -29,14 +29,25 @@ public class GameplayManager {
 
         this.add(
             GameMap.builder()
-                .dimension(11, 9)
+                .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 3)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 4)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 5)
+                .horizontalPattern("WBWBWBWGWBWBWBW", 6)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 7)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 8)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 9)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 10)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
             .build()
         );
 
         //@TODO
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getMap(0), "FizzBuzz", new Location(1.5, 1.5)));
+        this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", new Location(1.5, 1.5)));
 
     }
 
