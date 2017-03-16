@@ -90,6 +90,7 @@ public abstract class LightingView extends View {
             int r = light.getRadius();
             int r2 = r / 2;
 
+            lightingShader.setUniformf("u_resolution", light.getRadius() * 2);
             batch.draw(light.getShadowMap(), x - r2, y - r2, r, r, light.getR(), light.getG(), light.getB(), 1.0f);
             batch.flush();
         }
