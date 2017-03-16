@@ -81,8 +81,8 @@ public class Player {
     public Tile getTile() {
 
         return this.gameMap.get(
-                (int) Math.round(this.boundingBox.getCenter().getX()),
-                (int) Math.round(this.boundingBox.getCenter().getY())
+                (int) Math.round(this.boundingBox.getMin().getX()),
+                (int) Math.round(this.boundingBox.getMin().getY())
         );
 
     }

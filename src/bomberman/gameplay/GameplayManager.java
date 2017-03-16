@@ -19,7 +19,11 @@ public class GameplayManager {
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
-                .at(TileTypes.WALL, 5, 5)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 2)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 4)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 6)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 8)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 10)
             .build()
         );
 
