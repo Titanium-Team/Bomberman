@@ -17,7 +17,7 @@ public class Player {
     private final static double COLLISION_WIDTH = .6;
     private final static double COLLISION_HEIGHT = .6;
 
-    private final static float ACCELERATION_STEP = .5F;
+    private final static float ACCELERATION_STEP = 1.5F;
     private final static float ACCELERATION_LIMIT = 3;
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
@@ -139,8 +139,19 @@ public class Player {
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
         this.gameMap.checkInteraction(this);
-        if (this.gameMap.checkCollision(this)) {
-            this.boundingBox.setCenter(location);
+
+        switch (this.gameMap.checkCollision(this)) {
+
+            case LEFT:
+            case RIGHT:
+                this.vector.setX(0);
+                this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
+                break;
+            case UP:
+            case DOWN:
+                this.vector.setY(0);
+                this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
+                break;
         }
 
     }
@@ -234,9 +245,11 @@ public class Player {
         switch (d) {
 
             case UP:
+
                 this.vector.setY(
                         range(-ACCELERATION_LIMIT * this.PLAYER_speedFactor, (this.vector.getY() - ACCELERATION_STEP), 0)
                 );
+
                 break;
 
             case LEFT:

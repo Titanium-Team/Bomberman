@@ -28,7 +28,7 @@ public class Bomb extends TileObject {
     public boolean canVisit(Player p){
         return walkable.contains(p);
     }
-    
+
     @Override
     public void execute() {
         //@TODO Implement
