@@ -3,8 +3,8 @@ package bomberman.network;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.List;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
 public class Server extends Connection {
 
@@ -24,7 +24,7 @@ public class Server extends Connection {
     }
 
     @Override
-    public void message(String message ) {
+    public void message(String message) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
             send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getNetworkData());
         });
@@ -46,7 +46,7 @@ public class Server extends Connection {
 
         Gson gson = new Gson();
 
-        switch (splittedMessage[0]){
+        switch (splittedMessage[0]) {
             case "hello":
                 NetworkData thisPlayer = new NetworkData(packet.getAddress(), packet.getPort());
 
@@ -73,7 +73,7 @@ public class Server extends Connection {
     }
 
 
-    private void sendToAll(String message, NetworkData networkData){
+    private void sendToAll(String message, NetworkData networkData) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
             if (value.getConnectionData().getNetworkData() != networkData) {
                 send("message§" + value.getConnectionData().encrypt(message), networkData);

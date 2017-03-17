@@ -28,7 +28,7 @@ public class Light {
 
         createFrameBuffersIfNecessary();
     }
-    
+
     public void createFrameBuffersIfNecessary() {
         try {
             if (this.shadowMap == null)

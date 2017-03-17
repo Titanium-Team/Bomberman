@@ -43,9 +43,9 @@ public class AiPlayer extends Player {
     }
 
     public void update(float delta) {
-        timeTillUpdate =- delta;
-        if(timeTillUpdate < 0 && target.getPlayer().getBoundingBox().getCenter().distanceTo(this.getBoundingBox().getCenter()) > updateDistance){
-            playerRelevances.sort((o1, o2) -> (int)Math.round(o1.getRelevance(this.getBoundingBox().getCenter())-o2.getRelevance(this.getBoundingBox().getCenter())));
+        timeTillUpdate = -delta;
+        if (timeTillUpdate < 0 && target.getPlayer().getBoundingBox().getCenter().distanceTo(this.getBoundingBox().getCenter()) > updateDistance) {
+            playerRelevances.sort((o1, o2) -> (int) Math.round(o1.getRelevance(this.getBoundingBox().getCenter()) - o2.getRelevance(this.getBoundingBox().getCenter())));
             target = playerRelevances.get(0);
             //TODO: Gegner greift sich selber an
             if (target.getPlayer() == this) {
@@ -54,13 +54,13 @@ public class AiPlayer extends Player {
             timeTillUpdate = updateTime;
         }
 
-        if(steps.isEmpty()){
-            if(target != null){
+        if (steps.isEmpty()) {
+            if (target != null) {
                 findPath();
-            }else{
+            } else {
 
             }
-        }else{
+        } else {
 
         }
     }
@@ -134,11 +134,11 @@ public class AiPlayer extends Player {
         }
     }
 
-    private void evade(){
+    private void evade() {
 
     }
 
-    private void flee(){
+    private void flee() {
 
     }
 

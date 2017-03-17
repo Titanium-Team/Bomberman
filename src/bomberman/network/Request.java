@@ -13,12 +13,12 @@ public class Request {
         this.request = request;
         this.recieved = new HashMap<>();
 
-        for (NetworkData s: send){
+        for (NetworkData s : send) {
             recieved.put(s, false);
         }
     }
 
-    public void setRecieved(NetworkData key){
+    public void setRecieved(NetworkData key) {
         recieved.put(key, true);
     }
 

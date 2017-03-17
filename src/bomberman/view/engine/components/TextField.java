@@ -6,7 +6,7 @@ import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Keyboard;
 
-public class TextField extends ViewComponent{
+public class TextField extends ViewComponent {
 
     public enum State {
         Focussed, Unfocussed;
@@ -20,12 +20,12 @@ public class TextField extends ViewComponent{
         this(params, v, "");
     }
 
-    public TextField(LayoutParams params, View v,String text) {
+    public TextField(LayoutParams params, View v, String text) {
         super(params, v);
         this.text = text;
     }
 
-    public void addChar(char c){
+    public void addChar(char c) {
         this.text = text.substring(0, pointer) + c + text.substring(pointer, text.length());
         pointer++;
     }
@@ -38,7 +38,7 @@ public class TextField extends ViewComponent{
                 state = State.Focussed;
                 pointer = text.length();
             }
-        }else{
+        } else {
             state = State.Unfocussed;
         }
     }
@@ -46,7 +46,7 @@ public class TextField extends ViewComponent{
     @Override
     public void onKeyDown(int key, char c) {
         super.onKeyDown(key, c);
-        if(state == State.Focussed) {
+        if (state == State.Focussed) {
             if (key == Keyboard.KEY_BACK) {
                 if (text != null && !text.isEmpty()) {
                     this.text = text.substring(0, pointer - 1) + text.substring(pointer, text.length());
@@ -78,9 +78,9 @@ public class TextField extends ViewComponent{
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .2f, .2f, .2f, 1f);
         }
 
-        batch.draw(null, (getX() + 5) + ViewManager.font.getWidth(text.substring(0,pointer)), (getY() + 7), 3, (getHeight() - 15), 1f, 1f, 1f, 1f);
+        batch.draw(null, (getX() + 5) + ViewManager.font.getWidth(text.substring(0, pointer)), (getY() + 7), 3, (getHeight() - 15), 1f, 1f, 1f, 1f);
 
         if (text != null)
-            ViewManager.font.drawText(batch, text, (int) getX()+5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
+            ViewManager.font.drawText(batch, text, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
     }
 }

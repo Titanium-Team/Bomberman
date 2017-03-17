@@ -6,8 +6,8 @@ import bomberman.gameplay.utils.Location;
 
 
 public class NetworkPlayer extends Player {
-  
-   private ConnectionData connectionData;
+
+    private ConnectionData connectionData;
 
     public NetworkPlayer(String name, Location center, GameMap map, ConnectionData connectionData) {
         super(PlayerType.NETWORK, map, name, center);

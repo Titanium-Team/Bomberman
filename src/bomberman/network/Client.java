@@ -1,16 +1,14 @@
 package bomberman.network;
 
 import com.google.gson.Gson;
-import jdk.nashorn.api.scripting.JSObject;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
 
-public class Client extends Connection{
+public class Client extends Connection {
 
     private ConnectionData server;
 
@@ -55,7 +53,7 @@ public class Client extends Connection{
 
         Gson gson = new Gson();
 
-        switch (splittedMessage[0]){
+        switch (splittedMessage[0]) {
             case "hello":
                 NetworkData thisPlayer = new NetworkData(packet.getAddress(), packet.getPort());
 
@@ -75,7 +73,7 @@ public class Client extends Connection{
         }
     }
 
-    private void refreshServers(){
+    private void refreshServers() {
         try {
             send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638));
         } catch (UnknownHostException e) {

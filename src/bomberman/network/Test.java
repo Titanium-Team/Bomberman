@@ -1,8 +1,6 @@
 package bomberman.network;
 
-import java.awt.*;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Test {
 

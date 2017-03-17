@@ -2,7 +2,6 @@ package bomberman.view.views;
 
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.Button;
-import bomberman.view.engine.components.ButtonListener;
 import bomberman.view.engine.components.LayoutParams;
 import bomberman.view.engine.components.TextField;
 
@@ -31,7 +30,7 @@ public class HomeView extends BaseMenuView {
         this.optionsButton.setListener(() -> HomeView.this.changeView(OptionsView.class));
         this.getRoot().addChild(optionsButton);
 
-        this.textField = new TextField(LayoutParams.obtain(0.8f,0.8f,0.2f,0.1f), this, "swag");
+        this.textField = new TextField(LayoutParams.obtain(0.8f, 0.8f, 0.2f, 0.1f), this, "swag");
 
         this.getRoot().addChild(textField);
     }

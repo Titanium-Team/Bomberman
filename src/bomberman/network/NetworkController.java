@@ -1,11 +1,11 @@
 package bomberman.network;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-public class NetworkController implements Runnable{
+public class NetworkController implements Runnable {
 
     private boolean hosting = false;
     private Connection connection;
@@ -16,9 +16,9 @@ public class NetworkController implements Runnable{
         this.hosting = hosting;
         networkPlayerMap = new HashMap<>();
 
-        if (hosting){
+        if (hosting) {
             connection = new Server(this);
-        }else {
+        } else {
             connection = new Client(this);
         }
     }
@@ -29,13 +29,13 @@ public class NetworkController implements Runnable{
 
     @Override
     public void run() {
-        while (true){
+        while (true) {
             Scanner scanner = new Scanner(System.in);
             chatMessage(scanner.nextLine());
         }
     }
 
-    public void chatMessage(String message){
+    public void chatMessage(String message) {
         connection.message(message);
     }
 }
