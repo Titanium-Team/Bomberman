@@ -7,18 +7,18 @@ import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.objects.PowerUpTypes;
 
-/**
- * Created by 204g04 on 17.03.2017.
- */
 public class PowerUp extends TileObject{
-    private PowerUpTypes powerUpType;
+
     private Tile parent;
+    private PowerUpTypes powerUpType;
+
     public PowerUp(Tile parent, float lifespan, PowerUpTypes pPowerUpType){
         super(parent, lifespan);
-        this.parent = parent;
-        powerUpType = pPowerUpType;
 
+        this.parent = parent;
+        this.powerUpType = pPowerUpType;
     }
+
     @Override
     public void execute() {
         //@TODO Implement
@@ -31,6 +31,7 @@ public class PowerUp extends TileObject{
         PropertyRepository repo = player.getPropertyRepository();
 
         switch (powerUpType){
+
             case SPEEDUP:
                 repo.set(
                     PropertyTypes.SPEED_FACTOR,
@@ -40,6 +41,7 @@ public class PowerUp extends TileObject{
                 System.out.println("SpeedUP");
                 System.out.println(repo.get(PropertyTypes.SPEED_FACTOR));
                 break;
+
             case SPEEDDOWN:
                 /*if(player.getPLAYER_speedFactor()>((float)powerUpType.SPEEDDOWN.value()*-1)){
                     player.setPLAYER_speedFactor(player.getPLAYER_speedFactor()+(float)powerUpType.SPEEDDOWN.value());
@@ -49,8 +51,13 @@ public class PowerUp extends TileObject{
                 break;
 
             case FIREUP:
-                /*player.setBOMB_blastRadius(player.getBOMB_blastRadius()+(int)powerUpType.FIREUP.value());
-                System.out.println("FireUP");*/
+                repo.set(
+                    PropertyTypes.BOMB_BLAST_RADIUS,
+                    repo.<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + (float) powerUpType.value()
+                );
+
+                System.out.println("FireUP");
+                System.out.println(repo.get(PropertyTypes.BOMB_BLAST_RADIUS));
                 break;
 
             case FIREDOWN:
@@ -61,8 +68,13 @@ public class PowerUp extends TileObject{
                 break;
 
             case BOMBUP:
-                /*player.setBOMB_amount(player.getBOMB_amount()+(int)powerUpType.BOMBUP.value());
-                System.out.println("BombUP");*/
+                repo.set(
+                    PropertyTypes.BOMB_AMOUNT,
+                    repo.<Integer>get(PropertyTypes.BOMB_AMOUNT) + (float) powerUpType.value()
+                );
+
+                System.out.println("FireUP");
+                System.out.println(repo.get(PropertyTypes.BOMB_AMOUNT));
                 break;
 
             case BOMBDOWN:
@@ -72,14 +84,8 @@ public class PowerUp extends TileObject{
                 }*/
                 break;
         }
-        parent.destroyObject();
+        this.parent.destroyObject();
         System.out.println("DONT TOUCH MY TRALALA");
     }
 
-    @Override
-    public void update(float delta) {
-
-
-        super.update(delta);
-    }
 }
