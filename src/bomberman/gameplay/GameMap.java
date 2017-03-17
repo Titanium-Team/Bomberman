@@ -5,6 +5,8 @@ import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
 
 public class GameMap {
@@ -191,6 +193,10 @@ public class GameMap {
 
             for (int x = 0; x < this.width(); x++) {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
+
+                if(pattern.charAt(x) == 'P'){
+                    tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.SPEEDUP));
+                }
             }
 
             return this;
@@ -245,6 +251,7 @@ public class GameMap {
             switch (c) {
 
                 case 'G':
+                case 'P':
                     return TileTypes.GROUND;
                 case 'W':
                     return TileTypes.WALL;

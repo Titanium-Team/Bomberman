@@ -7,7 +7,7 @@ public enum PowerUpTypes implements PowerUpType{
     SPEEDUP{
         @Override
         public double value(){
-            return 0.25;
+            return 1;
         }
     },
 
