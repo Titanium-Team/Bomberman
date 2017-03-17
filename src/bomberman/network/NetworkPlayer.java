@@ -12,11 +12,9 @@ public class NetworkPlayer extends Player {
 
     public NetworkPlayer(String name, Location center, GameMap map, ConnectionData connectionData) {
         //super(x, y, hp, level);
-   private ConnectionData connectionData;
-      
-      
         super(PlayerType.NETWORK, map, name, center);
 
+        this.connectionData = connectionData;
     }
 
     //@Override
@@ -28,6 +26,4 @@ public class NetworkPlayer extends Player {
     public ConnectionData getConnectionData() {
         return connectionData;
     }
-}
-
 }

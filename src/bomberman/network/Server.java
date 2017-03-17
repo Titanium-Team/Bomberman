@@ -53,7 +53,7 @@ public class Server extends Connection {
                 ConnectionData connectionData = new ConnectionData(thisPlayer, splittedMessage[1]);
 
                 if (!getController().getNetworkPlayerMap().containsKey(packet.getAddress().getHostAddress() + packet.getPort())) {
-                    getController().getNetworkPlayerMap().put(thisPlayer, new NetworkPlayer(0, 0, 0, null, connectionData));
+                    getController().getNetworkPlayerMap().put(thisPlayer, new NetworkPlayer("", null, null, connectionData));
 
                     send("hello§" + getMyData().toJson(), new NetworkData(packet.getAddress(), packet.getPort()));
 

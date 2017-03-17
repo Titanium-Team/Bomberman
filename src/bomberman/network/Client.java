@@ -61,7 +61,7 @@ public class Client extends Connection{
 
                 ConnectionData connectionData = new ConnectionData(thisPlayer, splittedMessage[1]);
 
-                getController().getNetworkPlayerMap().putIfAbsent(thisPlayer, new NetworkPlayer(0, 0, 0, null, connectionData));
+                getController().getNetworkPlayerMap().putIfAbsent(thisPlayer, new NetworkPlayer("", null, null, connectionData));
 
                 System.out.println("ConnectionData from Server");
 
