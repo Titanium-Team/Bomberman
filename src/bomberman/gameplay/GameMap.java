@@ -71,7 +71,6 @@ public class GameMap {
                                         (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
                                 )
                         ) {
-                    //System.out.println(((Bomb) tile.getTileObject()).isSolid());
                     return true;
                 }
             }

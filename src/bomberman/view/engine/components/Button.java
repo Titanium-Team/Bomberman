@@ -3,7 +3,6 @@ package bomberman.view.engine.components;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
-import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.utility.Utility;
 
 

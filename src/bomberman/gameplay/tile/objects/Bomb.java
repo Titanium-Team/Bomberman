@@ -28,19 +28,7 @@ public class Bomb extends TileObject {
     public boolean canVisit(Player p){
         return walkable.contains(p);
     }
-
-    public boolean isSolid() {
-
-        for (Player p : Main.instance.getGameplayManager().getPlayers()){
-
-            if (p.getBoundingBox().intersects(this.getParent().getBoundingBox())){
-                return false;
-            }
-        }
-        System.out.println("Rock");
-        return true;
-    }
-
+    
     @Override
     public void execute() {
         //@TODO Implement

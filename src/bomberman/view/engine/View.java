@@ -51,11 +51,15 @@ public abstract class View {
         this.width = width;
 
         // this will relayout everything
-        this.root.layout(null);
+        requestLayout();
 
         this.sceneCamera.resize(width, height);
         this.uiCamera.resize(width, height);
         this.uiCamera.setTranslation(new Vector2(width / 2, height / 2));
+    }
+
+    public void requestLayout() {
+        this.root.layout(null);
     }
 
     public Camera getSceneCamera() {

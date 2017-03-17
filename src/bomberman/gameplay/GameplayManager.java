@@ -15,35 +15,35 @@ public class GameplayManager {
     public GameplayManager() {
 
         this.add(
-                GameMap.builder()
-                        .dimension(15, 13)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 2)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 4)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 6)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 8)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 10)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 2)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 4)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 6)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 8)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 10)
+            .build()
         );
 
         this.add(
-                GameMap.builder()
-                        .dimension(15, 13)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .horizontalPattern("WGGBBBBBBBBBGGW", 1)
-                        .horizontalPattern("WGWBWBWBWBWBWGW", 2)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 3)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 4)
-                        .horizontalPattern("WBBBBBGGGBBBBBW", 5)
-                        .horizontalPattern("WBWBWBWGWBWBWBW", 6)
-                        .horizontalPattern("WBBBBBGGGBBBBBW", 7)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 8)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 9)
-                        .horizontalPattern("WGWBWBWBWBWBWGW", 10)
-                        .horizontalPattern("WGGBBBBBBBBBGGW", 11)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 3)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 4)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 5)
+                .horizontalPattern("WBWBWBWGWBWBWBW", 6)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 7)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 8)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 9)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 10)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+            .build()
         );
 
         //@TODO
@@ -68,7 +68,7 @@ public class GameplayManager {
     }
 
     public GameMap getCurrentMap() {
-        return this.getMap(1); //@TODO
+        return this.getMap(0); //@TODO
     }
 
     public GameMap getMap(int index) {
@@ -98,10 +98,8 @@ public class GameplayManager {
         this.players.forEach(e -> e.keyUp(key, c));
     }
 
-    public void onMouseDown(int button, int mouseX, int mouseY) {
-    }
+    public void onMouseDown(int button, int mouseX, int mouseY) {}
 
-    public void onMouseUp(int button, int mouseX, int mouseY) {
-    }
+    public void onMouseUp(int button, int mouseX, int mouseY) {}
 
 }

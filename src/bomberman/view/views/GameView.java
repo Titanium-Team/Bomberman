@@ -4,6 +4,7 @@ import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
@@ -73,14 +74,12 @@ public class GameView extends LightingView {
                         j * this.tileSize < camera.getTranslation().getY() + camera.getHeight() / 2; j++) {
                     if (tiles[i][j] != null) {
                         if (!tiles[i][j].getTileType().isWalkable()) {
-                            batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
-                        } else {
-                            if (tiles[i][j].getTileObject() != null) {
-                                if (tiles[i][j].getTileObject() instanceof Bomb) {
-                                    //TODO: bomb texture
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
-                                }
+                            if (tiles[i][j].getTileType().equals(TileTypes.WALL)) {
+                                batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
+                            } else {
+                                batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.25f, 0.25f, 0.25f, 1);
                             }
+                        } else {
                         }
                     }
                 }
@@ -100,6 +99,14 @@ public class GameView extends LightingView {
                     if (tiles[i][j] != null) {
                         if (tiles[i][j].getTileType().isWalkable()) {
                             //batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.25f, 0.5f, 0.75f, 1);
+                        }
+                        if(tiles[i][j].getTileType().isWalkable()) {
+                            if (tiles[i][j].getTileObject() != null) {
+                                if (tiles[i][j].getTileObject() instanceof Bomb) {
+                                    //TODO: bomb texture
+                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
+                                }
+                            }
                         }
                     }
                 }
