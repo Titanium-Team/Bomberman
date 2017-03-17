@@ -6,9 +6,8 @@ import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
 import bomberman.view.views.GameView;
+import net.java.games.input.*;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Controller;
-import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
@@ -75,32 +74,24 @@ public class ViewManager {
             System.exit(0);
         }
 
-        try {
-            System.out.println("Loading Controllers...");
-            Controllers.create();
+        System.out.println("Loading Controllers...");
+        ControllerEnvironment e = ControllerEnvironment.getDefaultEnvironment();
+        Controller[] found = e.getControllers();
 
-            for (int i = 0; i < Controllers.getControllerCount(); i++) {
-                Controller controller = Controllers.getController(i);
+        for (int i = 0; i < found.length; i++) {
+            Controller controller = found[i];
 
-                if (controller.getName().toUpperCase().contains("XBOX")) {
-                    System.out.println("Found suitable Controller: " + controller.getName());
-                    this.selectedController = controller;
+            if (controller.getName().toUpperCase().contains("XBOX")) {
+                System.out.println("Found suitable Controller: " + controller.getName());
 
-                    for (int j = 0; j < controller.getButtonCount(); j++) {
-                        System.out.println("\tButton: " + controller.getButtonName(j));
-                    }
-                    for (int j = 0; j < controller.getRumblerCount(); j++) {
-                        System.out.println("\tRumbler: " + controller.getRumblerName(j));
-                    }
-                    for (int j = 0; j < controller.getAxisCount(); j++) {
-                        System.out.println("\tAxis: " + controller.getAxisName(j));
-                    }
+                for (int j = 0; j < controller.getComponents().length; j++) {
+                    net.java.games.input.Component com = controller.getComponents()[i];
 
-                    break;
+                    System.out.println(j + "   " + com.getName());
                 }
+
+                break;
             }
-        } catch (LWJGLException e) {
-            e.printStackTrace();
         }
 
         GL11.glEnable(GL13.GL_MULTISAMPLE);
@@ -241,23 +232,6 @@ public class ViewManager {
 
                 currentView.onKeyUp(key, c);
                 gameplayManager.onKeyUp(key, c);
-            }
-        }
-
-        if (selectedController != null && Controllers.isCreated()) {
-            Controllers.poll();
-            while (Controllers.next()) {
-                if (Controllers.getEventSource() == this.selectedController) {
-                    int controlIndex = Controllers.getEventControlIndex();
-
-                    if (Controllers.isEventButton()) {
-                        if (Controllers.getEventButtonState()) {
-                            System.out.println("Button down: " + controlIndex);
-                        } else {
-                            System.out.println("Button up: " + controlIndex);
-                        }
-                    }
-                }
             }
         }
     }

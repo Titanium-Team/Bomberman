@@ -12,10 +12,10 @@ public final class LayoutParams {
     public final float h;
 
     public LayoutParams(float x, float y, float w, float h) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+        this.x = Math.max(0,Math.min(x,1));
+        this.y = Math.max(0,Math.min(y,1));
+        this.w = Math.max(0,Math.min(w,1));
+        this.h = Math.max(0,Math.min(h,1));
     }
 
 }
