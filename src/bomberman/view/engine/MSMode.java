@@ -4,8 +4,7 @@ public enum MSMode {
 
     OFF(0),
     MSAAx2(2),
-    MSAAx4(4),
-    MSAAx8(8);
+    MSAAx4(4),;
 
     public final int samples;
 

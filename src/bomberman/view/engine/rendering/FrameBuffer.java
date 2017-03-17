@@ -96,7 +96,6 @@ public class FrameBuffer implements ITexture {
         if (ownsTexture)
             texture.dispose();
         handle = 0;
-        //glReadBuffer(GL_BACK);
     }
 
     @Override

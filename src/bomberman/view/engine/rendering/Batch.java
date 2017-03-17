@@ -12,14 +12,14 @@ import java.util.Map;
 
 public class Batch {
 
-    private static ShaderProgram createShader(VertexAttrib[] attribs) {
+    private static ShaderProgram createDefaultShader() {
         try {
             File vert = new File(Batch.class.getResource("/bomberman/resources/shaders/batch.vert").toURI());
             File frag = new File(Batch.class.getResource("/bomberman/resources/shaders/batch.frag").toURI());
 
             Map<Integer, String> map = new HashMap<>();
 
-            for (VertexAttrib attrib : attribs) {
+            for (VertexAttrib attrib : VERTEX_ATTRIBS) {
                 map.put(attrib.location, attrib.name);
             }
 
@@ -32,10 +32,17 @@ public class Batch {
 
     private static final int VERTICES_PER_SPRITE = 6;
 
+    public static final VertexAttrib[] VERTEX_ATTRIBS = new VertexAttrib[]{
+            new VertexAttrib(0, "position", 2),
+            new VertexAttrib(1, "tid", 1),
+            new VertexAttrib(2, "color", 4),
+            new VertexAttrib(3, "texCoords", 2)
+    };
+
     private ShaderProgram shader;
     private VertexData buffer;
 
-    private Matrix4 projectionMatrix = new Matrix4();
+    private Matrix4 combinedMatrix = new Matrix4();
 
     private int texIdx = 0;
     private final int maxTextureIdx = Math.min(16, GL11.glGetInteger(GL13.GL_MAX_TEXTURE_UNITS));
@@ -50,29 +57,19 @@ public class Batch {
     }
 
     public Batch(int size) {
-        VertexAttrib[] attribs = new VertexAttrib[]{
-                new VertexAttrib(0, "position", 2),
-                new VertexAttrib(1, "tid", 1),
-                new VertexAttrib(2, "color", 4),
-                new VertexAttrib(3, "texCoords", 2)
-        };
-        this.buffer = new VertexBuffer(size * VERTICES_PER_SPRITE, attribs);
+        this(size, createDefaultShader());
+    }
 
-        this.shader = createShader(attribs);
+    public Batch(int size, ShaderProgram shader) {
+        this.buffer = new VertexBuffer(size * VERTICES_PER_SPRITE, VERTEX_ATTRIBS);
+
+        this.shader = shader;
 
         maxIdx = buffer.getVertexCount();
 
         int sizeInBytes = buffer.getTotalNumComponents() * buffer.getVertexCount() * 4;
 
         System.out.println("Batch created with " + size + " sprites and " + maxTextureIdx + " textures (size: " + sizeInBytes + " bytes)");
-    }
-
-    public void resize(int w, int h) {
-        float left = 0;
-        float right = w;
-        float bottom = h;
-        float top = 0;
-        this.projectionMatrix = Matrix4.getOrthographicCamera(left, right, bottom, top, 0, 1);
     }
 
     public void begin() {
@@ -88,7 +85,17 @@ public class Batch {
         renderCalls = 0;
 
         shader.use();
-        shader.setUniformMatrix(shader.getUniformLocation("projectionMatrix"), false, this.projectionMatrix);
+        shader.setUniformMatrix(shader.getUniformLocation("combinedMatrix"), false, combinedMatrix);
+    }
+
+    public void setCombinedMatrix(Matrix4 combinedMatrix) {
+        if (drawing)
+            flush();
+
+        this.combinedMatrix = combinedMatrix;
+
+        if (drawing)
+            shader.setUniformMatrix(shader.getUniformLocation("combinedMatrix"), false, combinedMatrix);
     }
 
     public void flush() {

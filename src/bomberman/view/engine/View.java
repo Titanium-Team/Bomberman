@@ -1,76 +1,127 @@
 package bomberman.view.engine;
 
-import bomberman.view.engine.components.ViewComponent;
+import bomberman.view.engine.components.LayoutParams;
+import bomberman.view.engine.components.Panel;
 import bomberman.view.engine.rendering.Batch;
-
-import java.util.ArrayList;
-import java.util.List;
+import bomberman.view.engine.utility.Camera;
+import bomberman.view.engine.utility.Vector2;
 
 public abstract class View {
 
-    protected List<ViewComponent> components;
-    protected float width, height;
+    protected Panel root;
+    protected int width, height;
     protected final ViewManager viewManager;
+    private View parentView = null;
 
-    public View(float width, float height, ViewManager viewManager) {
-        components = new ArrayList<ViewComponent>();
-        this.height = height;
+    private Camera uiCamera;
+    private Camera sceneCamera;
+
+    public View(int width, int height, ViewManager viewManager) {
         this.width = width;
+        this.height = height;
         this.viewManager = viewManager;
+
+        this.root = new Panel(LayoutParams.obtain(0, 0, 1, 1), this);
+        this.root.layout(null);
+
+        this.sceneCamera = new Camera(width, height);
+        this.uiCamera = new Camera(width, height);
     }
 
-    public void render(float deltaTime, Batch batch) {
-        for (int i = 0; i < components.size(); i++) {
-            ViewComponent c = components.get(i);
-            c.draw(batch);
-        }
+    public void update(float deltaTime) {
     }
 
+    public final void render(Batch batch) {
+        batch.setCombinedMatrix(sceneCamera.getCombined());
+        renderScene(batch);
 
-    public void layout(float width, float height) {
+        batch.setCombinedMatrix(uiCamera.getCombined());
+        renderUI(batch);
+    }
+
+    public void renderUI(Batch batch) {
+        root.draw(batch);
+    }
+
+    public void renderScene(Batch batch) {
+    }
+
+    public void layout(int width, int height) {
         this.height = height;
         this.width = width;
+
+        // this will relayout everything
+        this.root.layout(null);
+
+        this.sceneCamera.resize(width, height);
+        this.uiCamera.resize(width, height);
+        this.uiCamera.setTranslation(new Vector2(width / 2, height / 2));
     }
 
-    public float getWidth() {
+    public Camera getSceneCamera() {
+        return sceneCamera;
+    }
+
+    public int getWidth() {
         return width;
     }
 
-    public float getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public List<ViewComponent> getComponents() {
-        return components;
+    public Panel getRoot() {
+        return root;
     }
 
     public ViewManager getViewManager() {
         return viewManager;
     }
 
-    public void onKeyDown(int key, char c) {
-        for (ViewComponent v : components) {
-            v.onKeyDown(key, c);
+    public View getParentView() {
+        return parentView;
+    }
+
+    public void setParentView(View parentView) {
+        this.parentView = parentView;
+    }
+
+    public void changeView(Class<? extends View> clazz) {
+        changeView(ViewFactory.instance().createView(clazz, viewManager));
+    }
+
+    public void changeView(View newView) {
+        if (newView != null) {
+            newView.setParentView(this);
+
+            viewManager.setCurrentView(newView);
         }
+    }
+
+    public void navigateBack() {
+        View parent = this.getParentView();
+
+        if (parent != null) {
+            viewManager.setCurrentView(parent);
+        }
+    }
+
+    public void onDestroy() {
+    }
+
+    public void onKeyDown(int key, char c) {
+        root.onKeyDown(key, c);
     }
 
     public void onKeyUp(int key, char c) {
-        for (ViewComponent v : components) {
-            v.onKeyUp(key, c);
-        }
+        root.onKeyUp(key, c);
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {
-        for (ViewComponent v : components) {
-            v.onMouseDown(button, mouseX, mouseY);
-        }
+        root.onMouseDown(button, mouseX, mouseY);
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
-        for (ViewComponent v : components) {
-            v.onMouseUp(button, mouseX, mouseY);
-        }
+        root.onMouseUp(button, mouseX, mouseY);
     }
-
-
 }

@@ -1,8 +1,8 @@
 package bomberman;
 
-import bomberman.view.TestView;
-import bomberman.view.engine.View;
+import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.ViewManager;
+import bomberman.view.views.HomeView;
 
 public class Main {
 
@@ -14,12 +14,13 @@ public class Main {
     }
 
     private ViewManager viewManager;
+    private GameplayManager gameplayManager;
 
     public void mainLoop() {
-        viewManager = new ViewManager();
+        this.gameplayManager = new GameplayManager();
+        this.viewManager = new ViewManager(this.gameplayManager);
 
-        View view = new TestView(viewManager.getViewportWidth(), viewManager.getViewportHeight(), viewManager);
-        viewManager.setCurrentView(view);
+        viewManager.setCurrentView(HomeView.class);
 
         float deltaTime;
         long startTime = System.nanoTime();
@@ -37,6 +38,8 @@ public class Main {
 
                 totalTime = currentTime;
             }
+
+            gameplayManager.update(deltaTime);
 
             viewManager.render(deltaTime, fpsCounter);
         }
