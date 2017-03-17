@@ -68,9 +68,10 @@ public class GameMap {
                         tile.getBoundingBox().intersects(boundingBox) &&
                                 (
                                         !(tile.getTileType().isWalkable()) ||
-                                                (tile.getTileObject() instanceof Bomb && ((Bomb) tile.getTileObject()).isTriggered())
+                                        (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
                                 )
                         ) {
+                    //System.out.println(((Bomb) tile.getTileObject()).isSolid());
                     return true;
                 }
             }
@@ -90,7 +91,7 @@ public class GameMap {
 
                 if (tile.getTileType().isWalkable() && !(tile.getTileObject() == null)) {
 
-                    if (tile.getTileObject() instanceof Bomb && !(((Bomb) tile.getTileObject()).isTriggered())) {
+                    if (tile.getTileObject() instanceof Bomb) {
                         continue;
                     }
 
