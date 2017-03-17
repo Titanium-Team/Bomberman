@@ -1,5 +1,6 @@
 package bomberman.view.engine;
 
+import bomberman.Main;
 import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.BitmapFont;
@@ -25,9 +26,7 @@ public class ViewManager {
 
     private Batch batch;
 
-    private boolean vSync = false;
     private MSMode msMode = MSMode.OFF;
-    private boolean enableFpsCounter = true;
 
     public static void load() {
         try {
@@ -152,7 +151,7 @@ public class ViewManager {
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
             Display.setTitle("Bomberman");
-            Display.setVSyncEnabled(this.vSync);
+            Display.setVSyncEnabled(true);
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
@@ -174,14 +173,14 @@ public class ViewManager {
             currentView.update(deltaTime);
             currentView.render(batch);
         }
-        if (enableFpsCounter) {
+        if (Main.instance.getConfig().isShowFPS()) {
             ViewManager.font.drawText(batch, "FPS: " + fpsCount, 5, 5);
         }
 
         batch.end();
 
         Display.update();
-        if (this.vSync)
+        if (Main.instance.getConfig().isvSync())
             Display.sync(60);
     }
 
