@@ -1,16 +1,21 @@
 package bomberman.gameplay;
 
+import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Stream;
 
 public class GameplayManager {
 
     private final List<GameMap> maps = new LinkedList<>();
     private final List<Player> players = new LinkedList<>();
+    private Timer timer;
+    private boolean einmalGemacht = false;
 
     public GameplayManager() {
         //map 0
@@ -107,7 +112,35 @@ public class GameplayManager {
     public void update(float delta) {
         this.players.forEach(e -> e.update(delta));
         Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
+        startPowerups();
     }
+    //powerup start
+    private void startPowerups(){
+        if(einmalGemacht== false) {
+            timedPowerups();
+            einmalGemacht= true;
+        }
+    }
+    private void timedPowerups(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                checkPowerups();
+            }
+        }, 0, 1000 * 25);
+
+    }
+    private void checkPowerups(){
+        int x = (int)(Math.random() * getCurrentMap().getWidth());
+        int y = (int)(Math.random() * getCurrentMap().getHeight());
+        if(getCurrentMap().get(x,y).getTileType() == TileTypes.GROUND&& getCurrentMap().get(x,y).getTileObject()==null){
+            getCurrentMap().get(x,y).spawnPowerup();
+        }else {
+            checkPowerups();
+        }
+    }
+    //powerup end
 
     public void onKeyDown(int key, char c) {
         this.players.forEach(e -> e.keyDown(key, c));

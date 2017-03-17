@@ -39,6 +39,7 @@ public class GameMap {
         return this.height;
     }
 
+    //UNDEUTLICHER METHODENNAME
     public Tile get(int x, int y) {
 
         assert x >= 0 && x < this.width;
@@ -195,27 +196,7 @@ public class GameMap {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
                 if(pattern.charAt(x) == 'P'){
-                    int random = (int)(Math.random() * 6);
-                    switch(random) {
-                        case 0:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.SPEEDUP));
-                            break;
-                        case 1:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.SPEEDDOWN));
-                            break;
-                        case 2:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.FIREUP));
-                            break;
-                        case 3:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.FIREDOWN));
-                            break;
-                        case 4:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.BOMBUP));
-                            break;
-                        case 5:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.BOMBDOWN));
-                            break;
-                    }
+                    tiles[x][y].spawnPowerup();
 
                 }
             }

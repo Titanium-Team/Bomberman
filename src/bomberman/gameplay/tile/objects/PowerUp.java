@@ -35,6 +35,8 @@ public class PowerUp extends TileObject{
                 if(player.getPLAYER_speedFactor()>((float)powerUpType.SPEEDDOWN.value()*-1)){
                     player.setPLAYER_speedFactor(player.getPLAYER_speedFactor()+(float)powerUpType.SPEEDDOWN.value());
                     System.out.println("SpeedDOWN");
+                }else{
+                    System.out.println("Speed Minimum bereits erreicht");
                 }
                 break;
             case FIREUP:
@@ -45,6 +47,8 @@ public class PowerUp extends TileObject{
                 if(player.getBOMB_blastRadius()>1){
                     player.setBOMB_blastRadius(player.getBOMB_blastRadius()+(int)powerUpType.FIREDOWN.value());
                     System.out.println("FireDOWN");
+                }else{
+                    System.out.println("Fire Minimum bereits erreicht");
                 }
                 break;
             case BOMBUP:
@@ -55,6 +59,8 @@ public class PowerUp extends TileObject{
                 if(player.getBOMB_amount()>1){
                     player.setBOMB_amount(player.getBOMB_amount()+(int)powerUpType.BOMBDOWN.value());
                     System.out.println("BombDOWN");
+                }else{
+                    System.out.println("Bomb Minimum bereits erreicht");
                 }
                 break;
         }
