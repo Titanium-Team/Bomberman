@@ -65,6 +65,8 @@ public class ViewManager {
         this.gameplayManager = gameplayManager;
 
         try {
+            LwjglNativesLoader.load();
+
             setDisplayMode(800, 600, false);
 
             Display.create(new PixelFormat(8, 0, 0, msMode.samples));

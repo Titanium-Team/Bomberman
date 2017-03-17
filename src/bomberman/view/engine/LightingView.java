@@ -7,7 +7,7 @@ import bomberman.view.engine.rendering.VertexAttrib;
 import bomberman.view.engine.utility.Camera;
 import org.lwjgl.opengl.GL11;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,13 +35,13 @@ public abstract class LightingView extends View {
             }
 
             {
-                File vert = new File(Batch.class.getResource("/bomberman/resources/shaders/lighting.vert").toURI());
-                File frag = new File(Batch.class.getResource("/bomberman/resources/shaders/lighting.frag").toURI());
+                InputStream vert = Batch.class.getResourceAsStream("/bomberman/resources/shaders/lighting.vert");
+                InputStream frag = Batch.class.getResourceAsStream("/bomberman/resources/shaders/lighting.frag");
                 this.lightingShader = new ShaderProgram(vert, frag, map);
             }
             {
-                File vert = new File(Batch.class.getResource("/bomberman/resources/shaders/shadowMapRender.vert").toURI());
-                File frag = new File(Batch.class.getResource("/bomberman/resources/shaders/shadowMapRender.frag").toURI());
+                InputStream vert = Batch.class.getResourceAsStream("/bomberman/resources/shaders/shadowMapRender.vert");
+                InputStream frag = Batch.class.getResourceAsStream("/bomberman/resources/shaders/shadowMapRender.frag");
                 this.shadowMapRenderShader = new ShaderProgram(vert, frag, map);
             }
         } catch (Exception e) {
