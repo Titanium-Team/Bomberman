@@ -1,10 +1,14 @@
 package bomberman.view.engine;
 
+import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
+import bomberman.view.views.GameView;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Controller;
+import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
@@ -21,7 +25,7 @@ public class ViewManager {
 
     private Batch batch;
 
-    private boolean vSync = false
+    private boolean vSync = false;
     private MSMode msMode = MSMode.OFF;
     private boolean enableFpsCounter = true;
 
@@ -29,12 +33,8 @@ public class ViewManager {
         try {
             font = new BitmapFont(ViewManager.class.getResource("/bomberman/resources/font/font.fnt"), ViewManager.class.getResource("/bomberman/resources/font/font.png"));
 
-            loadTexture("test0.png");
-            loadTexture("test1.png");
-            loadTexture("test2.png");
+            // loadTexture here
 
-            loadTexture("button.png");
-            loadTexture("buttonPressed.png");
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
@@ -56,9 +56,14 @@ public class ViewManager {
     }
 
     private View currentView;
+    private GameplayManager gameplayManager;
     private boolean fullscreen = false;
 
-    public ViewManager() {
+    private Controller selectedController = null;
+
+    public ViewManager(GameplayManager gameplayManager) {
+        this.gameplayManager = gameplayManager;
+
         try {
             setDisplayMode(800, 600, false);
 
@@ -68,6 +73,34 @@ public class ViewManager {
         } catch (LWJGLException e) {
             e.printStackTrace();
             System.exit(0);
+        }
+
+        try {
+            System.out.println("Loading Controllers...");
+            Controllers.create();
+
+            for (int i = 0; i < Controllers.getControllerCount(); i++) {
+                Controller controller = Controllers.getController(i);
+
+                if (controller.getName().toUpperCase().contains("XBOX")) {
+                    System.out.println("Found suitable Controller: " + controller.getName());
+                    this.selectedController = controller;
+
+                    for (int j = 0; j < controller.getButtonCount(); j++) {
+                        System.out.println("\tButton: " + controller.getButtonName(j));
+                    }
+                    for (int j = 0; j < controller.getRumblerCount(); j++) {
+                        System.out.println("\tRumbler: " + controller.getRumblerName(j));
+                    }
+                    for (int j = 0; j < controller.getAxisCount(); j++) {
+                        System.out.println("\tAxis: " + controller.getAxisName(j));
+                    }
+
+                    break;
+                }
+            }
+        } catch (LWJGLException e) {
+            e.printStackTrace();
         }
 
         GL11.glEnable(GL13.GL_MULTISAMPLE);
@@ -166,6 +199,7 @@ public class ViewManager {
                 int mouseY = Display.getHeight() - Mouse.getEventY();
 
                 currentView.onMouseDown(button, mouseX, mouseY);
+                gameplayManager.onMouseDown(button, mouseX, mouseY);
             } else {
                 int button = Mouse.getEventButton();
                 int mouseX = Mouse.getEventX();
@@ -173,6 +207,7 @@ public class ViewManager {
 
                 if (button != -1) {
                     currentView.onMouseUp(button, mouseX, mouseY);
+                    gameplayManager.onMouseUp(button, mouseX, mouseY);
                 }
             }
         }
@@ -182,6 +217,7 @@ public class ViewManager {
                 char c = Keyboard.getEventCharacter();
 
                 currentView.onKeyDown(key, c);
+                gameplayManager.onKeyDown(key, c);
 
                 if (key == Keyboard.KEY_F11) {
                     fullscreen = !fullscreen;
@@ -204,6 +240,24 @@ public class ViewManager {
                 char c = Keyboard.getEventCharacter();
 
                 currentView.onKeyUp(key, c);
+                gameplayManager.onKeyUp(key, c);
+            }
+        }
+
+        if (selectedController != null && Controllers.isCreated()) {
+            Controllers.poll();
+            while (Controllers.next()) {
+                if (Controllers.getEventSource() == this.selectedController) {
+                    int controlIndex = Controllers.getEventControlIndex();
+
+                    if (Controllers.isEventButton()) {
+                        if (Controllers.getEventButtonState()) {
+                            System.out.println("Button down: " + controlIndex);
+                        } else {
+                            System.out.println("Button up: " + controlIndex);
+                        }
+                    }
+                }
             }
         }
     }
@@ -241,7 +295,15 @@ public class ViewManager {
     }
 
     public void setCurrentView(View newView) {
+        if (this.currentView != null)
+            this.currentView.onDestroy();
+
         this.currentView = newView;
         this.currentView.layout(Display.getWidth(), Display.getHeight());
+
+        if (currentView instanceof GameView) {
+            GameView gameView = (GameView) currentView;
+            gameView.setGameplayManager(this.gameplayManager);
+        }
     }
 }

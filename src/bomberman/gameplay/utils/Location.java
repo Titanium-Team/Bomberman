@@ -1,4 +1,4 @@
-package bomberman.gameplay;
+package bomberman.gameplay.utils;
 
 public class Location implements Cloneable {
 

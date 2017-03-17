@@ -52,11 +52,15 @@ public abstract class LightingView extends View {
     @Override
     public void layout(int width, int height) {
         super.layout(width, height);
+
+        for (Light light : lights) {
+            light.createFrameBuffersIfNecessary();
+        }
     }
 
-    public abstract void renderOccluders(Batch batch);
+    public abstract void renderOccluders(Batch batch, Camera camera);
 
-    public abstract void renderNonOccluders(Batch batch);
+    public abstract void renderNonOccluders(Batch batch, Camera camera);
 
     @Override
     public void renderUI(Batch batch) {
@@ -64,7 +68,7 @@ public abstract class LightingView extends View {
 
         // debug
         /*for (int i = 0; i < lights.size(); i++) {
-            Light light = lights.get(i);
+            Light light = lights.getMap(i);
 
             batch.draw(light.getShadowMap(), 0, 100 + i * 100, 100, 100);
         }*/
@@ -72,8 +76,6 @@ public abstract class LightingView extends View {
 
     @Override
     public final void renderScene(Batch batch) {
-        renderNonOccluders(batch);
-
         batch.end();
 
         updateShadowMaps(batch);
@@ -92,6 +94,7 @@ public abstract class LightingView extends View {
             int r = light.getRadius();
             int r2 = r / 2;
 
+            lightingShader.setUniformf("u_resolution", light.getRadius() * 2);
             batch.draw(light.getShadowMap(), x - r2, y - r2, r, r, light.getR(), light.getG(), light.getB(), 1.0f);
             batch.flush();
         }
@@ -103,7 +106,9 @@ public abstract class LightingView extends View {
 
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        renderOccluders(batch);
+        renderOccluders(batch, this.getSceneCamera());
+
+        renderNonOccluders(batch, this.getSceneCamera());
     }
 
     private void updateShadowMaps(Batch batch) {
@@ -119,7 +124,7 @@ public abstract class LightingView extends View {
             batch.begin();
             batch.setCombinedMatrix(lightCamera.getCombined());//
 
-            renderOccluders(batch);
+            renderOccluders(batch, lightCamera);
 
             batch.end();
             occludersMap.end();
@@ -157,6 +162,12 @@ public abstract class LightingView extends View {
             lights.get(i).cleanUp();
         }
         lights.clear();
+    }
+
+    public void onDestroy() {
+        for (int i = 0; i < lights.size(); i++) {
+            lights.get(i).cleanUp();
+        }
     }
 
 }
