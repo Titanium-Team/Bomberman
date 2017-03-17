@@ -1,5 +1,7 @@
 package bomberman.gameplay;
 
+import bomberman.gameplay.properties.PropertyRepository;
+import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.objects.Bomb;
@@ -32,6 +34,7 @@ public class Player {
     private double health;
 
     private final PlayerType playerType;
+    private final PropertyRepository propertyRepository = new PropertyRepository(this);
 
     //--- Position
     private final Vector2 vector = new Vector2(0, 0);
@@ -42,8 +45,6 @@ public class Player {
     private FacingDirection facingDirection = FacingDirection.NORTH;
 
     //--- Stats
-    private float PLAYER_speedFactor = 1.0F;
-    private int BOMB_blastRadius = 1;
     private int BOMB_amount = 1;
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
@@ -82,6 +83,10 @@ public class Player {
 
     public PlayerType getPlayerType() {
         return playerType;
+    }
+
+    public PropertyRepository getPropertyRepository() {
+        return this.propertyRepository;
     }
 
     public GameStatistic getGameStatistic() {
@@ -234,25 +239,27 @@ public class Player {
 
     public void move(Direction d) {
 
+        float limit = this.propertyRepository.<Float>get(PropertyTypes.SPEED_FACTOR) * ACCELERATION_LIMIT;
+
         switch (d) {
 
             case UP:
-                this.xY = range(0, this.xY + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
                 this.vector.setY((float) -a(this.xY));
                 break;
 
             case LEFT:
-                this.xX = range(0, this.xX + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
                 this.vector.setX((float) -a(this.xX));
                 break;
 
             case RIGHT:
-                this.xX = range(0, this.xX + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
                 this.vector.setX((float) a(this.xX));
                 break;
 
             case DOWN:
-                this.xY = range(0, this.xY + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
                 this.vector.setY((float) a(this.xY));
                 break;
 

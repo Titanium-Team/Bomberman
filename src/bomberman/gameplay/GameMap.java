@@ -8,8 +8,6 @@ import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
-import bomberman.gameplay.utils.Location;
-import bomberman.view.engine.utility.Vector2;
 
 public class GameMap {
 
