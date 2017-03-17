@@ -17,11 +17,11 @@ public class Player {
     private final static double COLLISION_WIDTH = .6;
     private final static double COLLISION_HEIGHT = .6;
 
-    private final static float ACCELERATION_STEP = .5F;
-    private final static float ACCELERATION_LIMIT = 3;
+    private final static float ACCELERATION_STEP = .1F;
+    private final static float ACCELERATION_LIMIT = 1;
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
-    private float accelerationTimer = .1F;
+    private float accelerationTimer = .01F;
 
     //--- Game
     private final GameStatistic gameStatistic = new GameStatistic();
@@ -35,6 +35,9 @@ public class Player {
 
     //--- Position
     private final Vector2 vector = new Vector2(0, 0);
+    private float xX = 0;
+    private float xY = 0;
+
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
 
@@ -153,7 +156,7 @@ public class Player {
             case Keyboard.KEY_S:
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
-                this.move(Direction.STOP_HORIZONTAL_MOVEMENT);
+                this.move(Direction.STOP_VERTICAL_MOVEMENT);
 
                 if(EXPERIMENTAL_MOVEMENT) {
                     this.acceleratingDirections.put(Direction.UP, false);
@@ -165,7 +168,7 @@ public class Player {
             case Keyboard.KEY_D:
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                this.move(Direction.STOP_VERTICAL_MOVEMENT);
+                this.move(Direction.STOP_HORIZONTAL_MOVEMENT);
 
                 if(EXPERIMENTAL_MOVEMENT) {
                     this.acceleratingDirections.put(Direction.LEFT, false);
@@ -234,38 +237,45 @@ public class Player {
         switch (d) {
 
             case UP:
-                this.vector.setY(
-                        range(-ACCELERATION_LIMIT * this.PLAYER_speedFactor, (this.vector.getY() - ACCELERATION_STEP), 0)
-                );
+                this.xY = range(0, this.xY + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.vector.setY((float) -a(this.xY));
                 break;
 
             case LEFT:
-                this.vector.setX(
-                        range(-ACCELERATION_LIMIT * this.PLAYER_speedFactor, (this.vector.getX() - ACCELERATION_STEP), 0)
-                );
+                this.xX = range(0, this.xX + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.vector.setX((float) -a(this.xX));
                 break;
 
             case RIGHT:
-                this.vector.setX(
-                        range(0, this.vector.getX() + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor)
-                );
+
+                if(this.xX < this.xY) {
+                    this.xX = this.xY;
+                }
+
+                this.xX = range(0, this.xX + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.vector.setX((float) a(this.xX));
                 break;
 
             case DOWN:
-                this.vector.setY(
-                        range(0, this.vector.getY() + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor)
-                );
+                this.xY = range(0, this.xY + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
+                this.vector.setY((float) a(this.xY));
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
-                this.vector.setY(0);
-                break;
-
-            case STOP_VERTICAL_MOVEMENT:
+                this.xX = 0;
                 this.vector.setX(0);
                 break;
 
+            case STOP_VERTICAL_MOVEMENT:
+                this.xY = 0;
+                this.vector.setY(0);
+                break;
+
         }
+    }
+
+    private static double a(float y) {
+        return Math.exp(2 * y - 1);
     }
 
     private static float range(float min, float value, float max) {
@@ -277,7 +287,6 @@ public class Player {
         LOCAL,
         AI,
         NETWORK;
-
 
     }
 
