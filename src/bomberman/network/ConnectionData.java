@@ -25,19 +25,16 @@ import static java.util.Base64.getDecoder;
 
 public class ConnectionData {
 
-    private final InetAddress ip;
-    private final int port;
+    private final NetworkData networkData;
     private final PublicKey publicKey;
 
-    public ConnectionData(InetAddress ip, int port, PublicKey publicKey) {
-        this.ip = ip;
-        this.port = port;
+    public ConnectionData(NetworkData networkData, PublicKey publicKey) {
+        this.networkData = networkData;
         this.publicKey = publicKey;
     }
 
-    public ConnectionData(InetAddress ip, int port, String json){
-        this.ip = ip;
-        this.port = port;
+    public ConnectionData(NetworkData networkData, String json){
+        this.networkData = networkData;
 
         Gson gson = new Gson();
 
@@ -63,12 +60,8 @@ public class ConnectionData {
         publicKey = tempKey;
     }
 
-    public InetAddress getIp() {
-        return ip;
-    }
-
-    public int getPort() {
-        return port;
+    public NetworkData getNetworkData() {
+        return networkData;
     }
 
     public PublicKey getPublicKey() {

@@ -8,6 +8,10 @@ import java.net.UnknownHostException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class Connection {
 
@@ -19,7 +23,11 @@ public abstract class Connection {
     private ConnectionData myData;
     private final KeyPair keyPair;
 
+    private Map<String, Request> requestMap;
+
     public Connection(NetworkController controller) {
+        requestMap = new HashMap<>();
+
         KeyPair tempKeys = null;
 
         try {
@@ -51,7 +59,7 @@ public abstract class Connection {
 
     public void init(){
         try {
-            myData = new ConnectionData(InetAddress.getLocalHost(), socket.getLocalPort(), keyPair.getPublic());
+            myData = new ConnectionData(new NetworkData(InetAddress.getLocalHost(), socket.getLocalPort()), keyPair.getPublic());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -85,11 +93,11 @@ public abstract class Connection {
         getListener().interrupt();
     }
 
-    public void send(String message, InetAddress address, int port){
+    public void send(String message, NetworkData networkData){
         try {
-            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, address, port);
+            requestMap.put(message, new Request(message, getController().getNetworkPlayerMap().keySet()));
 
-
+            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, networkData.getIp(), networkData.getPort());
 
             getSocket().send(packet);
 
@@ -102,8 +110,11 @@ public abstract class Connection {
         return myData.decrpyt(message, keyPair.getPrivate());
     }
 
+    public void recieved(String message, NetworkData reciever){
+        requestMap.get(message).setRecieved(reciever);
+    }
+
     abstract void update();
     abstract void message(String message);
     abstract void listen();
-
 }

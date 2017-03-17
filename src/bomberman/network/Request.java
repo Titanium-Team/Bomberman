@@ -6,19 +6,19 @@ import java.util.Set;
 
 public class Request {
 
-    private Map<String, Boolean> recieved;
+    private Map<NetworkData, Boolean> recieved;
     private final String request;
 
-    public Request(String request, Set<String> send) {
+    public Request(String request, Set<NetworkData> send) {
         this.request = request;
         this.recieved = new HashMap<>();
 
-        for (String s: send){
+        for (NetworkData s: send){
             recieved.put(s, false);
         }
     }
 
-    public void setRecieved(String key){
+    public void setRecieved(NetworkData key){
         recieved.put(key, true);
     }
 

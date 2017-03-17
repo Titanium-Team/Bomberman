@@ -35,7 +35,7 @@ public class Client extends Connection{
     @Override
     public void message(String message) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
-            send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getIp(), value.getConnectionData().getPort());
+            send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getNetworkData());
         });
     }
 
@@ -57,9 +57,11 @@ public class Client extends Connection{
 
         switch (splittedMessage[0]){
             case "hello":
-                ConnectionData connectionData = new ConnectionData(packet.getAddress(), packet.getPort(), splittedMessage[1]);
+                NetworkData thisPlayer = new NetworkData(packet.getAddress(), packet.getPort());
 
-                getController().getNetworkPlayerMap().putIfAbsent(packet.getAddress().getHostAddress() + packet.getAddress(), new NetworkPlayer(0, 0, 0, null, connectionData));
+                ConnectionData connectionData = new ConnectionData(thisPlayer, splittedMessage[1]);
+
+                getController().getNetworkPlayerMap().putIfAbsent(thisPlayer, new NetworkPlayer(0, 0, 0, null, connectionData));
 
                 System.out.println("ConnectionData from Server");
 
@@ -75,7 +77,7 @@ public class Client extends Connection{
 
     private void refreshServers(){
         try {
-            send("hello§" + getMyData().toJson(), InetAddress.getByName("255.255.255.255"), 1638);
+            send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

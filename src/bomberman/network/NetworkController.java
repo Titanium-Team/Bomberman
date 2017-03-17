@@ -10,7 +10,7 @@ public class NetworkController implements Runnable{
     private boolean hosting = false;
     private Connection connection;
 
-    private Map<String, NetworkPlayer> networkPlayerMap;
+    private Map<NetworkData, NetworkPlayer> networkPlayerMap;
 
     public NetworkController(boolean hosting) throws IOException {
         this.hosting = hosting;
@@ -23,7 +23,7 @@ public class NetworkController implements Runnable{
         }
     }
 
-    public Map<String, NetworkPlayer> getNetworkPlayerMap() {
+    public Map<NetworkData, NetworkPlayer> getNetworkPlayerMap() {
         return networkPlayerMap;
     }
 

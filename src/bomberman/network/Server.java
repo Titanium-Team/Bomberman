@@ -26,7 +26,7 @@ public class Server extends Connection {
     @Override
     public void message(String message ) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
-            send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getIp(), value.getConnectionData().getPort());
+            send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getNetworkData());
         });
     }
 
@@ -42,18 +42,20 @@ public class Server extends Connection {
 
         String message = new String(packet.getData(), 0, packet.getLength());
 
-        String[] splittedMessage = message.split("§");
+        String[] splittedMessage = message.split("§", 1);
 
         Gson gson = new Gson();
 
         switch (splittedMessage[0]){
             case "hello":
-                ConnectionData connectionData = new ConnectionData(packet.getAddress(), packet.getPort(), splittedMessage[1]);
+                NetworkData thisPlayer = new NetworkData(packet.getAddress(), packet.getPort());
+
+                ConnectionData connectionData = new ConnectionData(thisPlayer, splittedMessage[1]);
 
                 if (!getController().getNetworkPlayerMap().containsKey(packet.getAddress().getHostAddress() + packet.getPort())) {
-                    getController().getNetworkPlayerMap().put(packet.getAddress().getHostAddress() + packet.getPort(), new NetworkPlayer(0, 0, 0, null, connectionData));
+                    getController().getNetworkPlayerMap().put(thisPlayer, new NetworkPlayer(0, 0, 0, null, connectionData));
 
-                    send("hello§" + getMyData().toJson(), packet.getAddress(), packet.getPort());
+                    send("hello§" + getMyData().toJson(), new NetworkData(packet.getAddress(), packet.getPort()));
 
                     System.out.println("ConnectionData from " + packet.getAddress() + " " + packet.getPort());
                 }
@@ -62,7 +64,7 @@ public class Server extends Connection {
             case "message":
                 String stringMessage = decrypt(splittedMessage[1]);
 
-                sendToAll("message§" + stringMessage, packet.getAddress(), packet.getPort());
+                sendToAll("message§" + stringMessage, new NetworkData(packet.getAddress(), packet.getPort()));
 
                 System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
 
@@ -70,10 +72,11 @@ public class Server extends Connection {
         }
     }
 
-    private void sendToAll(String message, InetAddress address, int port){
+
+    private void sendToAll(String message, NetworkData networkData){
         getController().getNetworkPlayerMap().forEach((key, value) -> {
-            if (value.getConnectionData().getIp() != address && value.getConnectionData().getPort() != port) {
-                send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getIp(), value.getConnectionData().getPort());
+            if (value.getConnectionData().getNetworkData() != networkData) {
+                send("message§" + value.getConnectionData().encrypt(message), networkData);
             }
         });
     }
