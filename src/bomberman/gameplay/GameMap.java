@@ -8,6 +8,8 @@ import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
+import bomberman.gameplay.utils.Location;
+import bomberman.view.engine.utility.Vector2;
 
 public class GameMap {
 
@@ -67,12 +69,12 @@ public class GameMap {
                 Tile tile = this.tiles[x][y];
 
                 if (
-                        tile.getBoundingBox().intersects(boundingBox) &&
-                                (
-                                        !(tile.getTileType().isWalkable()) ||
-                                        (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
-                                )
-                        ) {
+                    tile.getBoundingBox().intersects(boundingBox) &&
+                        (
+                            !(tile.getTileType().isWalkable()) ||
+                            (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
+                        )
+                    ) {
                     return true;
                 }
             }

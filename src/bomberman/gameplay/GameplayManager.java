@@ -1,10 +1,13 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 public class GameplayManager {
@@ -86,7 +89,7 @@ public class GameplayManager {
 
     //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(2); //@TODO
+        return this.getMap(0); //@TODO
 
     }
 
@@ -107,6 +110,7 @@ public class GameplayManager {
     public void update(float delta) {
         this.players.forEach(e -> e.update(delta));
         Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
+
     }
 
     public void onKeyDown(int key, char c) {

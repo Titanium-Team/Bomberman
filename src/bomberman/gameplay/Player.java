@@ -17,7 +17,7 @@ public class Player {
     private final static double COLLISION_WIDTH = .6;
     private final static double COLLISION_HEIGHT = .6;
 
-    private final static float ACCELERATION_STEP = .1F;
+    private final static float ACCELERATION_STEP = .5F;
     private final static float ACCELERATION_LIMIT = 1;
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
@@ -60,42 +60,12 @@ public class Player {
 
     }
 
-    //getter und setter
-
     public String getName() {
         return this.name;
     }
 
     public double getHealth() {
         return health;
-    }
-
-    public void setHealth(double health) {
-        this.health = health;
-    }
-
-    public float getPLAYER_speedFactor() {
-        return PLAYER_speedFactor;
-    }
-
-    public void setPLAYER_speedFactor(float player_speedFactor) {
-        this.PLAYER_speedFactor = player_speedFactor;
-    }
-
-    public int getBOMB_blastRadius() {
-        return BOMB_blastRadius;
-    }
-
-    public void setBOMB_blastRadius(int bomb_blastRadius) {
-        this.BOMB_blastRadius = bomb_blastRadius;
-    }
-
-    public int getBOMB_amount() {
-        return BOMB_amount;
-    }
-
-    public void setBOMB_amount(int bomb_amount) {
-        this.BOMB_amount = bomb_amount;
     }
 
     public FacingDirection getFacingDirection() {
@@ -127,7 +97,9 @@ public class Player {
 
     }
 
-
+    public void setHealth(double health) {
+        this.health = health;
+    }
 
     //--- Test @TODO
     private boolean EXPERIMENTAL_MOVEMENT = true;
@@ -275,11 +247,6 @@ public class Player {
                 break;
 
             case RIGHT:
-
-                if(this.xX < this.xY) {
-                    this.xX = this.xY;
-                }
-
                 this.xX = range(0, this.xX + ACCELERATION_STEP, ACCELERATION_LIMIT * this.PLAYER_speedFactor);
                 this.vector.setX((float) a(this.xX));
                 break;
