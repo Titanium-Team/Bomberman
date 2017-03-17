@@ -4,7 +4,7 @@ import bomberman.view.engine.utility.Matrix4;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +14,8 @@ public class Batch {
 
     private static ShaderProgram createDefaultShader() {
         try {
-            File vert = new File(Batch.class.getResource("/bomberman/resources/shaders/batch.vert").toURI());
-            File frag = new File(Batch.class.getResource("/bomberman/resources/shaders/batch.frag").toURI());
+            InputStream vert = Batch.class.getResourceAsStream("/bomberman/resources/shaders/batch.vert");
+            InputStream frag = Batch.class.getResourceAsStream("/bomberman/resources/shaders/batch.frag");
 
             Map<Integer, String> map = new HashMap<>();
 

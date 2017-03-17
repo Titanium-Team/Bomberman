@@ -4,6 +4,8 @@ import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.views.HomeView;
 
+import java.io.File;
+
 public class Main {
 
     public static Main instance;
@@ -16,7 +18,12 @@ public class Main {
     private ViewManager viewManager;
     private GameplayManager gameplayManager;
 
+    private File saveDir;
+
     public void mainLoop() {
+        this.saveDir = new File("save/");
+        this.saveDir.mkdir();
+
         this.gameplayManager = new GameplayManager();
         this.viewManager = new ViewManager(this.gameplayManager);
 
