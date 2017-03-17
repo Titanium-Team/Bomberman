@@ -8,16 +8,14 @@ import bomberman.view.engine.rendering.Batch;
  */
 public class VerticalView extends Panel {
 
+    private final Scrollbar scrollbar;
+
     public VerticalView(LayoutParams params, View v) {
         super(params, v);
 
-        this.setBackgroundColor(0.2f,0.3f,0.5f,0);
-    }
-
-    @Override
-    public void draw(Batch batch) {
-        super.draw(batch);
-        batch.draw(null,0.9f,0,0.1f,1,0.5f,0.5f,0.5f,1);
+        this.setBackgroundColor(0.2f,0.3f,0.5f,0.5f);
+        this.scrollbar = new Scrollbar(LayoutParams.obtain(0.9f,0,0.1f,1),v);
+        super.addChild(scrollbar);
     }
 
     @Override
@@ -33,10 +31,15 @@ public class VerticalView extends Panel {
     }
 
     private void updateChildren() {
-        float size = 1 / (float) this.getChildren().size();
+        scrollbar.setElements(this.getChildren().size()-1);
+        float size = 1 / (float) (this.getChildren().size()-1);
+        int count=0;
         for (int i = 0; i < this.getChildren().size(); i++) {
             ViewComponent childComponent = this.getChildren().get(i);
-            childComponent.setParams(LayoutParams.obtain(0, i * size, 0.9f, size));
+            if(!(childComponent instanceof Scrollbar)) {
+                childComponent.setParams(LayoutParams.obtain(0, count * size, 0.9f, size));
+                count++;
+            }
         }
 
         getView().requestLayout();

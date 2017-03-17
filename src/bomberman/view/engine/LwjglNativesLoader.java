@@ -19,6 +19,7 @@ public class LwjglNativesLoader {
                 throw new UnsupportedOperationException("Unsupported os!!!");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalStateException("Unable to extract LWJGL natives.");
         }
 
