@@ -50,12 +50,42 @@ public class Player {
 
     }
 
+    //getter und setter
+
     public String getName() {
         return this.name;
     }
 
     public double getHealth() {
         return health;
+    }
+
+    public void setHealth(double health) {
+        this.health = health;
+    }
+
+    public float getPLAYER_speedFactor() {
+        return PLAYER_speedFactor;
+    }
+
+    public void setPLAYER_speedFactor(float player_speedFactor) {
+        this.PLAYER_speedFactor = player_speedFactor;
+    }
+
+    public int getBOMB_blastRadius() {
+        return BOMB_blastRadius;
+    }
+
+    public void setBOMB_blastRadius(int bomb_blastRadius) {
+        this.BOMB_blastRadius = bomb_blastRadius;
+    }
+
+    public int getBOMB_amount() {
+        return BOMB_amount;
+    }
+
+    public void setBOMB_amount(int bomb_amount) {
+        this.BOMB_amount = bomb_amount;
     }
 
     public FacingDirection getFacingDirection() {
@@ -87,9 +117,7 @@ public class Player {
 
     }
 
-    public void setHealth(double health) {
-        this.health = health;
-    }
+
 
     public void update(float delta) {
 

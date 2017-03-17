@@ -13,7 +13,7 @@ public class GameplayManager {
     private final List<Player> players = new LinkedList<>();
 
     public GameplayManager() {
-
+        //map 0
         this.add(
                 GameMap.builder()
                         .dimension(15, 13)
@@ -27,6 +27,7 @@ public class GameplayManager {
                         .build()
         );
 
+        //map 1
         this.add(
                 GameMap.builder()
                         .dimension(15, 13)
@@ -43,6 +44,22 @@ public class GameplayManager {
                         .horizontalPattern("WBBBBBBBBBBBBBW", 9)
                         .horizontalPattern("WGWBWBWBWBWBWGW", 10)
                         .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                        .build()
+        );
+
+        //map 2
+        this.add(
+                GameMap.builder()
+                        .dimension(15, 13)
+                        .frame(TileTypes.WALL)
+                        .fillEmpty(TileTypes.GROUND)
+                        .horizontalPattern("WGGBBBBBBBBBGGW", 3)
+                        .horizontalPattern("WGGBBBBBBBBBGGW", 4)
+                        .horizontalPattern("WGGBBGGGGGBBGGW", 5)
+                        .horizontalPattern("WGGBBGGGGGBBGGW", 6)
+                        .horizontalPattern("WGGBBGGGGGBBGGW", 7)
+                        .horizontalPattern("WGGBBBBBBBBBGGW", 8)
+                        .horizontalPattern("WGGBBBBBBBBBGGW", 9)
                         .build()
         );
 
@@ -67,8 +84,9 @@ public class GameplayManager {
         return this.players.get(index);
     }
 
+    //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(1); //@TODO
+        return this.getMap(2); //@TODO
     }
 
     public GameMap getMap(int index) {
