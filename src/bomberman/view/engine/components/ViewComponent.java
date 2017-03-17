@@ -39,6 +39,10 @@ public abstract class ViewComponent {
         return params;
     }
 
+    public void setParams(LayoutParams params) {
+        this.params = params;
+    }
+
     public float getX() {
         return x;
     }

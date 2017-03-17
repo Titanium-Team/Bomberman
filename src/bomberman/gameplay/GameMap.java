@@ -5,6 +5,8 @@ import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
 
 public class GameMap {
@@ -68,7 +70,7 @@ public class GameMap {
                         tile.getBoundingBox().intersects(boundingBox) &&
                                 (
                                         !(tile.getTileType().isWalkable()) ||
-                                                (tile.getTileObject() instanceof Bomb && ((Bomb) tile.getTileObject()).isTriggered())
+                                        (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
                                 )
                         ) {
                     return true;
@@ -90,7 +92,7 @@ public class GameMap {
 
                 if (tile.getTileType().isWalkable() && !(tile.getTileObject() == null)) {
 
-                    if (tile.getTileObject() instanceof Bomb && !(((Bomb) tile.getTileObject()).isTriggered())) {
+                    if (tile.getTileObject() instanceof Bomb) {
                         continue;
                     }
 
@@ -191,6 +193,31 @@ public class GameMap {
 
             for (int x = 0; x < this.width(); x++) {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
+                //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
+                if(pattern.charAt(x) == 'P'){
+                    int random = (int)(Math.random() * 6);
+                    switch(random) {
+                        case 0:
+                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.SPEEDUP));
+                            break;
+                        case 1:
+                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.SPEEDDOWN));
+                            break;
+                        case 2:
+                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.FIREUP));
+                            break;
+                        case 3:
+                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.FIREDOWN));
+                            break;
+                        case 4:
+                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.BOMBUP));
+                            break;
+                        case 5:
+                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.BOMBDOWN));
+                            break;
+                    }
+
+                }
             }
 
             return this;
@@ -245,6 +272,7 @@ public class GameMap {
             switch (c) {
 
                 case 'G':
+                case 'P':
                     return TileTypes.GROUND;
                 case 'W':
                     return TileTypes.WALL;

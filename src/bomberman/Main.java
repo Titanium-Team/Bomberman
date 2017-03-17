@@ -58,4 +58,10 @@ public class Main {
         return viewManager;
     }
 
+    public GameplayManager getGameplayManager() {
+        return gameplayManager;
+    }
+
+
+
 }
