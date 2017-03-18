@@ -5,30 +5,27 @@ import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
+import bomberman.gameplay.utils.Location;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Bomb extends TileObject {
-    
-    private List<Player> walkable = new ArrayList<>();
-    //player der die bombe legt
-    private Player player;
-    private int x;
-    private int y;
 
-    public Bomb(Tile parent, float lifespan, Player player, int x, int y) {
+    private final static float EXPLOSION_LIFESPAN = 1F;
+
+    private List<Player> walkable = new ArrayList<>();
+    private Player player;
+
+    public Bomb(Player player, Tile parent, float lifespan) {
 
         super(parent, lifespan);
         this.player = player;
-        this.x = x;
-        this.y = y;
 
         Main.instance.getGameplayManager().getPlayers().forEach(e -> {
-
             if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())) {
-                walkable.add(e);
+                this.walkable.add(e);
             }
         });
     }
@@ -39,54 +36,64 @@ public class Bomb extends TileObject {
 
     @Override
     public void execute() {
-        //@TODO Implement
-        getParent().destroyObject();
-        //System.out.println("PEWWWWW");
-        createExplosion(x,y,1);
+
+        //--- destroy the exploding bomb
+        this.getParent().destroyObject();
+
+        //--- coordinates of the bomb
+        int x = (int) this.getParent().getBoundingBox().getMin().getX();
+        int y = (int) this.getParent().getBoundingBox().getMin().getY();
+
+        //--- create explosion
+        this.createExplosion(x, y, 1);
+
+        //--- effect surrounding tiles
         boolean stopUp = false,stopLeft= false,stopDown = false,stopRight = false;
-        for(int i = 1; i < player.getPropertyRepository().<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS)+1; i++){
-            if(x+i <player.getGameMap().getWidth()&& !stopRight ){
-                stopRight = createExplosion(x+i, y, 1);
+
+        for(int i = 1; i < this.player.getPropertyRepository().<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + 1; i++){
+
+            if((x + i) < this.player.getGameMap().getWidth() && !stopRight ){
+                stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
-            if(x-i >1&& !stopLeft){
-                stopLeft = createExplosion(x-i, y, 1);
+
+            if((x - i) > 1 && !stopLeft){
+                stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
-            if(y+i<player.getGameMap().getHeight()&& !stopUp) {
-                stopUp = createExplosion(x, y + i, 1);
+
+            if((y + i) < this.player.getGameMap().getHeight() && !stopUp) {
+                stopUp = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
-            if(y-i>1 && !stopDown) {
-                stopDown=createExplosion(x, y - i, 1);
+
+            if((y-i) > 1 && !stopDown) {
+                stopDown = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
             }
+
         }
 
     }
 
     @Override
-    public void interact(Player player) {
-        //System.out.println("DONT TOUCH MY TRALALA");
-    }
+    public void interact(Player player) {}
 
     @Override
     public void update(float delta) {
-        Iterator<Player> iterator = walkable.iterator();
-
-        while (iterator.hasNext()) {
-            if (!(iterator.next().getBoundingBox().intersects(this.getParent().getBoundingBox()))) {
-                iterator.remove();
-            }
-        }
+        this.walkable.removeIf(player -> !(player.getBoundingBox().intersects(this.getParent().getBoundingBox())));
         super.update(delta);
     }
 
-    private boolean createExplosion(int x, int y, int lifespan){
-        Explosion tmp = new Explosion(player.getGameMap().getTile(x, y),lifespan);
-        spawnExplosion(x,y,tmp);
-        return tmp.destroyWall();
-    }
-    private void spawnExplosion(int x, int y,  Explosion explosion){
-        if(player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
-            player.getGameMap().getTile(x,y).getTileObject().execute();
+    private boolean createExplosion(int x, int y, float lifespan){
+
+        Explosion explosion = new Explosion(this.player.getGameMap().getTile(x, y), lifespan);
+
+        //--- spawning explosion
+        if(this.player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
+            this.player.getGameMap().getTile(x,y).getTileObject().execute();
         }
-        player.getGameMap().getTile(x, y).spawn(explosion);
+
+        this.player.getGameMap().getTile(x, y).spawn(explosion);
+
+        return explosion.destroyWall();
+
     }
+
 }
