@@ -38,7 +38,8 @@ public class GameMap {
     }
 
 
-    public Tile getTile(double x, double y) {
+    public Tile getTile(int x,int y) {
+
 
 
         assert x >= 0 && x < this.width;
@@ -57,32 +58,57 @@ public class GameMap {
 
     }
 
-    /**
-    public boolean checkCollision(Player player) {
 
-        BoundingBox boundingBox = player.getBoundingBox();
 
-        for (int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
-            for (int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
+    public Player.Direction checkCollision(Player player) {
 
-                Tile tile = this.tiles[x][y];
+
+        BoundingBox playerBox = player.getBoundingBox();
+
+        for (int x = (int) playerBox.getMin().getX(); x < playerBox.getMax().getX(); x++) {
+            for (int y = (int) playerBox.getMin().getY(); y < playerBox.getMax().getY(); y++) {
+
+                Tile tile = this.getTile(x, y);
 
                 if (
-                        tile.getBoundingBox().intersects(boundingBox) &&
+                        tile.getBoundingBox().intersects(playerBox) &&
                                 (
                                         !(tile.getTileType().isWalkable()) ||
-                                        (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
+                                                (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
                                 )
                         ) {
-                    return true;
+
+                    int pX = (int) playerBox.getCenter().getX();
+                    int pY = (int) playerBox.getCenter().getY();
+
+                    int tX = (int) tile.getBoundingBox().getCenter().getX();
+                    int tY = (int) tile.getBoundingBox().getCenter().getY();
+
+                    if (pX == tX) {
+                        if (pY > tY) {
+                            return Player.Direction.UP;
+                        } else if (pY < tY) {
+                            return Player.Direction.DOWN;
+                        }
+                    } else if (pY == tY) {
+                        if (pX > tX) {
+                            return Player.Direction.RIGHT;
+                        } else if (pX < tX) {
+                            return Player.Direction.LEFT;
+                        }
+                    } else {
+                        return Player.Direction.STOP_VERTICAL_MOVEMENT;
+                    }
                 }
             }
         }
 
-        return false;
-    }
-     **/
+        return Player.Direction.STOP_HORIZONTAL_MOVEMENT;
 
+    }
+
+
+    /**
     public Player.Direction checkCollision(Player player) {
 
         BoundingBox boundingBox = player.getBoundingBox();
@@ -154,6 +180,7 @@ public class GameMap {
         return Player.Direction.STOP_HORIZONTAL_MOVEMENT;
 
     }
+     **/
 
     public void checkInteraction(Player player) {
 
@@ -268,7 +295,7 @@ public class GameMap {
             for (int x = 0; x < this.width(); x++) {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
-                if(pattern.charAt(x) == 'P'){
+                if (pattern.charAt(x) == 'P') {
                     tiles[x][y].spawnPowerup();
 
                 }

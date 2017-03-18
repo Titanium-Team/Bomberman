@@ -19,13 +19,13 @@ public class Bomb extends TileObject {
 
         Main.instance.getGameplayManager().getPlayers().forEach(e -> {
 
-            if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())){
+            if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())) {
                 walkable.add(e);
             }
         });
     }
 
-    public boolean canVisit(Player p){
+    public boolean canVisit(Player p) {
         return walkable.contains(p);
     }
 
@@ -44,8 +44,8 @@ public class Bomb extends TileObject {
     public void update(float delta) {
         Iterator<Player> iterator = walkable.iterator();
 
-        while(iterator.hasNext()){
-            if (!(iterator.next().getBoundingBox().intersects(this.getParent().getBoundingBox()))){
+        while (iterator.hasNext()) {
+            if (!(iterator.next().getBoundingBox().intersects(this.getParent().getBoundingBox()))) {
                 iterator.remove();
             }
         }

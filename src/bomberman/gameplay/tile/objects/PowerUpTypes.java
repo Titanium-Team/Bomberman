@@ -3,45 +3,40 @@ package bomberman.gameplay.tile.objects;
 /**
  * Created by 204g04 on 17.03.2017.
  */
-public enum PowerUpTypes implements PowerUpType{
-    SPEEDUP{
+public enum PowerUpTypes implements PowerUpType {
+    SPEEDUP {
         @Override
-        public double value(){
+        public double value() {
             return 1;
         }
     },
-
-    SPEEDDOWN{
+    SPEEDDOWN {
         @Override
-        public double value(){
+        public double value() {
             return -0.25;
         }
     },
-
-    FIREUP{
+    FIREUP {
         @Override
-        public double value(){
+        public double value() {
             return 1;
         }
     },
-
-    FIREDOWN{
+    FIREDOWN {
         @Override
-        public double value(){
+        public double value() {
             return -1;
         }
     },
-
-    BOMBUP{
+    BOMBUP {
         @Override
-        public double value(){
+        public double value() {
             return 1;
         }
     },
-
-    BOMBDOWN{
+    BOMBDOWN {
         @Override
-        public double value(){
+        public double value() {
             return -1;
         }
     };

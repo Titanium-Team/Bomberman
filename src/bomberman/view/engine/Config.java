@@ -5,7 +5,8 @@ public class Config {
     private boolean vSync = true;
     private boolean showFPS = false;
 
-    public Config() {}
+    public Config() {
+    }
 
     public boolean isvSync() {
         return vSync;

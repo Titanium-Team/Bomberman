@@ -2,7 +2,6 @@ package bomberman.view.engine;
 
 import bomberman.Main;
 import bomberman.gameplay.GameplayManager;
-import bomberman.view.engine.components.ViewGroup;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
@@ -65,7 +64,7 @@ public class ViewManager {
         this.gameplayManager = gameplayManager;
 
         try {
-            LwjglNativesLoader.load();
+            //LwjglNativesLoader.load();
 
             setDisplayMode(800, 600, false);
 
