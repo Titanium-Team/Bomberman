@@ -116,7 +116,7 @@ public class Player {
         this.accelerationTimer -= delta;
 
         //--- Accelerating
-        if (accelerationTimer <= 0) {
+        if (this.accelerationTimer <= 0) {
             if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
                 this.move(Direction.UP);
             }
@@ -163,8 +163,16 @@ public class Player {
                 this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
                 break;
          **/
-
         Direction direction = this.gameMap.checkCollision(this);
+
+        BoundingBox min = this.gameMap.getMin().getBoundingBox();
+        BoundingBox max = this.gameMap.getMax().getBoundingBox();
+
+        float minX = (float) (min.getMax().getX() + (COLLISION_WIDTH / 2));
+        float minY = (float) (min.getMax().getY() + (COLLISION_HEIGHT / 2));
+
+        float maxX = (float) (max.getMin().getX() - (COLLISION_WIDTH / 2));
+        float maxY = (float) (max.getMin().getY() - (COLLISION_HEIGHT / 2));
 
         switch (direction) {
 
@@ -172,8 +180,8 @@ public class Player {
             case DOWN: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
-                        this.boundingBox.getCenter().getX(),
-                        location.getY()
+                    range(minX, (float) this.boundingBox.getCenter().getX(), maxX),
+                    range(minY, (float) location.getY(), maxY)
                 );
             }
             break;
@@ -182,8 +190,8 @@ public class Player {
             case RIGHT:
                 this.vector.setX(0);
                 this.boundingBox.setCenter(
-                        location.getX(),
-                        this.boundingBox.getCenter().getY()
+                    range(minX, (float) location.getX(), maxX),
+                    range(minY, (float) this.boundingBox.getCenter().getY(), maxY)
                 );
                 break;
 
@@ -202,7 +210,11 @@ public class Player {
 
                 this.vector.setX(0);
                 this.vector.setY(0);
-                this.boundingBox.setCenter(location.getX(), location.getY());
+                this.vector.setX(0);
+                this.boundingBox.setCenter(
+                    range(minX, (float) location.getX(), maxX),
+                    range(minY, (float) location.getY(), maxY)
+                );
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
