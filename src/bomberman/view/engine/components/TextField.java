@@ -12,7 +12,7 @@ public class TextField extends ViewComponent {
         Focussed, Unfocussed;
     }
 
-    private String text;
+    private String text, backText;
     private State state = State.Unfocussed;
     private int pointer;
 
@@ -20,10 +20,21 @@ public class TextField extends ViewComponent {
         this(params, v, "");
     }
 
-    public TextField(LayoutParams params, View v, String text) {
+    public TextField(LayoutParams params, View v, String text, String backText) {
         super(params, v);
-        this.text = text;
+        if(text != null) {
+            this.text = text;
+        }else{
+            this.text = "";
+        }
+        this.backText = backText;
+
     }
+
+    public TextField(LayoutParams params, View v, String text ) {this(params,v,text,"");
+    }
+
+
 
     public void addChar(char c) {
         this.text = text.substring(0, pointer) + c + text.substring(pointer, text.length());
@@ -76,11 +87,15 @@ public class TextField extends ViewComponent {
         } else {
             batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .2f, .2f, .2f, 1f);
+            batch.draw(null, (getX() + 5) + ViewManager.font.getWidth(text.substring(0, pointer)), (getY() + 7), 3, (getHeight() - 15), 1f, 1f, 1f, 1f);
+
         }
 
-        batch.draw(null, (getX() + 5) + ViewManager.font.getWidth(text.substring(0, pointer)), (getY() + 7), 3, (getHeight() - 15), 1f, 1f, 1f, 1f);
-
-        if (text != null)
+        System.out.println(text.length() == 0 && state == State.Unfocussed);
+        if (text.length() != 0 && text != null) {
             ViewManager.font.drawText(batch, text, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
+
+        }else if (text.length() == 0 && state == State.Unfocussed)
+            ViewManager.font.drawText(batch, backText, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
     }
 }

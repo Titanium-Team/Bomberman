@@ -3,6 +3,7 @@ package bomberman.view.views;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.Button;
 import bomberman.view.engine.components.LayoutParams;
+import bomberman.view.engine.components.TextField;
 
 /**
  * shows Players and GameSettings (not the Options)
@@ -14,6 +15,8 @@ import bomberman.view.engine.components.LayoutParams;
 public class LobbyView extends BaseMenuView {
 
     private Button startButton;
+
+    private TextField mapSizeTextField;
 
     public LobbyView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
