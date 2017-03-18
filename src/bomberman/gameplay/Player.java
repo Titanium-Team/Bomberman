@@ -6,6 +6,7 @@ import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
+import bomberman.gameplay.utils.CircleBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.input.Keyboard;
@@ -55,9 +56,10 @@ public class Player {
         this.name = name;
 
         this.boundingBox = new BoundingBox(
-                new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
-                new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
+            new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
+            new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
+        //this.boundingBox = new CircleBox(center, COLLISION_HEIGHT);
 
     }
 
@@ -96,8 +98,8 @@ public class Player {
     public Tile getTile() {
 
         return this.gameMap.get(
-                (int) Math.round(this.boundingBox.getMin().getX()),
-                (int) Math.round(this.boundingBox.getMin().getY())
+                (int) this.boundingBox.getCenter().getX(),
+                (int) this.boundingBox.getCenter().getY()
         );
 
     }
@@ -259,7 +261,8 @@ public class Player {
                 break;
 
             case DOWN:
-                this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
+                this.xY = range(0, this.xY + ACCELERATION_STEP, limit
+                );
                 this.vector.setY((float) a(this.xY));
                 break;
 

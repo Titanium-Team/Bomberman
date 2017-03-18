@@ -47,7 +47,6 @@ public class PowerUp extends TileObject{
                     player.setPLAYER_speedFactor(player.getPLAYER_speedFactor()+(float)powerUpType.SPEEDDOWN.value());
                     System.out.println("SpeedDOWN");
                 }*/
-
                 break;
 
             case FIREUP:
@@ -84,6 +83,7 @@ public class PowerUp extends TileObject{
                 }*/
                 break;
         }
+
         this.parent.destroyObject();
         System.out.println("DONT TOUCH MY TRALALA");
     }

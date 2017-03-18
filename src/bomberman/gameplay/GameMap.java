@@ -5,9 +5,8 @@ import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
-import bomberman.gameplay.tile.objects.PowerUp;
-import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
+import bomberman.gameplay.utils.CircleBox;
 
 public class GameMap {
 
@@ -39,12 +38,12 @@ public class GameMap {
         return this.height;
     }
 
-    public Tile get(int x, int y) {
+    public Tile get(double x, double y) {
 
         assert x >= 0 && x < this.width;
         assert y >= 0 && y < this.height;
 
-        return this.tiles[x][y];
+        return this.tiles[(int) x][(int) y];
 
     }
 
@@ -64,7 +63,7 @@ public class GameMap {
         for (int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
             for (int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
 
-                Tile tile = this.tiles[x][y];
+                Tile tile = this.get(x, y);
 
                 if (
                     tile.getBoundingBox().intersects(boundingBox) &&
@@ -79,6 +78,45 @@ public class GameMap {
         }
 
         return false;
+    }
+
+    public Player.FacingDirection TcheckCollision(Player player) {
+
+        BoundingBox playerBox = player.getBoundingBox();
+
+        for (double x = playerBox.getMin().getX(); x < playerBox.getMax().getX(); x++) {
+            for (double y = playerBox.getMin().getY(); y < playerBox.getMax().getY(); y++) {
+
+                Tile tile = this.get(x, y);
+
+                if (
+                    tile.getBoundingBox().intersects(playerBox) &&
+                    (
+                        !(tile.getTileType().isWalkable()) ||
+                        (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
+                    )
+                ) {
+
+                    //--- Horizontal and Vertical distance
+                    double horizontal = Math.abs(
+                        Math.pow(playerBox.getCenter().getX(), 2) + Math.pow(playerBox.getCenter().getX(), 2)
+                    );
+                    double vertical = Math.abs(
+                        Math.pow(playerBox.getCenter().getY(), 2) + Math.pow(playerBox.getCenter().getY(), 2)
+                    );
+
+                    if(horizontal < vertical) {
+                        return (playerBox.getCenter().getX() < tile.getBoundingBox().getCenter().getX() ? Player.FacingDirection.EAST : Player.FacingDirection.WEST);
+                    } else if(vertical < horizontal) {
+                        return (playerBox.getCenter().getY() < tile.getBoundingBox().getCenter().getY() ? Player.FacingDirection.SOUTH : Player.FacingDirection.NORTH);
+                    }
+
+                }
+            }
+        }
+
+        return Player.FacingDirection.DEFAULT;
+
     }
 
     public void checkInteraction(Player player) {
@@ -195,27 +233,7 @@ public class GameMap {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
                 if(pattern.charAt(x) == 'P'){
-                    int random = (int)(Math.random() * 6);
-                    switch(random) {
-                        case 0:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.SPEEDUP));
-                            break;
-                        case 1:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.SPEEDDOWN));
-                            break;
-                        case 2:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.FIREUP));
-                            break;
-                        case 3:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.FIREDOWN));
-                            break;
-                        case 4:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.BOMBUP));
-                            break;
-                        case 5:
-                            tiles[x][y].spawn(new PowerUp(this.tiles[x][y], 1000, PowerUpTypes.BOMBDOWN));
-                            break;
-                    }
+                    tiles[x][y].spawnPowerup();
 
                 }
             }
