@@ -7,15 +7,14 @@ import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
 import bomberman.view.views.GameView;
-import net.java.games.input.Controller;
-import net.java.games.input.ControllerEnvironment;
+import net.java.games.input.*;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -58,7 +57,8 @@ public class ViewManager {
     private GameplayManager gameplayManager;
     private boolean fullscreen = false;
 
-    private Controller selectedController = null;
+    private Controller selectedGamepad = null;
+    private GamepadConfig gamepadConfig = null;
 
     public ViewManager(GameplayManager gameplayManager) {
         this.gameplayManager = gameplayManager;
@@ -83,14 +83,11 @@ public class ViewManager {
         for (int i = 0; i < found.length; i++) {
             Controller controller = found[i];
 
-            if (controller.getName().toUpperCase().contains("XBOX")) {
-                System.out.println("Found suitable Controller: " + controller.getName());
+            if (controller.getType() == Controller.Type.GAMEPAD) {
+                System.out.println("Found suitable Gamepad: " + controller.getName());
 
-                for (int j = 0; j < controller.getComponents().length; j++) {
-                    net.java.games.input.Component com = controller.getComponents()[i];
-
-                    System.out.println(j + "   " + com.getName());
-                }
+                this.selectedGamepad = controller;
+                this.gamepadConfig = new GamepadConfig(selectedGamepad);
 
                 break;
             }
@@ -234,6 +231,15 @@ public class ViewManager {
 
                 currentView.onKeyUp(key, c);
                 gameplayManager.onKeyUp(key, c);
+            }
+        }
+
+        if (selectedGamepad != null) {
+            selectedGamepad.poll();
+            EventQueue gamepadEventQueue = selectedGamepad.getEventQueue();
+            Event event = new Event();
+            while (gamepadEventQueue.getNextEvent(event)) {
+                System.out.println(event.getComponent().getIdentifier());
             }
         }
     }
