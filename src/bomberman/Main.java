@@ -3,6 +3,7 @@ package bomberman;
 import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.Config;
 import bomberman.view.engine.ViewManager;
+import bomberman.view.views.GameView;
 import bomberman.view.views.HomeView;
 import com.google.gson.Gson;
 
@@ -60,7 +61,9 @@ public class Main {
                 totalTime = currentTime;
             }
 
-            gameplayManager.update(deltaTime);
+            if (viewManager.getCurrentView() instanceof GameView) {
+                gameplayManager.update(deltaTime);
+            }
 
             viewManager.render(deltaTime, fpsCounter);
         }
@@ -73,6 +76,7 @@ public class Main {
             gson.toJson(this.config, writer);
             writer.close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
