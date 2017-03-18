@@ -90,7 +90,7 @@ public class TextField extends ViewComponent {
             batch.draw(null, (getX() + 5) + ViewManager.font.getWidth(text.substring(0, pointer)), (getY() + 7), 3, (getHeight() - 15), 1f, 1f, 1f, 1f);
 
         }
-        
+
         if (text.length() != 0 && text != null) {
             ViewManager.font.drawText(batch, text, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
 
