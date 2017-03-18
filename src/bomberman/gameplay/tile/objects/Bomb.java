@@ -17,7 +17,7 @@ public class Bomb extends TileObject {
     private Player player;
     private int x;
     private int y;
-    
+
     public Bomb(Tile parent, float lifespan, Player player, int x, int y) {
 
         super(parent, lifespan);
