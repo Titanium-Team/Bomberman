@@ -208,13 +208,13 @@ public class Player {
 
                     case NORTH_WEST:
                     case NORTH_EAST: {
-                        this.vector.setY(0);
+                        this.vector.setX(0);
                     }
                     break;
 
                     case SOUTH_WEST:
                     case SOUTH_EAST: {
-                        this.vector.setX(0);
+                        this.vector.setY(0);
                     }
                     break;
 
