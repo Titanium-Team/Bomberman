@@ -107,6 +107,10 @@ public class Player {
 
     }
 
+    public GameMap getGameMap(){
+        return gameMap;
+    }
+
     public void setHealth(double health) {
         this.health = health;
     }
@@ -271,7 +275,7 @@ public class Player {
 
                 Tile tile = this.getTile();
                 //@TODO
-                tile.spawn(new Bomb(tile, 6, 2));
+                tile.spawn(new Bomb(tile, 2, this, (int) Math.round(this.boundingBox.getMin().getX()), (int) Math.round(this.boundingBox.getMin().getY())));
 
             }
             break;

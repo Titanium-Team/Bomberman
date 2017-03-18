@@ -90,7 +90,7 @@ public class GameplayManager {
 
     //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(0); //@TODO
+        return this.getMap(2); //@TODO
 
     }
 
