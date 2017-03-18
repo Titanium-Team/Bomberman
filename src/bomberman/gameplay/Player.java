@@ -47,9 +47,6 @@ public class Player {
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
 
-    //--- Stats
-    private int BOMB_amount = 1;
-
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
         this.playerType = playerType;
@@ -290,8 +287,7 @@ public class Player {
             case Keyboard.KEY_SPACE: {
 
                 Tile tile = this.getTile();
-                //@TODO
-                tile.spawn(new Bomb(tile, 2, this, (int) Math.round(this.boundingBox.getMin().getX()), (int) Math.round(this.boundingBox.getMin().getY())));
+                tile.spawn(new Bomb(this, tile, 2));
 
             }
             break;

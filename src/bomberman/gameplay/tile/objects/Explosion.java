@@ -6,11 +6,8 @@ import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 
-
-/**
- * Created by Liam on 18.03.2017.
- */
 public class Explosion extends TileObject{
+
     public Explosion(Tile parent, float lifespan) {
         super(parent, lifespan);
 
@@ -27,10 +24,13 @@ public class Explosion extends TileObject{
     }
 
     public boolean destroyWall(){
+
         if(getParent().getTileType() == TileTypes.WALL_BREAKABLE){
-            getParent().setTileType(TileTypes.GROUND);
+            this.getParent().setTileType(TileTypes.GROUND);
             return true;
         }
+
         return false;
+
     }
 }
