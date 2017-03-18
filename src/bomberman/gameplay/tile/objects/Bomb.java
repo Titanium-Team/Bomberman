@@ -11,15 +11,15 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Bomb extends TileObject {
-
-    private float triggerTimer;
+    
     private List<Player> walkable = new ArrayList<>();
     //player der die bombe legt
     private Player player;
     private int x;
     private int y;
-
+    
     public Bomb(Tile parent, float lifespan, Player player, int x, int y) {
+
         super(parent, lifespan);
         this.player = player;
         this.x = x;

@@ -49,13 +49,20 @@ public class GameMap {
 
     }
 
+    public Tile getMin() {
+        return this.getTile(0, 0);
+    }
 
-    public void spawn(TileObject tileObject, double x, double y) {
+    public Tile getMax() {
+        return this.getTile(this.width - 1, this.height - 1);
+    }
+
+    public void spawn(TileObject tileObject, int x, int y) {
 
         assert x >= 0 && x < this.width;
         assert y >= 0 && y < this.height;
 
-        this.tiles[(int) x][(int) y].spawn(tileObject);
+        this.tiles[x][y].spawn(tileObject);
 
     }
 
