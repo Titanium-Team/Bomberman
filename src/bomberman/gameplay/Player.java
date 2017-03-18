@@ -283,7 +283,7 @@ public class Player {
 
                 Tile tile = this.getTile();
                 //@TODO
-                tile.spawn(new Bomb(tile, 6, 2));
+                tile.spawn(new Bomb(tile, 6));
 
             }
             break;
