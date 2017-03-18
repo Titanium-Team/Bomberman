@@ -1,5 +1,8 @@
 package bomberman.network;
 
+import bomberman.gameplay.Player;
+import bomberman.view.engine.utility.Vector2;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.Adler32;
+import java.util.zip.Checksum;
 
 public abstract class Connection {
 
@@ -95,15 +100,28 @@ public abstract class Connection {
 
     public void send(String message, NetworkData networkData){
         try {
-            requestMap.put(message, new Request(message, getController().getNetworkPlayerMap().keySet()));
+            Adler32 checksum = new Adler32();
+            checksum.update(message.getBytes());
 
-            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, networkData.getIp(), networkData.getPort());
+            String checkedMessage = checksum.getValue() + "§" + message;
+            requestMap.put(checkedMessage, new Request(checkedMessage, getController().getNetworkPlayerMap().keySet()));
+
+            DatagramPacket packet = new DatagramPacket(checkedMessage.getBytes(), checkedMessage.getBytes().length, networkData.getIp(), networkData.getPort());
 
             getSocket().send(packet);
 
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public boolean checksum(String[] message){
+        Adler32 checksum = new Adler32();
+        checksum.update(message[1].getBytes());
+        long check = checksum.getValue();
+        long checkOriginal = Long.parseLong(message[0]);
+
+        return check == checkOriginal;
     }
 
     public String decrypt(String message){
@@ -117,4 +135,9 @@ public abstract class Connection {
     abstract void update();
     abstract void message(String message);
     abstract void listen();
+    abstract void move(Vector2 position);
+    abstract void plantBomb();
+    abstract void explodedBomb();
+    abstract void hit(double health);
+
 }

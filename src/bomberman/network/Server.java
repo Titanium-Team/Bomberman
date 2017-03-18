@@ -1,10 +1,19 @@
 package bomberman.network;
 
+import bomberman.gameplay.Player;
+import bomberman.gameplay.utils.Location;
+import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.*;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Server extends Connection {
 
@@ -42,7 +51,11 @@ public class Server extends Connection {
 
         String message = new String(packet.getData(), 0, packet.getLength());
 
-        String[] splittedMessage = message.split("§", 1);
+
+        String[] splittedChecksum = message.split("§", 2);
+        System.out.println(checksum(splittedChecksum));
+
+        String[] splittedMessage = splittedChecksum[1].split("§", 2);
 
         Gson gson = new Gson();
 
@@ -53,7 +66,7 @@ public class Server extends Connection {
                 ConnectionData connectionData = new ConnectionData(thisPlayer, splittedMessage[1]);
 
                 if (!getController().getNetworkPlayerMap().containsKey(packet.getAddress().getHostAddress() + packet.getPort())) {
-                    getController().getNetworkPlayerMap().put(thisPlayer, new NetworkPlayer("", null, null, connectionData));
+                    getController().getNetworkPlayerMap().put(thisPlayer, new NetworkPlayer("", new Location(0, 0), null, connectionData));
 
                     send("hello§" + getMyData().toJson(), new NetworkData(packet.getAddress(), packet.getPort()));
 
@@ -70,6 +83,36 @@ public class Server extends Connection {
 
                 break;
         }
+    }
+
+    @Override
+    void move(Vector2 position) {
+        Map<String, Float> data = new HashMap<>();
+        data.put("xCoord", position.getX());
+        data.put("yCoord", position.getY());
+
+        Gson gson = new Gson();
+
+        String json = gson.toJson(data);
+
+        getController().getNetworkPlayerMap().forEach((key, value) -> {
+            send("position§" + value.getConnectionData().encrypt(json), value.getConnectionData().getNetworkData());
+        });
+    }
+
+    @Override
+    void plantBomb() {
+
+    }
+
+    @Override
+    void explodedBomb() {
+
+    }
+
+    @Override
+    void hit(double health) {
+
     }
 
 

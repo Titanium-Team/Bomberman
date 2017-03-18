@@ -1,5 +1,7 @@
 package bomberman.network;
 
+import bomberman.gameplay.utils.Location;
+import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 import jdk.nashorn.api.scripting.JSObject;
 
@@ -51,7 +53,10 @@ public class Client extends Connection{
 
         String message = new String(packet.getData(), 0, packet.getLength());
 
-        String[] splittedMessage = message.split("§");
+        String[] splittedChecksum = message.split("§", 2);
+        System.out.println(checksum(splittedChecksum));
+
+        String[] splittedMessage = splittedChecksum[1].split("§", 2);
 
         Gson gson = new Gson();
 
@@ -61,7 +66,7 @@ public class Client extends Connection{
 
                 ConnectionData connectionData = new ConnectionData(thisPlayer, splittedMessage[1]);
 
-                getController().getNetworkPlayerMap().putIfAbsent(thisPlayer, new NetworkPlayer("", null, null, connectionData));
+                getController().getNetworkPlayerMap().putIfAbsent(thisPlayer, new NetworkPlayer("", new Location(0, 0), null, connectionData));
 
                 System.out.println("ConnectionData from Server");
 
@@ -73,6 +78,26 @@ public class Client extends Connection{
 
                 break;
         }
+    }
+
+    @Override
+    void move(Vector2 position) {
+
+    }
+
+    @Override
+    void plantBomb() {
+
+    }
+
+    @Override
+    void explodedBomb() {
+
+    }
+
+    @Override
+    void hit(double health) {
+
     }
 
     private void refreshServers(){
