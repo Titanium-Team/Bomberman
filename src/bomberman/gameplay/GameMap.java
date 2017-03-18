@@ -221,10 +221,10 @@ public class GameMap {
 
             for (int x = 0; x < this.width(); x++) {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
+
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
                 if (pattern.charAt(x) == 'P') {
-                    tiles[x][y].spawnPowerup();
-
+                    this.tiles[x][y].spawnPowerup();
                 }
             }
 

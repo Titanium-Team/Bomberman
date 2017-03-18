@@ -112,7 +112,7 @@ public class Player {
         this.accelerationTimer -= delta;
 
         //--- Accelerating
-        if (accelerationTimer <= 0) {
+        if (this.accelerationTimer <= 0) {
             if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
                 this.move(Direction.UP);
             }
@@ -133,7 +133,6 @@ public class Player {
 
         }
 
-
         //--- Facing Direction
         FacingDirection facing = FacingDirection.from(this.vector);
         this.facingDirection = (facing == FacingDirection.DEFAULT ? this.facingDirection : facing);
@@ -144,17 +143,25 @@ public class Player {
 
         FacingDirection direction = this.gameMap.checkCollision(this);
 
+        BoundingBox min = this.gameMap.getMin().getBoundingBox();
+        BoundingBox max = this.gameMap.getMax().getBoundingBox();
+
+        float minX = (float) (min.getMax().getX() + (min.getWidth() / 2));
+        float minY = (float) (min.getMax().getY() + (min.getHeight() / 2));
+
+        float maxX = (float) (max.getMin().getX() + (max.getWidth() / 2));
+        float maxY = (float) (max.getMin().getY() + (max.getHeight() / 2));
+
+        System.out.println(minX + " - " + maxX);
+
         switch (direction) {
 
             case SOUTH:
             case NORTH: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
-                    /*range(
-                        this.gameMap.getMin().getBoundingBox().getMax().getX() + (this.gameMap.getWidth() / 2),
-                        this.boundingBox.getCenter().getX(),
-                        this.gameMap.getTi)*/0,
-                    location.getY()
+                    range(minX, (float) this.boundingBox.getCenter().getX(), maxX),
+                    range(minY, (float) location.getY(), maxY)
                 );
             }
             break;
@@ -163,15 +170,18 @@ public class Player {
             case WEST:
                 this.vector.setX(0);
                 this.boundingBox.setCenter(
-                    location.getX(),
-                    this.boundingBox.getCenter().getY()
+                    range(minX, (float) location.getX(), maxX),
+                    range(minY, (float) this.boundingBox.getCenter().getY(), maxY)
                 );
                 break;
 
             case NORTH_EAST: //<--- All diagonal collisions
                 this.vector.setX(0);
                 this.vector.setY(0);
-                    this.boundingBox.setCenter(location.getX(), location.getY());
+                this.boundingBox.setCenter(
+                    range(minX, (float) location.getX(), maxX),
+                    range(minY, (float) location.getY(), maxY)
+                );
                 break;
 
             case DEFAULT:

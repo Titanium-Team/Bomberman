@@ -18,7 +18,7 @@ public class PropertyRepository {
         return this.player;
     }
 
-    public void set(PropertyType propertyType, float value) {
+    public void set(PropertyType propertyType, Object value) {
         this.properties.put(propertyType, value);
     }
 
