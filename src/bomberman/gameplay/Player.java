@@ -196,25 +196,29 @@ public class Player {
                 break;
 
             case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
-                //TODO Kollision verbessern
-                switch (this.facingDirection) {
-                    case NORTH_EAST:
-                        break;
-                    case SOUTH_EAST:
-                        break;
-                    case SOUTH_WEST:
-                        break;
-                    case NORTH_WEST:
-                        break;
-                }
 
-                this.vector.setX(0);
-                this.vector.setY(0);
-                this.vector.setX(0);
                 this.boundingBox.setCenter(
                     range(minX, (float) location.getX(), maxX),
                     range(minY, (float) location.getY(), maxY)
                 );
+
+                //TODO Kollision verbessern
+                switch (this.facingDirection) {
+
+                    case NORTH_WEST:
+                    case NORTH_EAST: {
+                        this.vector.setX(0);
+                    }
+                    break;
+
+                    case SOUTH_WEST:
+                    case SOUTH_EAST: {
+                        this.vector.setY(0);
+                    }
+                    break;
+
+                }
+
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
