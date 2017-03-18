@@ -37,7 +37,9 @@ public class GameMap {
         return this.height;
     }
 
-    public Tile get(double x, double y) {
+
+    public Tile getTile(double x, double y) {
+
 
         assert x >= 0 && x < this.width;
         assert y >= 0 && y < this.height;
@@ -86,15 +88,15 @@ public class GameMap {
         BoundingBox boundingBox = player.getBoundingBox();
         Player.FacingDirection facing = player.getFacingDirection();
 
-        Tile right = this.get(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY());
-        Tile left = this.get(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY());
-        Tile down = this.get(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() + 1);
-        Tile up = this.get(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() - 1);
+        Tile right = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY());
+        Tile left = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY());
+        Tile down = this.getTile(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() + 1);
+        Tile up = this.getTile(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() - 1);
 
-        Tile rightDown = this.get(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() + 1);
-        Tile rightUp = this.get(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() - 1);
-        Tile leftDown = this.get(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() + 1);
-        Tile leftUp = this.get(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() - 1);
+        Tile rightDown = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() + 1);
+        Tile rightUp = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() - 1);
+        Tile leftDown = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() + 1);
+        Tile leftUp = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() - 1);
 
         if (
             (boundingBox.intersects(right.getBoundingBox()) &&
@@ -265,6 +267,11 @@ public class GameMap {
 
             for (int x = 0; x < this.width(); x++) {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
+                //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
+                if(pattern.charAt(x) == 'P'){
+                    tiles[x][y].spawnPowerup();
+
+                }
             }
 
             return this;
@@ -319,6 +326,7 @@ public class GameMap {
             switch (c) {
 
                 case 'G':
+                case 'P':
                     return TileTypes.GROUND;
                 case 'W':
                     return TileTypes.WALL;
