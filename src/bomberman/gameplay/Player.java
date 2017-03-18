@@ -19,9 +19,11 @@ public class Player {
     private final static double COLLISION_WIDTH = .6;
     private final static double COLLISION_HEIGHT = .6;
 
+
     private final static float ACCELERATION_STEP = .2F;
     private final static float ACCELERATION_LIMIT = 1;
     private final static float ACCELERATION_TIMER = 0.1F;
+
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
     private float accelerationTimer = ACCELERATION_TIMER;
@@ -97,8 +99,10 @@ public class Player {
     public Tile getTile() {
 
         return this.gameMap.getTile(
-                (int) this.boundingBox.getCenter().getX(),
-                (int) this.boundingBox.getCenter().getY()
+
+                (int) Math.round(this.boundingBox.getMin().getX()),
+                (int) Math.round(this.boundingBox.getMin().getY())
+
         );
 
     }
@@ -142,7 +146,25 @@ public class Player {
         Location location = this.boundingBox.getCenter();
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
-        FacingDirection direction = this.gameMap.checkCollision(this);
+
+        /**
+        this.gameMap.checkInteraction(this);
+
+        switch (this.gameMap.checkCollision(this)) {
+
+            case LEFT:
+            case RIGHT:
+                this.vector.setX(0);
+                this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
+                break;
+            case UP:
+            case DOWN:
+                this.vector.setY(0);
+                this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
+                break;
+         **/
+
+        Direction direction = this.gameMap.checkCollision(this);
 
         BoundingBox min = this.gameMap.getMin().getBoundingBox();
         BoundingBox max = this.gameMap.getMax().getBoundingBox();
@@ -155,8 +177,8 @@ public class Player {
 
         switch (direction) {
 
-            case SOUTH:
-            case NORTH: {
+            case UP:
+            case DOWN: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
                     range(minX, (float) this.boundingBox.getCenter().getX(), maxX),
@@ -165,8 +187,8 @@ public class Player {
             }
             break;
 
-            case EAST:
-            case WEST:
+            case LEFT:
+            case RIGHT:
                 this.vector.setX(0);
                 this.boundingBox.setCenter(
                     range(minX, (float) location.getX(), maxX),
@@ -174,7 +196,19 @@ public class Player {
                 );
                 break;
 
-            case NORTH_EAST: //<--- All diagonal collisions
+            case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
+                //TODO Kollision verbessern
+                switch (this.facingDirection) {
+                    case NORTH_EAST:
+                        break;
+                    case SOUTH_EAST:
+                        break;
+                    case SOUTH_WEST:
+                        break;
+                    case NORTH_WEST:
+                        break;
+                }
+
                 this.vector.setX(0);
                 this.vector.setY(0);
                 this.vector.setX(0);
@@ -184,7 +218,7 @@ public class Player {
                 );
                 break;
 
-            case DEFAULT:
+            case STOP_HORIZONTAL_MOVEMENT:
                 break;
 
             default:

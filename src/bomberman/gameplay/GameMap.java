@@ -37,15 +37,19 @@ public class GameMap {
         return this.height;
     }
 
-    public Tile getTile(int x, int y) {
+
+    public Tile getTile(int x,int y) {
+
+
 
         assert x >= 0 && x < this.width;
         assert y >= 0 && y < this.height;
 
-        return this.tiles[x][y];
+        return this.tiles[(int) x][(int) y];
 
     }
 
+<<<<<<< HEAD
     public Tile getMin() {
         return this.getTile(0, 0);
     }
@@ -55,15 +59,21 @@ public class GameMap {
     }
 
     public void spawn(TileObject tileObject, int x, int y) {
+=======
+    public void spawn(TileObject tileObject, double x, double y) {
+>>>>>>> 30143636b25b3cb7c0ef5c4d7e5320b4af7671f9
 
         assert x >= 0 && x < this.width;
         assert y >= 0 && y < this.height;
 
-        this.tiles[x][y].spawn(tileObject);
+        this.tiles[(int) x][(int) y].spawn(tileObject);
 
     }
 
-    public Player.FacingDirection checkCollision(Player player) {
+
+
+    public Player.Direction checkCollision(Player player) {
+
 
         BoundingBox playerBox = player.getBoundingBox();
 
@@ -88,26 +98,101 @@ public class GameMap {
 
                     if (pX == tX) {
                         if (pY > tY) {
-                            return Player.FacingDirection.NORTH;
+                            return Player.Direction.UP;
                         } else if (pY < tY) {
-                            return Player.FacingDirection.SOUTH;
+                            return Player.Direction.DOWN;
                         }
                     } else if (pY == tY) {
                         if (pX > tX) {
-                            return Player.FacingDirection.EAST;
+                            return Player.Direction.RIGHT;
                         } else if (pX < tX) {
-                            return Player.FacingDirection.WEST;
+                            return Player.Direction.LEFT;
                         }
                     } else {
-                        return Player.FacingDirection.NORTH_EAST;
+                        return Player.Direction.STOP_VERTICAL_MOVEMENT;
                     }
                 }
             }
         }
 
-        return Player.FacingDirection.DEFAULT;
+        return Player.Direction.STOP_HORIZONTAL_MOVEMENT;
 
     }
+
+
+    /**
+    public Player.Direction checkCollision(Player player) {
+
+        BoundingBox boundingBox = player.getBoundingBox();
+        Player.FacingDirection facing = player.getFacingDirection();
+
+        Tile right = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY());
+        Tile left = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY());
+        Tile down = this.getTile(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() + 1);
+        Tile up = this.getTile(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() - 1);
+
+        Tile rightDown = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() + 1);
+        Tile rightUp = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() - 1);
+        Tile leftDown = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() + 1);
+        Tile leftUp = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() - 1);
+
+        if (
+            (boundingBox.intersects(right.getBoundingBox()) &&
+                (facing == Player.FacingDirection.EAST || facing == Player.FacingDirection.NORTH_EAST || facing == Player.FacingDirection.SOUTH_EAST) &&
+                    (!right.getTileType().isWalkable() || (right.getTileObject() instanceof Bomb && ((Bomb) right.getTileObject()).canVisit(player)))) ||
+            (boundingBox.intersects(rightDown.getBoundingBox()) &&
+                (facing == Player.FacingDirection.EAST || facing == Player.FacingDirection.NORTH_EAST || facing == Player.FacingDirection.SOUTH_EAST) &&
+                    (!rightDown.getTileType().isWalkable() || (rightDown.getTileObject() instanceof Bomb && ((Bomb) rightDown.getTileObject()).canVisit(player)))) ||
+            (boundingBox.intersects(rightUp.getBoundingBox()) &&
+                (facing == Player.FacingDirection.EAST || facing == Player.FacingDirection.NORTH_EAST || facing == Player.FacingDirection.SOUTH_EAST) &&
+                    (!rightUp.getTileType().isWalkable() || (rightUp.getTileObject() instanceof Bomb && ((Bomb) rightUp.getTileObject()).canVisit(player))))
+        ){
+            return Player.Direction.RIGHT;
+        }
+        if (
+                (boundingBox.intersects(left.getBoundingBox()) &&
+                    (facing == Player.FacingDirection.WEST || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.SOUTH_WEST) &&
+                        (!left.getTileType().isWalkable() || (left.getTileObject() instanceof Bomb && ((Bomb) left.getTileObject()).canVisit(player)))) ||
+                (boundingBox.intersects(leftDown.getBoundingBox()) &&
+                    (facing == Player.FacingDirection.WEST || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.SOUTH_WEST) &&
+                        (!leftDown.getTileType().isWalkable() || (leftDown.getTileObject() instanceof Bomb && ((Bomb) leftDown.getTileObject()).canVisit(player)))) ||
+                (boundingBox.intersects(leftUp.getBoundingBox()) &&
+                    (facing == Player.FacingDirection.WEST || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.SOUTH_WEST) &&
+                        (!leftUp.getTileType().isWalkable() || (leftUp.getTileObject() instanceof Bomb && ((Bomb) leftUp.getTileObject()).canVisit(player))))
+                ){
+            return Player.Direction.LEFT;
+        }
+        if (
+                (boundingBox.intersects(down.getBoundingBox()) &&
+                    (facing == Player.FacingDirection.SOUTH || facing == Player.FacingDirection.SOUTH_WEST || facing == Player.FacingDirection.SOUTH_EAST) &&
+                        (!down.getTileType().isWalkable() || (down.getTileObject() instanceof Bomb && ((Bomb) down.getTileObject()).canVisit(player)))) ||
+                (boundingBox.intersects(rightDown.getBoundingBox()) &&
+                    (facing == Player.FacingDirection.SOUTH || facing == Player.FacingDirection.SOUTH_WEST || facing == Player.FacingDirection.SOUTH_EAST) &&
+                        (!rightDown.getTileType().isWalkable() || (rightDown.getTileObject() instanceof Bomb && ((Bomb) rightDown.getTileObject()).canVisit(player)))) ||
+                (boundingBox.intersects(leftDown.getBoundingBox()) &&
+                    (facing == Player.FacingDirection.SOUTH || facing == Player.FacingDirection.SOUTH_WEST || facing == Player.FacingDirection.SOUTH_EAST) &&
+                        (!leftDown.getTileType().isWalkable() || (leftDown.getTileObject() instanceof Bomb && ((Bomb) leftDown.getTileObject()).canVisit(player))))
+                ){
+            return Player.Direction.DOWN;
+        }
+        if (
+                (boundingBox.intersects(up.getBoundingBox()) &&
+                    (facing == Player.FacingDirection.NORTH || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.NORTH_EAST) &&
+                        (!up.getTileType().isWalkable() || (up.getTileObject() instanceof Bomb && ((Bomb) up.getTileObject()).canVisit(player)))) ||
+                (boundingBox.intersects(rightUp.getBoundingBox()) &&
+                        (facing == Player.FacingDirection.NORTH || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.NORTH_EAST) &&
+                        (!rightUp.getTileType().isWalkable() || (rightUp.getTileObject() instanceof Bomb && ((Bomb) rightUp.getTileObject()).canVisit(player)))) ||
+                (boundingBox.intersects(leftUp.getBoundingBox()) &&
+                        (facing == Player.FacingDirection.NORTH || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.NORTH_EAST) &&
+                        (!leftUp.getTileType().isWalkable() || (leftUp.getTileObject() instanceof Bomb && ((Bomb) leftUp.getTileObject()).canVisit(player))))
+                ){
+            return Player.Direction.UP;
+        }
+
+        return Player.Direction.STOP_HORIZONTAL_MOVEMENT;
+
+    }
+     **/
 
     public void checkInteraction(Player player) {
 

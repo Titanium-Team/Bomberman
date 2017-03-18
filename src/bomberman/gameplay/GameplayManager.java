@@ -134,6 +134,7 @@ public class GameplayManager {
 
     }
 
+
     private void checkPowerups() {
         int x = (int) (Math.random() * getCurrentMap().getWidth());
         int y = (int) (Math.random() * getCurrentMap().getHeight());

@@ -71,7 +71,7 @@ public class PowerUp extends TileObject {
                         repo.<Integer>get(PropertyTypes.BOMB_AMOUNT) + (int) powerUpType.value()
                 );
 
-                System.out.println("FireUP");
+                System.out.println("BombUP");
                 System.out.println(repo.get(PropertyTypes.BOMB_AMOUNT));
                 break;
 
