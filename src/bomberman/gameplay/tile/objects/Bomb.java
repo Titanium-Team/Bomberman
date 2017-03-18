@@ -10,11 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Bomb extends TileObject {
-
-    private float triggerTimer;
+    
     private List<Player> walkable = new ArrayList<>();
 
-    public Bomb(Tile parent, float lifespan, float triggerTimer) {
+    public Bomb(Tile parent, float lifespan) {
         super(parent, lifespan);
 
         Main.instance.getGameplayManager().getPlayers().forEach(e -> {
