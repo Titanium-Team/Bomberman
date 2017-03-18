@@ -51,7 +51,7 @@ public class PowerUp extends TileObject {
             case FIREUP:
                 repo.set(
                         PropertyTypes.BOMB_BLAST_RADIUS,
-                        repo.<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + (float) powerUpType.value()
+                        repo.<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + (int) powerUpType.value()
                 );
 
                 System.out.println("FireUP");
@@ -68,7 +68,7 @@ public class PowerUp extends TileObject {
             case BOMBUP:
                 repo.set(
                         PropertyTypes.BOMB_AMOUNT,
-                        repo.<Integer>get(PropertyTypes.BOMB_AMOUNT) + (float) powerUpType.value()
+                        repo.<Integer>get(PropertyTypes.BOMB_AMOUNT) + (int) powerUpType.value()
                 );
 
                 System.out.println("FireUP");

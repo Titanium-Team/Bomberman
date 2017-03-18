@@ -46,6 +46,14 @@ public class GameMap {
 
     }
 
+    public Tile getMin() {
+        return this.getTile(0, 0);
+    }
+
+    public Tile getMax() {
+        return this.getTile(this.width - 1, this.height - 1);
+    }
+
     public void spawn(TileObject tileObject, int x, int y) {
 
         assert x >= 0 && x < this.width;
@@ -65,12 +73,12 @@ public class GameMap {
                 Tile tile = this.getTile(x, y);
 
                 if (
-                        tile.getBoundingBox().intersects(playerBox) &&
-                                (
-                                        !(tile.getTileType().isWalkable()) ||
-                                                (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
-                                )
-                        ) {
+                    tile.getBoundingBox().intersects(playerBox) &&
+                        (
+                            !(tile.getTileType().isWalkable()) ||
+                            (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
+                        )
+                ) {
 
                     int pX = (int) playerBox.getCenter().getX();
                     int pY = (int) playerBox.getCenter().getY();

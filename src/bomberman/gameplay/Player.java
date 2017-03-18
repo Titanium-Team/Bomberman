@@ -150,8 +150,11 @@ public class Player {
             case NORTH: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
+                    /*range(
+                        this.gameMap.getMin().getBoundingBox().getMax().getX() + (this.gameMap.getWidth() / 2),
                         this.boundingBox.getCenter().getX(),
-                        location.getY()
+                        this.gameMap.getTi)*/0,
+                    location.getY()
                 );
             }
             break;
@@ -160,15 +163,15 @@ public class Player {
             case WEST:
                 this.vector.setX(0);
                 this.boundingBox.setCenter(
-                        location.getX(),
-                        this.boundingBox.getCenter().getY()
+                    location.getX(),
+                    this.boundingBox.getCenter().getY()
                 );
                 break;
 
             case NORTH_EAST: //<--- All diagonal collisions
                 this.vector.setX(0);
                 this.vector.setY(0);
-                this.boundingBox.setCenter(location.getX(), location.getY());
+                    this.boundingBox.setCenter(location.getX(), location.getY());
                 break;
 
             case DEFAULT:
