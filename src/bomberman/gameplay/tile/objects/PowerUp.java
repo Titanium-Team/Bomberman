@@ -5,14 +5,13 @@ import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
-import bomberman.gameplay.tile.objects.PowerUpTypes;
 
-public class PowerUp extends TileObject{
+public class PowerUp extends TileObject {
 
     private Tile parent;
     private PowerUpTypes powerUpType;
 
-    public PowerUp(Tile parent, float lifespan, PowerUpTypes pPowerUpType){
+    public PowerUp(Tile parent, float lifespan, PowerUpTypes pPowerUpType) {
         super(parent, lifespan);
 
         this.parent = parent;
@@ -30,12 +29,12 @@ public class PowerUp extends TileObject{
 
         PropertyRepository repo = player.getPropertyRepository();
 
-        switch (powerUpType){
+        switch (powerUpType) {
 
             case SPEEDUP:
                 repo.set(
-                    PropertyTypes.SPEED_FACTOR,
-                    repo.<Float>get(PropertyTypes.SPEED_FACTOR) + (float) powerUpType.value()
+                        PropertyTypes.SPEED_FACTOR,
+                        repo.<Float>get(PropertyTypes.SPEED_FACTOR) + (float) powerUpType.value()
                 );
 
                 System.out.println("SpeedUP");
@@ -51,8 +50,8 @@ public class PowerUp extends TileObject{
 
             case FIREUP:
                 repo.set(
-                    PropertyTypes.BOMB_BLAST_RADIUS,
-                    repo.<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + (float) powerUpType.value()
+                        PropertyTypes.BOMB_BLAST_RADIUS,
+                        repo.<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + (float) powerUpType.value()
                 );
 
                 System.out.println("FireUP");
@@ -68,8 +67,8 @@ public class PowerUp extends TileObject{
 
             case BOMBUP:
                 repo.set(
-                    PropertyTypes.BOMB_AMOUNT,
-                    repo.<Integer>get(PropertyTypes.BOMB_AMOUNT) + (float) powerUpType.value()
+                        PropertyTypes.BOMB_AMOUNT,
+                        repo.<Integer>get(PropertyTypes.BOMB_AMOUNT) + (float) powerUpType.value()
                 );
 
                 System.out.println("FireUP");

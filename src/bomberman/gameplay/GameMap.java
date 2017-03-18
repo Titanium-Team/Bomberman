@@ -6,7 +6,6 @@ import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
-import bomberman.gameplay.utils.Location;
 
 public class GameMap {
 
@@ -66,12 +65,12 @@ public class GameMap {
                 Tile tile = this.getTile(x, y);
 
                 if (
-                    tile.getBoundingBox().intersects(playerBox) &&
-                    (
-                        !(tile.getTileType().isWalkable()) ||
-                        (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
-                    )
-                ) {
+                        tile.getBoundingBox().intersects(playerBox) &&
+                                (
+                                        !(tile.getTileType().isWalkable()) ||
+                                                (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
+                                )
+                        ) {
 
                     int pX = (int) playerBox.getCenter().getX();
                     int pY = (int) playerBox.getCenter().getY();
@@ -79,16 +78,16 @@ public class GameMap {
                     int tX = (int) tile.getBoundingBox().getCenter().getX();
                     int tY = (int) tile.getBoundingBox().getCenter().getY();
 
-                    if(pX == tX) {
-                        if (pY > tY){
+                    if (pX == tX) {
+                        if (pY > tY) {
                             return Player.FacingDirection.NORTH;
                         } else if (pY < tY) {
                             return Player.FacingDirection.SOUTH;
                         }
-                    } else if(pY == tY) {
-                        if(pX > tX) {
+                    } else if (pY == tY) {
+                        if (pX > tX) {
                             return Player.FacingDirection.EAST;
-                        } else if(pX < tX) {
+                        } else if (pX < tX) {
                             return Player.FacingDirection.WEST;
                         }
                     } else {
@@ -215,7 +214,7 @@ public class GameMap {
             for (int x = 0; x < this.width(); x++) {
                 this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
-                if(pattern.charAt(x) == 'P'){
+                if (pattern.charAt(x) == 'P') {
                     tiles[x][y].spawnPowerup();
 
                 }

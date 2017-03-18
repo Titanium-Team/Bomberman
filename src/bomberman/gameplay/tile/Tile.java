@@ -53,28 +53,28 @@ public class Tile {
         this.tileObject = tileObject;
     }
 
-    public void spawnPowerup(){
-            int random = (int)(Math.random() * 6);
-            switch(random) {
-                case 0:
-                    this.spawn(new PowerUp(this, 1000, PowerUpTypes.SPEEDUP));
-                    break;
-                case 1:
-                    this.spawn(new PowerUp(this, 1000, PowerUpTypes.SPEEDDOWN));
-                    break;
-                case 2:
-                    this.spawn(new PowerUp(this, 1000, PowerUpTypes.FIREUP));
-                    break;
-                case 3:
-                    this.spawn(new PowerUp(this, 1000, PowerUpTypes.FIREDOWN));
-                    break;
-                case 4:
-                    this.spawn(new PowerUp(this, 1000, PowerUpTypes.BOMBUP));
-                    break;
-                case 5:
-                    this.spawn(new PowerUp(this, 1000, PowerUpTypes.BOMBDOWN));
-                    break;
-            }
+    public void spawnPowerup() {
+        int random = (int) (Math.random() * 6);
+        switch (random) {
+            case 0:
+                this.spawn(new PowerUp(this, 1000, PowerUpTypes.SPEEDUP));
+                break;
+            case 1:
+                this.spawn(new PowerUp(this, 1000, PowerUpTypes.SPEEDDOWN));
+                break;
+            case 2:
+                this.spawn(new PowerUp(this, 1000, PowerUpTypes.FIREUP));
+                break;
+            case 3:
+                this.spawn(new PowerUp(this, 1000, PowerUpTypes.FIREDOWN));
+                break;
+            case 4:
+                this.spawn(new PowerUp(this, 1000, PowerUpTypes.BOMBUP));
+                break;
+            case 5:
+                this.spawn(new PowerUp(this, 1000, PowerUpTypes.BOMBDOWN));
+                break;
+        }
     }
 
     public void destroyObject() {

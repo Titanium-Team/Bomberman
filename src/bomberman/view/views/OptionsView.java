@@ -30,14 +30,13 @@ public class OptionsView extends BaseMenuView {
         this.getRoot().addChild(vSyncCheckBox);
 
         this.testButton = new Button(LayoutParams.obtain(0.2f, 0.3f, 0.2f, 0.1f), this, "Test");
-        this.testButton.setListener(() -> this.verticalView.addChild(new Label(LayoutParams.obtain(0,0,0.9f,1),this,"Test12345")));
+        this.testButton.setListener(() -> this.verticalView.addChild(new Label(LayoutParams.obtain(0, 0, 0.9f, 1), this, "Test12345")));
         this.getRoot().addChild(testButton);
 
         this.delButton = new Button(LayoutParams.obtain(0.2f, 0.4f, 0.2f, 0.1f), this, "Delete");
-        this.delButton.setListener(() -> this.verticalView.removeChild(this.verticalView.getChildren().size()>1 ?this.verticalView.getChildren().get(verticalView.getChildren().size()-1) : null));
+        this.delButton.setListener(() -> this.verticalView.removeChild(this.verticalView.getChildren().size() > 1 ? this.verticalView.getChildren().get(verticalView.getChildren().size() - 1) : null));
 
         this.getRoot().addChild(delButton);
-
 
 
     }

@@ -56,8 +56,8 @@ public class Player {
         this.name = name;
 
         this.boundingBox = new BoundingBox(
-            new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
-            new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
+                new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
+                new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
 
     }
@@ -112,7 +112,7 @@ public class Player {
         this.accelerationTimer -= delta;
 
         //--- Accelerating
-        if(accelerationTimer <= 0) {
+        if (accelerationTimer <= 0) {
             if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
                 this.move(Direction.UP);
             }
@@ -150,8 +150,8 @@ public class Player {
             case NORTH: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
-                    this.boundingBox.getCenter().getX(),
-                    location.getY()
+                        this.boundingBox.getCenter().getX(),
+                        location.getY()
                 );
             }
             break;
@@ -160,8 +160,8 @@ public class Player {
             case WEST:
                 this.vector.setX(0);
                 this.boundingBox.setCenter(
-                    location.getX(),
-                    this.boundingBox.getCenter().getY()
+                        location.getX(),
+                        this.boundingBox.getCenter().getY()
                 );
                 break;
 
@@ -171,9 +171,11 @@ public class Player {
                 this.boundingBox.setCenter(location.getX(), location.getY());
                 break;
 
-            case DEFAULT: break;
+            case DEFAULT:
+                break;
 
-            default: throw new IllegalStateException(String.format("Unknown collision direction: %s", direction.name()));
+            default:
+                throw new IllegalStateException(String.format("Unknown collision direction: %s", direction.name()));
 
         }
 
@@ -213,22 +215,22 @@ public class Player {
 
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
-                    this.acceleratingDirections.put(Direction.UP, true);
+                this.acceleratingDirections.put(Direction.UP, true);
                 break;
 
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                    this.acceleratingDirections.put(Direction.LEFT, true);
+                this.acceleratingDirections.put(Direction.LEFT, true);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
-                    this.acceleratingDirections.put(Direction.RIGHT, true);
+                this.acceleratingDirections.put(Direction.RIGHT, true);
                 break;
 
             case Keyboard.KEY_DOWN:
             case Keyboard.KEY_S:
-                    this.acceleratingDirections.put(Direction.DOWN, true);
+                this.acceleratingDirections.put(Direction.DOWN, true);
                 break;
 
             case Keyboard.KEY_SPACE: {

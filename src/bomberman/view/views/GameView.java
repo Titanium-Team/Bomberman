@@ -101,14 +101,14 @@ public class GameView extends LightingView {
                         if (tiles[i][j].getTileType().isWalkable()) {
                             //batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.25f, 0.5f, 0.75f, 1);
                         }
-                        if(tiles[i][j].getTileType().isWalkable()) {
+                        if (tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileObject() != null) {
                                 if (tiles[i][j].getTileObject() instanceof Bomb) {
                                     //TODO: bomb texture
                                     batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
                                     //TODO:textures
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize,0.478f,0.567f,0.32f,1);
+                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.478f, 0.567f, 0.32f, 1);
                                 }
                             }
                         }
