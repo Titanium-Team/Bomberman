@@ -133,6 +133,7 @@ public class Player {
 
         }
 
+
         //--- Facing Direction
         FacingDirection facing = FacingDirection.from(this.vector);
         this.facingDirection = (facing == FacingDirection.DEFAULT ? this.facingDirection : facing);
@@ -151,8 +152,6 @@ public class Player {
 
         float maxX = (float) (max.getMin().getX() + (max.getWidth() / 2));
         float maxY = (float) (max.getMin().getY() + (max.getHeight() / 2));
-
-        System.out.println(minX + " - " + maxX);
 
         switch (direction) {
 
@@ -178,6 +177,7 @@ public class Player {
             case NORTH_EAST: //<--- All diagonal collisions
                 this.vector.setX(0);
                 this.vector.setY(0);
+                this.vector.setX(0);
                 this.boundingBox.setCenter(
                     range(minX, (float) location.getX(), maxX),
                     range(minY, (float) location.getY(), maxY)
