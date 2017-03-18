@@ -166,23 +166,14 @@ public class Player {
 
         Direction direction = this.gameMap.checkCollision(this);
 
-        BoundingBox min = this.gameMap.getMin().getBoundingBox();
-        BoundingBox max = this.gameMap.getMax().getBoundingBox();
-
-        float minX = (float) (min.getMax().getX() + (min.getWidth() / 2));
-        float minY = (float) (min.getMax().getY() + (min.getHeight() / 2));
-
-        float maxX = (float) (max.getMin().getX() + (max.getWidth() / 2));
-        float maxY = (float) (max.getMin().getY() + (max.getHeight() / 2));
-
         switch (direction) {
 
             case UP:
             case DOWN: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
-                    range(minX, (float) this.boundingBox.getCenter().getX(), maxX),
-                    range(minY, (float) location.getY(), maxY)
+                        this.boundingBox.getCenter().getX(),
+                        location.getY()
                 );
             }
             break;
@@ -191,8 +182,8 @@ public class Player {
             case RIGHT:
                 this.vector.setX(0);
                 this.boundingBox.setCenter(
-                    range(minX, (float) location.getX(), maxX),
-                    range(minY, (float) this.boundingBox.getCenter().getY(), maxY)
+                        location.getX(),
+                        this.boundingBox.getCenter().getY()
                 );
                 break;
 
@@ -211,11 +202,7 @@ public class Player {
 
                 this.vector.setX(0);
                 this.vector.setY(0);
-                this.vector.setX(0);
-                this.boundingBox.setCenter(
-                    range(minX, (float) location.getX(), maxX),
-                    range(minY, (float) location.getY(), maxY)
-                );
+                this.boundingBox.setCenter(location.getX(), location.getY());
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
