@@ -21,7 +21,7 @@ public class PowerUp extends TileObject {
     @Override
     public void execute() {
         //@TODO Implement
-        System.out.println("Despawn");
+        //System.out.println("Despawn");
     }
 
     @Override
