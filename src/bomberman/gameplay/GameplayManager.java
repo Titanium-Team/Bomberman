@@ -135,8 +135,8 @@ public class GameplayManager {
     private void checkPowerups(){
         int x = (int)(Math.random() * getCurrentMap().getWidth());
         int y = (int)(Math.random() * getCurrentMap().getHeight());
-        if(getCurrentMap().get(x,y).getTileType() == TileTypes.GROUND&& getCurrentMap().get(x,y).getTileObject()==null){
-            getCurrentMap().get(x,y).spawnPowerup();
+        if(getCurrentMap().getTile(x,y).getTileType() == TileTypes.GROUND&& getCurrentMap().getTile(x,y).getTileObject()==null){
+            getCurrentMap().getTile(x,y).spawnPowerup();
         }else {
             checkPowerups();
         }

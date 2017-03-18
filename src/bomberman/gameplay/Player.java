@@ -6,7 +6,6 @@ import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
-import bomberman.gameplay.utils.CircleBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.input.Keyboard;
@@ -20,11 +19,12 @@ public class Player {
     private final static double COLLISION_WIDTH = .6;
     private final static double COLLISION_HEIGHT = .6;
 
-    private final static float ACCELERATION_STEP = .5F;
+    private final static float ACCELERATION_STEP = .2F;
     private final static float ACCELERATION_LIMIT = 1;
+    private final static float ACCELERATION_TIMER = 0.1F;
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
-    private float accelerationTimer = .01F;
+    private float accelerationTimer = ACCELERATION_TIMER;
 
     //--- Game
     private final GameStatistic gameStatistic = new GameStatistic();
@@ -59,7 +59,6 @@ public class Player {
             new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
             new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
-        //this.boundingBox = new CircleBox(center, COLLISION_HEIGHT);
 
     }
 
@@ -97,7 +96,7 @@ public class Player {
 
     public Tile getTile() {
 
-        return this.gameMap.get(
+        return this.gameMap.getTile(
                 (int) this.boundingBox.getCenter().getX(),
                 (int) this.boundingBox.getCenter().getY()
         );
@@ -108,15 +107,12 @@ public class Player {
         this.health = health;
     }
 
-    //--- Test @TODO
-    private boolean EXPERIMENTAL_MOVEMENT = true;
-
     public void update(float delta) {
 
         this.accelerationTimer -= delta;
 
         //--- Accelerating
-        if(EXPERIMENTAL_MOVEMENT && accelerationTimer <= 0) {
+        if(accelerationTimer <= 0) {
             if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
                 this.move(Direction.UP);
             }
@@ -133,9 +129,8 @@ public class Player {
                 this.move(Direction.RIGHT);
             }
 
-            System.out.println(this.vector.getX() + " - " + this.vector.getY());
+            this.accelerationTimer = ACCELERATION_TIMER;
 
-            accelerationTimer = .3F;
         }
 
 
@@ -145,13 +140,44 @@ public class Player {
 
         //--- Collision
         Location location = this.boundingBox.getCenter();
-
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
-        this.gameMap.checkInteraction(this);
-        if (this.gameMap.checkCollision(this)) {
-            this.boundingBox.setCenter(location);
+        FacingDirection direction = this.gameMap.checkCollision(this);
+
+        switch (direction) {
+
+            case SOUTH:
+            case NORTH: {
+                this.vector.setY(0);
+                this.boundingBox.setCenter(
+                    this.boundingBox.getCenter().getX(),
+                    location.getY()
+                );
+            }
+            break;
+
+            case EAST:
+            case WEST:
+                this.vector.setX(0);
+                this.boundingBox.setCenter(
+                    location.getX(),
+                    this.boundingBox.getCenter().getY()
+                );
+                break;
+
+            case NORTH_EAST: //<--- All diagonal collisions
+                this.vector.setX(0);
+                this.vector.setY(0);
+                this.boundingBox.setCenter(location.getX(), location.getY());
+                break;
+
+            case DEFAULT: break;
+
+            default: throw new IllegalStateException(String.format("Unknown collision direction: %s", direction.name()));
+
         }
+
+        this.gameMap.checkInteraction(this);
 
     }
 
@@ -164,11 +190,8 @@ public class Player {
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
                 this.move(Direction.STOP_VERTICAL_MOVEMENT);
-
-                if(EXPERIMENTAL_MOVEMENT) {
-                    this.acceleratingDirections.put(Direction.UP, false);
-                    this.acceleratingDirections.put(Direction.DOWN, false);
-                }
+                this.acceleratingDirections.put(Direction.UP, false);
+                this.acceleratingDirections.put(Direction.DOWN, false);
                 break;
 
             case Keyboard.KEY_RIGHT:
@@ -176,14 +199,8 @@ public class Player {
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
                 this.move(Direction.STOP_HORIZONTAL_MOVEMENT);
-
-                if(EXPERIMENTAL_MOVEMENT) {
-                    this.acceleratingDirections.put(Direction.LEFT, false);
-                    this.acceleratingDirections.put(Direction.RIGHT, false);
-                }
-                break;
-
-            case Keyboard.KEY_SPACE:
+                this.acceleratingDirections.put(Direction.LEFT, false);
+                this.acceleratingDirections.put(Direction.RIGHT, false);
                 break;
 
         }
@@ -196,34 +213,22 @@ public class Player {
 
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
-                if(EXPERIMENTAL_MOVEMENT)
                     this.acceleratingDirections.put(Direction.UP, true);
-                else
-                    this.move(Direction.UP);
                 break;
 
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                if(EXPERIMENTAL_MOVEMENT)
                     this.acceleratingDirections.put(Direction.LEFT, true);
-                else
-                    this.move(Direction.LEFT);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
-                if(EXPERIMENTAL_MOVEMENT)
                     this.acceleratingDirections.put(Direction.RIGHT, true);
-                else
-                    this.move(Direction.RIGHT);
                 break;
 
             case Keyboard.KEY_DOWN:
             case Keyboard.KEY_S:
-                if(EXPERIMENTAL_MOVEMENT)
                     this.acceleratingDirections.put(Direction.DOWN, true);
-                else
-                    this.move(Direction.DOWN);
                 break;
 
             case Keyboard.KEY_SPACE: {
@@ -247,23 +252,23 @@ public class Player {
 
             case UP:
                 this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
-                this.vector.setY((float) -a(this.xY));
+                this.vector.setY((float) -accelerationCurve(this.xY));
                 break;
 
             case LEFT:
                 this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
-                this.vector.setX((float) -a(this.xX));
+                this.vector.setX((float) -accelerationCurve(this.xX));
                 break;
 
             case RIGHT:
                 this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
-                this.vector.setX((float) a(this.xX));
+                this.vector.setX((float) accelerationCurve(this.xX));
                 break;
 
             case DOWN:
                 this.xY = range(0, this.xY + ACCELERATION_STEP, limit
                 );
-                this.vector.setY((float) a(this.xY));
+                this.vector.setY((float) accelerationCurve(this.xY));
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
@@ -279,7 +284,7 @@ public class Player {
         }
     }
 
-    private static double a(float y) {
+    private static double accelerationCurve(float y) {
         return Math.exp(2 * y - 1);
     }
 

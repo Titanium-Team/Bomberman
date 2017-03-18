@@ -6,7 +6,7 @@ import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
-import bomberman.gameplay.utils.CircleBox;
+import bomberman.gameplay.utils.Location;
 
 public class GameMap {
 
@@ -38,12 +38,12 @@ public class GameMap {
         return this.height;
     }
 
-    public Tile get(double x, double y) {
+    public Tile getTile(int x, int y) {
 
         assert x >= 0 && x < this.width;
         assert y >= 0 && y < this.height;
 
-        return this.tiles[(int) x][(int) y];
+        return this.tiles[x][y];
 
     }
 
@@ -56,38 +56,14 @@ public class GameMap {
 
     }
 
-    public boolean checkCollision(Player player) {
-
-        BoundingBox boundingBox = player.getBoundingBox();
-
-        for (int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
-            for (int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
-
-                Tile tile = this.get(x, y);
-
-                if (
-                    tile.getBoundingBox().intersects(boundingBox) &&
-                        (
-                            !(tile.getTileType().isWalkable()) ||
-                            (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
-                        )
-                    ) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public Player.FacingDirection TcheckCollision(Player player) {
+    public Player.FacingDirection checkCollision(Player player) {
 
         BoundingBox playerBox = player.getBoundingBox();
 
-        for (double x = playerBox.getMin().getX(); x < playerBox.getMax().getX(); x++) {
-            for (double y = playerBox.getMin().getY(); y < playerBox.getMax().getY(); y++) {
+        for (int x = (int) playerBox.getMin().getX(); x < playerBox.getMax().getX(); x++) {
+            for (int y = (int) playerBox.getMin().getY(); y < playerBox.getMax().getY(); y++) {
 
-                Tile tile = this.get(x, y);
+                Tile tile = this.getTile(x, y);
 
                 if (
                     tile.getBoundingBox().intersects(playerBox) &&
@@ -97,20 +73,27 @@ public class GameMap {
                     )
                 ) {
 
-                    //--- Horizontal and Vertical distance
-                    double horizontal = Math.abs(
-                        Math.pow(playerBox.getCenter().getX(), 2) + Math.pow(playerBox.getCenter().getX(), 2)
-                    );
-                    double vertical = Math.abs(
-                        Math.pow(playerBox.getCenter().getY(), 2) + Math.pow(playerBox.getCenter().getY(), 2)
-                    );
+                    int pX = (int) playerBox.getCenter().getX();
+                    int pY = (int) playerBox.getCenter().getY();
 
-                    if(horizontal < vertical) {
-                        return (playerBox.getCenter().getX() < tile.getBoundingBox().getCenter().getX() ? Player.FacingDirection.EAST : Player.FacingDirection.WEST);
-                    } else if(vertical < horizontal) {
-                        return (playerBox.getCenter().getY() < tile.getBoundingBox().getCenter().getY() ? Player.FacingDirection.SOUTH : Player.FacingDirection.NORTH);
+                    int tX = (int) tile.getBoundingBox().getCenter().getX();
+                    int tY = (int) tile.getBoundingBox().getCenter().getY();
+
+                    if(pX == tX) {
+                        if (pY > tY){
+                            return Player.FacingDirection.NORTH;
+                        } else if (pY < tY) {
+                            return Player.FacingDirection.SOUTH;
+                        }
+                    } else if(pY == tY) {
+                        if(pX > tX) {
+                            return Player.FacingDirection.EAST;
+                        } else if(pX < tX) {
+                            return Player.FacingDirection.WEST;
+                        }
+                    } else {
+                        return Player.FacingDirection.NORTH_EAST;
                     }
-
                 }
             }
         }

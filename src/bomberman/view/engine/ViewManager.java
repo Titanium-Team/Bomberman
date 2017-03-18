@@ -65,7 +65,7 @@ public class ViewManager {
         this.gameplayManager = gameplayManager;
 
         try {
-            LwjglNativesLoader.load();
+//            LwjglNativesLoader.load();
 
             setDisplayMode(800, 600, false);
 
