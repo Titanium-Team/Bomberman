@@ -24,7 +24,6 @@ public class Bomb extends TileObject {
         this.player = player;
 
         Main.instance.getGameplayManager().getPlayers().forEach(e -> {
-
             if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())) {
                 this.walkable.add(e);
             }
