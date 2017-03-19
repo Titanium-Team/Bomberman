@@ -38,10 +38,9 @@ public abstract class TileObject {
         this.lifespan -= delta;
 
         if (this.lifespan <= 0) {
-            this.execute();
-
             //--- destroy
             this.parent.destroyObject();
+            this.execute();
         }
     }
 

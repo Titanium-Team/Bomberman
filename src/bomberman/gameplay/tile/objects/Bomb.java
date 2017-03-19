@@ -43,12 +43,15 @@ public class Bomb extends TileObject {
         //--- destroy the exploding bomb
         this.getParent().destroyObject();
 
+
         //--- coordinates of the bomb
         int x = (int) this.getParent().getBoundingBox().getMin().getX();
         int y = (int) this.getParent().getBoundingBox().getMin().getY();
+        //Explosion explosion = new Explosion(this.player.getGameMap().getTile(x, y), EXPLOSION_LIFESPAN);
+        //this.player.getGameMap().getTile(x, y).spawn(explosion);
 
         //--- create explosion
-        this.createExplosion(x, y, 1);
+        this.createExplosion(x, y, EXPLOSION_LIFESPAN);
 
         //--- effect surrounding tiles
         boolean stopUp = false, stopLeft= false, stopDown = false, stopRight = false;
@@ -90,7 +93,7 @@ public class Bomb extends TileObject {
 
         //--- spawning explosion
         if(this.player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
-                this.player.getGameMap().getTile(x,y).getTileObject().execute();
+            this.player.getGameMap().getTile(x,y).getTileObject().execute();
         }
 
         this.player.getGameMap().getTile(x, y).spawn(explosion);
