@@ -6,12 +6,14 @@ import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.utils.Location;
+import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Bomb extends TileObject {
+
 
     private final static float EXPLOSION_LIFESPAN = 1F;
 
@@ -40,18 +42,19 @@ public class Bomb extends TileObject {
     @Override
     public void execute() {
 
-        //--- destroy the exploding bomb
-        this.getParent().destroyObject();
-
         //--- coordinates of the bomb
         int x = (int) this.getParent().getBoundingBox().getMin().getX();
         int y = (int) this.getParent().getBoundingBox().getMin().getY();
 
+        //--- destroy the exploding bomb
+        this.getParent().destroyObject();
+
         //--- create explosion
-        this.createExplosion(x, y, 1);
+        this.createExplosion(x, y, EXPLOSION_LIFESPAN);
+
 
         //--- effect surrounding tiles
-        boolean stopUp = false, stopLeft= false, stopDown = false, stopRight = false;
+        boolean stopUp = false, stopLeft = false, stopDown = false, stopRight = false;
 
         for(int i = 1; i < this.range + 1; i++){
 
