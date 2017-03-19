@@ -3,16 +3,14 @@ package bomberman.network;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
-import jdk.nashorn.api.scripting.JSObject;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
 
-public class Client extends Connection{
+public class Client extends Connection {
 
     private ConnectionData server;
 

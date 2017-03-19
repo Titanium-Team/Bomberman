@@ -5,15 +5,19 @@ import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Stream;
 
 public class GameplayManager {
 
     private final List<GameMap> maps = new LinkedList<>();
     private final List<Player> players = new LinkedList<>();
+    private Timer timer;
+    private boolean einmalGemacht = false;
 
     public GameplayManager() {
-
+        //map 0
         this.add(
                 GameMap.builder()
                         .dimension(15, 13)
@@ -27,6 +31,7 @@ public class GameplayManager {
                         .build()
         );
 
+        //map 1
         this.add(
                 GameMap.builder()
                         .dimension(15, 13)
@@ -43,6 +48,22 @@ public class GameplayManager {
                         .horizontalPattern("WBBBBBBBBBBBBBW", 9)
                         .horizontalPattern("WGWBWBWBWBWBWGW", 10)
                         .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                        .build()
+        );
+
+        //map 2
+        this.add(
+                GameMap.builder()
+                        .dimension(15, 13)
+                        .frame(TileTypes.WALL)
+                        .fillEmpty(TileTypes.GROUND)
+                        .horizontalPattern("WGPBBBBBBBBBGGW", 3)
+                        .horizontalPattern("WGPBBBBBBBBBGGW", 4)
+                        .horizontalPattern("WGPBBGGGGGBBGGW", 5)
+                        .horizontalPattern("WGPBBGGGGGBBGGW", 6)
+                        .horizontalPattern("WGPBBGGGGGBBGGW", 7)
+                        .horizontalPattern("WGPBBBBBBBBBGGW", 8)
+                        .horizontalPattern("WGPBBBBBBBBBGGW", 9)
                         .build()
         );
 
@@ -67,8 +88,10 @@ public class GameplayManager {
         return this.players.get(index);
     }
 
+    //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(1); //@TODO
+        return this.getMap(2); //@TODO
+
     }
 
     public GameMap getMap(int index) {
@@ -88,7 +111,40 @@ public class GameplayManager {
     public void update(float delta) {
         this.players.forEach(e -> e.update(delta));
         Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
+
+        this.startPowerups();
     }
+
+    //powerup start
+    private void startPowerups() {
+        if (einmalGemacht == false) {
+            timedPowerups();
+            einmalGemacht = true;
+        }
+    }
+
+    private void timedPowerups() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                checkPowerups();
+            }
+        }, 0, 1000 * 25);
+
+    }
+
+
+    private void checkPowerups() {
+        int x = (int) (Math.random() * getCurrentMap().getWidth());
+        int y = (int) (Math.random() * getCurrentMap().getHeight());
+        if (getCurrentMap().getTile(x, y).getTileType() == TileTypes.GROUND && getCurrentMap().getTile(x, y).getTileObject() == null) {
+            getCurrentMap().getTile(x, y).spawnPowerup();
+        } else {
+            checkPowerups();
+        }
+    }
+    //powerup end
 
     public void onKeyDown(int key, char c) {
         this.players.forEach(e -> e.keyDown(key, c));

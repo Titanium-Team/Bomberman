@@ -15,12 +15,12 @@ public class Request {
         this.recieved = new HashMap<>();
         this.resend = resend;
 
-        for (NetworkData s: send){
+        for (NetworkData s : send) {
             recieved.put(s, false);
         }
     }
 
-    public void setRecieved(NetworkData key){
+    public void setRecieved(NetworkData key) {
         recieved.put(key, true);
     }
 

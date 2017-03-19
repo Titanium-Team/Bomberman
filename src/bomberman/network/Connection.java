@@ -14,6 +14,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public abstract class Connection {
 
@@ -47,11 +50,11 @@ public abstract class Connection {
         this.controller = controller;
 
         listener = new Thread(() -> {
-            while (true){
+            while (true) {
                 try {
                     listen();
                     Thread.sleep(0);
-                }catch (InterruptedException e){
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
                 }
@@ -59,7 +62,7 @@ public abstract class Connection {
         });
     }
 
-    public void init(){
+    public void init() {
         try {
             myData = new ConnectionData(new NetworkData(InetAddress.getLocalHost(), socket.getLocalPort()), keyPair.getPublic());
         } catch (UnknownHostException e) {
@@ -107,7 +110,7 @@ public abstract class Connection {
 
             getSocket().send(packet);
 
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -125,7 +128,7 @@ public abstract class Connection {
         return myData.decrpyt(message, keyPair.getPrivate());
     }
 
-    public void recieved(String message, NetworkData reciever){
+    public void recieved(String message, NetworkData reciever) {
         requestMap.get(message).setRecieved(reciever);
     }
 
@@ -146,7 +149,9 @@ public abstract class Connection {
     }
 
     abstract void update();
+
     abstract void message(String message);
+
     abstract void listen();
     abstract void move(Vector2 position);
     abstract void plantBomb();

@@ -1,6 +1,6 @@
 package bomberman.network;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import javax.crypto.BadPaddingException;
@@ -9,19 +9,12 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Base64.getDecoder;
 
 public class ConnectionData {
 
@@ -33,12 +26,13 @@ public class ConnectionData {
         this.publicKey = publicKey;
     }
 
-    public ConnectionData(NetworkData networkData, String json){
+    public ConnectionData(NetworkData networkData, String json) {
         this.networkData = networkData;
 
         Gson gson = new Gson();
 
-        Type type = new TypeToken<Map<String, byte[]>>(){}.getType();
+        Type type = new TypeToken<Map<String, byte[]>>() {
+        }.getType();
 
 
         Map<String, byte[]> connectionData = gson.fromJson(json, type);
@@ -68,7 +62,7 @@ public class ConnectionData {
         return publicKey;
     }
 
-    public String toJson(){
+    public String toJson() {
 
         Map<String, byte[]> connectionData = new HashMap<>();
 
@@ -88,7 +82,7 @@ public class ConnectionData {
         return gson.toJson(connectionData);
     }
 
-    public String encrypt(String message){
+    public String encrypt(String message) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -109,7 +103,7 @@ public class ConnectionData {
         return null;
     }
 
-    public String decrpyt(String message, PrivateKey privateKey){
+    public String decrpyt(String message, PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);

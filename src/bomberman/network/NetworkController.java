@@ -3,11 +3,11 @@ package bomberman.network;
 import bomberman.view.engine.utility.Vector2;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-public class NetworkController implements Runnable{
+public class NetworkController implements Runnable {
 
     private final boolean hosting;
     private Connection connection;
@@ -46,13 +46,13 @@ public class NetworkController implements Runnable{
 
     @Override
     public void run() {
-        while (true){
+        while (true) {
             Scanner scanner = new Scanner(System.in);
             chatMessage(scanner.nextLine());
         }
     }
 
-    public void chatMessage(String message){
+    public void chatMessage(String message) {
         connection.message(message);
     }
 

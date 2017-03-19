@@ -1,20 +1,20 @@
 package bomberman.view.engine;
 
+import bomberman.Main;
 import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
 import bomberman.view.views.GameView;
+import net.java.games.input.*;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Controller;
-import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -25,9 +25,7 @@ public class ViewManager {
 
     private Batch batch;
 
-    private boolean vSync = false;
     private MSMode msMode = MSMode.OFF;
-    private boolean enableFpsCounter = true;
 
     public static void load() {
         try {
@@ -59,12 +57,15 @@ public class ViewManager {
     private GameplayManager gameplayManager;
     private boolean fullscreen = false;
 
-    private Controller selectedController = null;
+    private Controller selectedGamepad = null;
+    private GamepadConfig gamepadConfig = null;
 
     public ViewManager(GameplayManager gameplayManager) {
         this.gameplayManager = gameplayManager;
 
         try {
+            LwjglNativesLoader.load();
+
             setDisplayMode(800, 600, false);
 
             Display.create(new PixelFormat(8, 0, 0, msMode.samples));
@@ -75,32 +76,21 @@ public class ViewManager {
             System.exit(0);
         }
 
-        try {
-            System.out.println("Loading Controllers...");
-            Controllers.create();
+        System.out.println("Loading Controllers...");
+        ControllerEnvironment e = ControllerEnvironment.getDefaultEnvironment();
+        Controller[] found = e.getControllers();
 
-            for (int i = 0; i < Controllers.getControllerCount(); i++) {
-                Controller controller = Controllers.getController(i);
+        for (int i = 0; i < found.length; i++) {
+            Controller controller = found[i];
 
-                if (controller.getName().toUpperCase().contains("XBOX")) {
-                    System.out.println("Found suitable Controller: " + controller.getName());
-                    this.selectedController = controller;
+            if (controller.getType() == Controller.Type.GAMEPAD) {
+                System.out.println("Found suitable Gamepad: " + controller.getName());
 
-                    for (int j = 0; j < controller.getButtonCount(); j++) {
-                        System.out.println("\tButton: " + controller.getButtonName(j));
-                    }
-                    for (int j = 0; j < controller.getRumblerCount(); j++) {
-                        System.out.println("\tRumbler: " + controller.getRumblerName(j));
-                    }
-                    for (int j = 0; j < controller.getAxisCount(); j++) {
-                        System.out.println("\tAxis: " + controller.getAxisName(j));
-                    }
+                this.selectedGamepad = controller;
+                this.gamepadConfig = new GamepadConfig(selectedGamepad);
 
-                    break;
-                }
+                break;
             }
-        } catch (LWJGLException e) {
-            e.printStackTrace();
         }
 
         GL11.glEnable(GL13.GL_MULTISAMPLE);
@@ -158,7 +148,7 @@ public class ViewManager {
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
             Display.setTitle("Bomberman");
-            Display.setVSyncEnabled(this.vSync);
+            Display.setVSyncEnabled(true);
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
@@ -180,14 +170,14 @@ public class ViewManager {
             currentView.update(deltaTime);
             currentView.render(batch);
         }
-        if (enableFpsCounter) {
+        if (Main.instance.getConfig().isShowFPS()) {
             ViewManager.font.drawText(batch, "FPS: " + fpsCount, 5, 5);
         }
 
         batch.end();
 
         Display.update();
-        if (this.vSync)
+        if (Main.instance.getConfig().isvSync())
             Display.sync(60);
     }
 
@@ -244,20 +234,12 @@ public class ViewManager {
             }
         }
 
-        if (selectedController != null && Controllers.isCreated()) {
-            Controllers.poll();
-            while (Controllers.next()) {
-                if (Controllers.getEventSource() == this.selectedController) {
-                    int controlIndex = Controllers.getEventControlIndex();
-
-                    if (Controllers.isEventButton()) {
-                        if (Controllers.getEventButtonState()) {
-                            System.out.println("Button down: " + controlIndex);
-                        } else {
-                            System.out.println("Button up: " + controlIndex);
-                        }
-                    }
-                }
+        if (selectedGamepad != null) {
+            selectedGamepad.poll();
+            EventQueue gamepadEventQueue = selectedGamepad.getEventQueue();
+            Event event = new Event();
+            while (gamepadEventQueue.getNextEvent(event)) {
+                System.out.println(event.getComponent().getIdentifier());
             }
         }
     }

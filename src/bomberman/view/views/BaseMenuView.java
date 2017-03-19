@@ -45,7 +45,7 @@ public abstract class BaseMenuView extends LightingView {
     public void renderOccluders(Batch batch, Camera camera) {
     }
 
-    public void renderNonOccluders(Batch batch, Camera camera){
+    public void renderNonOccluders(Batch batch, Camera camera) {
     }
 
 }

@@ -1,10 +1,14 @@
 package bomberman.gameplay.tile;
 
+import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
 
 public class Tile {
 
-    private final TileType tileType;
+    private TileType tileType;
     private final BoundingBox boundingBox;
 
     private TileObject tileObject;
@@ -22,6 +26,10 @@ public class Tile {
 
     public TileType getTileType() {
         return this.tileType;
+    }
+
+    public void setTileType(TileType tileType){
+        this.tileType = tileType;
     }
 
     public BoundingBox getBoundingBox() {
@@ -44,11 +52,45 @@ public class Tile {
         this.explodingTime = explodingTime;
     }
 
+    public boolean canVisit(Player player) {
+        return !(
+                    this.boundingBox.intersects(player.getBoundingBox()) &&
+                    (
+                        !(this.tileType.isWalkable()) ||
+                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
+                    )
+                );
+    }
+
     public void spawn(TileObject tileObject) {
 
         assert !(tileObject == null);
 
         this.tileObject = tileObject;
+    }
+
+    public void spawnPowerup() {
+        int random = (int) (Math.random() * 3);
+        switch (random) {
+            case 0:
+                this.spawn(new PowerUp(this, 15, PowerUpTypes.SPEEDUP));
+                break;
+            case 4:
+                this.spawn(new PowerUp(this, 15, PowerUpTypes.SPEEDDOWN));
+                break;
+            case 2:
+                this.spawn(new PowerUp(this, 15, PowerUpTypes.FIREUP));
+                break;
+            case 5:
+                this.spawn(new PowerUp(this, 15, PowerUpTypes.FIREDOWN));
+                break;
+            case 3:
+                this.spawn(new PowerUp(this, 15, PowerUpTypes.BOMBUP));
+                break;
+            case 6:
+                this.spawn(new PowerUp(this, 15, PowerUpTypes.BOMBDOWN));
+                break;
+        }
     }
 
     public void destroyObject() {

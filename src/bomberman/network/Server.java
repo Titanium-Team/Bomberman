@@ -14,6 +14,8 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
 public class Server extends Connection {
 
@@ -43,7 +45,7 @@ public class Server extends Connection {
     }
 
     @Override
-    public void message(String message ) {
+    public void message(String message) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
             send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getNetworkData(), true);
         });
@@ -111,10 +113,6 @@ public class Server extends Connection {
         Gson gson = new Gson();
 
         String json = gson.toJson(data);
-
-        getController().getNetworkPlayerMap().forEach((key, value) -> {
-            send("position§" + value.getConnectionData().encrypt(json), value.getConnectionData().getNetworkData(), false);
-        });
     }
 
     @Override
