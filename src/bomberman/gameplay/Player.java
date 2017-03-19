@@ -279,6 +279,10 @@ public class Player {
 
         switch (keyCode) {
 
+            case Keyboard.KEY_Q:
+                System.out.println(this.getTile().getTileType() +  " - " + this.getTile().isExploding() + " - " + this.getTile().canVisit(this));
+                break;
+
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
                 this.acceleratingDirections.put(Direction.UP, true);

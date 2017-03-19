@@ -29,6 +29,8 @@ public class GameplayManager {
                 .horizontalPattern("WGBGBGBGBGBGBGW", 6)
                 .horizontalPattern("WGBGBGBGBGBGBGW", 8)
                 .horizontalPattern("WGBGBGBGBGBGBGW", 10)
+                .startPosition(1, 1)
+                .startPosition(12, 11)
             .build()
         );
 
@@ -69,7 +71,7 @@ public class GameplayManager {
         );
 
         //@TODO
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", new Location(1.5, 1.5)));
+        this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
 
     }
 
@@ -91,7 +93,7 @@ public class GameplayManager {
 
     //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(2); //@TODO
+        return this.getMap(0); //@TODO
 
     }
 

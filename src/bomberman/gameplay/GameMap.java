@@ -7,22 +7,34 @@ import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
+import bomberman.gameplay.utils.Location;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 public class GameMap {
 
+    private final static Random random = new Random();
+
     private final Tile[][] tiles;
+
+    private final List<Location> startPositions;
 
     private final int width;
     private final int height;
 
 
-    public GameMap(Tile[][] tiles) {
+    public GameMap(Tile[][] tiles, List<Location> startPositions) {
 
+        assert !(startPositions == null);
+        assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
         this.tiles = tiles;
         this.width = tiles.length;
         this.height = tiles[0].length;
+        this.startPositions = startPositions;
 
     }
 
@@ -38,6 +50,9 @@ public class GameMap {
         return this.height;
     }
 
+    public Location getRandomStartPosition() {
+        return this.startPositions.remove(GameMap.random.nextInt(this.startPositions.size()));
+    }
 
     public Tile getTile(int x,int y) {
 
@@ -64,8 +79,6 @@ public class GameMap {
         this.tiles[x][y].spawn(tileObject);
 
     }
-
-
 
     public Player.Direction checkCollision(Player player) {
 
@@ -217,8 +230,9 @@ public class GameMap {
 
         private Tile[][] tiles;
 
-        public Builder() {
-        }
+        private List<Location> startPositions = new LinkedList<>();
+
+        public Builder() {}
 
         public int width() {
             return this.tiles.length;
@@ -226,6 +240,19 @@ public class GameMap {
 
         public int height() {
             return this.tiles[0].length;
+        }
+
+        public Builder startPosition(int x, int y) {
+
+            Tile tile = this.tiles[x][y];
+
+            if(!(tile.getTileType().isWalkable())) {
+                throw new IllegalArgumentException();
+            }
+
+            this.startPositions.add(tile.getBoundingBox().getCenter());
+            return this;
+
         }
 
         public Builder dimension(int width, int height) {
@@ -350,7 +377,7 @@ public class GameMap {
         }
 
         public GameMap build() {
-            return new GameMap(this.tiles);
+            return new GameMap(this.tiles, this.startPositions);
         }
 
         private static TileType tileTypeByChar(char c) {
