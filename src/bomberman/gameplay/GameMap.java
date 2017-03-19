@@ -40,12 +40,10 @@ public class GameMap {
 
     public Tile getTile(int x,int y) {
 
-
-
         assert x >= 0 && x < this.width;
         assert y >= 0 && y < this.height;
 
-        return this.tiles[(int) x][(int) y];
+        return this.tiles[x][y];
 
     }
 
@@ -78,13 +76,7 @@ public class GameMap {
 
                 Tile tile = this.getTile(x, y);
 
-                if (
-                    tile.getBoundingBox().intersects(playerBox) &&
-                        (
-                            !(tile.getTileType().isWalkable()) ||
-                            (tile.getTileObject() instanceof Bomb && !((Bomb) tile.getTileObject()).canVisit(player))
-                        )
-                ) {
+                if (!(tile.canVisit(player))) {
 
                     int pX = (int) playerBox.getCenter().getX();
                     int pY = (int) playerBox.getCenter().getY();

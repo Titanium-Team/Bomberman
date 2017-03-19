@@ -4,6 +4,7 @@ import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
@@ -20,9 +21,9 @@ public class Player {
     private final static double COLLISION_HEIGHT = .6;
 
 
-    private final static float ACCELERATION_STEP = .2F;
+    private final static float ACCELERATION_STEP = .02F;
     private final static float ACCELERATION_LIMIT = 1;
-    private final static float ACCELERATION_TIMER = 0.1F;
+    private final static float ACCELERATION_TIMER = 0.01F;
 
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
@@ -46,9 +47,6 @@ public class Player {
 
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
-
-    //--- Stats
-    private int BOMB_amount = 1;
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
@@ -107,6 +105,10 @@ public class Player {
 
     }
 
+    public GameMap getGameMap(){
+        return gameMap;
+    }
+
     public void setHealth(double health) {
         this.health = health;
     }
@@ -134,6 +136,8 @@ public class Player {
             }
 
             this.accelerationTimer = ACCELERATION_TIMER;
+
+            System.out.println(this.vector.getX() + " - " + this.vector.getY());
 
         }
 
@@ -196,25 +200,31 @@ public class Player {
                 break;
 
             case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
-                //TODO Kollision verbessern
-                switch (this.facingDirection) {
-                    case NORTH_EAST:
-                        break;
-                    case SOUTH_EAST:
-                        break;
-                    case SOUTH_WEST:
-                        break;
-                    case NORTH_WEST:
-                        break;
-                }
 
-                this.vector.setX(0);
-                this.vector.setY(0);
-                this.vector.setX(0);
+
                 this.boundingBox.setCenter(
                     range(minX, (float) location.getX(), maxX),
                     range(minY, (float) location.getY(), maxY)
                 );
+
+
+                //TODO Kollision verbessern
+
+                switch (this.facingDirection) {
+
+                    case NORTH_WEST:
+                    case NORTH_EAST: {
+                        this.vector.setX(0);
+                    }
+                    break;
+
+                    case SOUTH_WEST:
+                    case SOUTH_EAST: {
+                        this.vector.setY(0);
+                    }
+                    break;
+
+                }
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
@@ -282,8 +292,8 @@ public class Player {
             case Keyboard.KEY_SPACE: {
 
                 Tile tile = this.getTile();
-                //@TODO
-                tile.spawn(new Bomb(tile, 6));
+
+                tile.spawn(new Bomb(this, tile, 2));
 
             }
             break;
@@ -298,26 +308,56 @@ public class Player {
 
         switch (d) {
 
-            case UP:
-                this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
+            case UP: {
+
+                if(this.xX > 0) {
+                    this.xY = this.xX;
+                } else {
+                    this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
+                }
+
                 this.vector.setY((float) -accelerationCurve(this.xY));
-                break;
+            }
+            break;
 
-            case LEFT:
-                this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
+            case LEFT: {
+
+                if(this.xY > 0) {
+                    this.xX = this.xY;
+                } else {
+                    this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
+                }
+
                 this.vector.setX((float) -accelerationCurve(this.xX));
-                break;
+            }
+            break;
 
-            case RIGHT:
-                this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
+            case RIGHT: {
+
+                if(this.xY > 0) {
+                    this.xX = this.xY;
+                } else {
+                    this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
+                }
+
                 this.vector.setX((float) accelerationCurve(this.xX));
-                break;
 
-            case DOWN:
-                this.xY = range(0, this.xY + ACCELERATION_STEP, limit
-                );
+            }
+            break;
+
+            case DOWN: {
+
+                if(this.xX > 0) {
+                    this.xY = this.xX;
+                } else {
+                    this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
+                }
+
+                this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
+
                 this.vector.setY((float) accelerationCurve(this.xY));
-                break;
+            }
+            break;
 
             case STOP_HORIZONTAL_MOVEMENT:
                 this.xX = 0;
@@ -332,8 +372,8 @@ public class Player {
         }
     }
 
-    private static double accelerationCurve(float y) {
-        return Math.exp(2 * y - 1);
+    private static double accelerationCurve(float value) {
+        return Math.exp(2 * value - 1);
     }
 
     private static float range(float min, float value, float max) {
