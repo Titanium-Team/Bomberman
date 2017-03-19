@@ -36,11 +36,14 @@ public class Bomb extends TileObject {
     }
 
     public boolean canVisit(Player p) {
-        return walkable.contains(p);
+        return this.walkable.contains(p);
     }
 
     @Override
     public void execute() {
+
+        //--- Add new bomb
+        this.player.setBombsLeft(this.player.getBombsLeft() + 1);
 
         //--- coordinates of the bomb
         int x = (int) this.getParent().getBoundingBox().getMin().getX();
