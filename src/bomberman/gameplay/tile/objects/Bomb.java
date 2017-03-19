@@ -90,7 +90,7 @@ public class Bomb extends TileObject {
 
         //--- spawning explosion
         if(this.player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
-            this.player.getGameMap().getTile(x,y).getTileObject().execute();
+                this.player.getGameMap().getTile(x,y).getTileObject().execute();
         }
 
         this.player.getGameMap().getTile(x, y).spawn(explosion);

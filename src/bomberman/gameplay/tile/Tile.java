@@ -58,8 +58,8 @@ public class Tile {
                     this.boundingBox.intersects(player.getBoundingBox()) &&
                     (
                         !(this.tileType.isWalkable()) ||
-                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player)) ||
-                        (this.tileObject instanceof Explosion)
+                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
+                            //instanceof explosion rausgenommen, damit man in explosionen laufen kann
                     )
                 );
     }
