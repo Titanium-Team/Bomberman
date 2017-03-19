@@ -48,6 +48,8 @@ public class Player {
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
 
+    private int bombsLeft = this.propertyRepository.<Integer>get(PropertyTypes.BOMB_AMOUNT);
+
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
         this.playerType = playerType;
@@ -64,6 +66,14 @@ public class Player {
 
     public String getName() {
         return this.name;
+    }
+
+    public int getBombsLeft() {
+        return this.bombsLeft;
+    }
+
+    public void setBombsLeft(int bombsLeft) {
+        this.bombsLeft = Math.min(bombsLeft, this.getPropertyRepository().<Integer>get(PropertyTypes.BOMB_AMOUNT));
     }
 
     public double getHealth() {
@@ -293,6 +303,12 @@ public class Player {
 
                 Tile tile = this.getTile();
 
+                if(tile.getTileObject() instanceof Bomb || this.bombsLeft <= 0) {
+                    assert this.bombsLeft == 0;
+                    return;
+                }
+
+                this.bombsLeft--;
                 tile.spawn(new Bomb(this, tile, 2));
 
             }
