@@ -17,6 +17,7 @@ public class PlayMenuView extends BaseMenuView {
     private Button hostGameButton, joinGameButton;
     private TextField portTextField;
 
+
     public PlayMenuView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 

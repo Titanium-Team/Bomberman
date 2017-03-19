@@ -41,16 +41,8 @@ public class Tile {
         return this.tileObject;
     }
 
-    public double getExplodingTime() {
-        return this.explodingTime;
-    }
-
     public boolean isExploding() {
-        return this.explodingTime > 0;
-    }
-
-    public void setExplodingTime(double explodingTime) {
-        this.explodingTime = explodingTime;
+        return (this.tileObject instanceof Explosion);
     }
 
     public boolean canVisit(Player player) {
