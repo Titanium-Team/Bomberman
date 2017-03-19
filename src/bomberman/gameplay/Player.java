@@ -4,6 +4,7 @@ import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
@@ -199,12 +200,15 @@ public class Player {
 
             case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
 
+
                 this.boundingBox.setCenter(
                     range(minX, location.getX(), maxX),
                     range(minY, location.getY(), maxY)
                 );
 
+
                 //TODO Kollision verbessern
+
                 switch (this.facingDirection) {
 
                     case NORTH_WEST:
@@ -220,7 +224,6 @@ public class Player {
                     break;
 
                 }
-
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:
@@ -288,6 +291,7 @@ public class Player {
             case Keyboard.KEY_SPACE: {
 
                 Tile tile = this.getTile();
+
                 tile.spawn(new Bomb(this, tile, 2));
 
             }
