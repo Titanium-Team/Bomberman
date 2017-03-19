@@ -101,6 +101,7 @@ public class GameMap {
                         return Player.Direction.STOP_VERTICAL_MOVEMENT;
                     }
                 }
+
             }
         }
 
@@ -364,7 +365,7 @@ public class GameMap {
                     return TileTypes.WALL_BREAKABLE;
 
                 default:
-                    throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall) " +
+                    throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall), P (PowerUp) " +
                             "B (WALL_BREAKABLE).");
 
             }

@@ -42,7 +42,6 @@ public abstract class TileObject {
             this.parent.destroyObject();
 
             this.execute();
-
         }
     }
 

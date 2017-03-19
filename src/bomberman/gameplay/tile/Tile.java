@@ -13,7 +13,6 @@ public class Tile {
     private final BoundingBox boundingBox;
 
     private TileObject tileObject;
-    private double explodingTime = -1D;
 
     public Tile(TileType tileType, BoundingBox boundingBox) {
 
@@ -42,7 +41,7 @@ public class Tile {
     }
 
     public boolean isExploding() {
-        return (this.tileObject instanceof Explosion);
+        return (this.tileObject instanceof Bomb);
     }
 
     public boolean canVisit(Player player) {
@@ -68,19 +67,19 @@ public class Tile {
             case 0:
                 this.spawn(new PowerUp(this, 15, PowerUpTypes.SPEEDUP));
                 break;
-            case 4:
+            case 3:
                 this.spawn(new PowerUp(this, 15, PowerUpTypes.SPEEDDOWN));
                 break;
-            case 2:
+            case 1:
                 this.spawn(new PowerUp(this, 15, PowerUpTypes.FIREUP));
                 break;
-            case 5:
+            case 4:
                 this.spawn(new PowerUp(this, 15, PowerUpTypes.FIREDOWN));
                 break;
-            case 3:
+            case 2:
                 this.spawn(new PowerUp(this, 15, PowerUpTypes.BOMBUP));
                 break;
-            case 6:
+            case 5:
                 this.spawn(new PowerUp(this, 15, PowerUpTypes.BOMBDOWN));
                 break;
         }
