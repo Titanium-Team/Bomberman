@@ -101,6 +101,7 @@ public class GameMap {
                         return Player.Direction.STOP_VERTICAL_MOVEMENT;
                     }
                 }
+
             }
         }
 

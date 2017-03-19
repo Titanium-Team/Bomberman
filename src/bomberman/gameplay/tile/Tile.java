@@ -13,7 +13,6 @@ public class Tile {
     private final BoundingBox boundingBox;
 
     private TileObject tileObject;
-    private double explodingTime = -1D;
 
     public Tile(TileType tileType, BoundingBox boundingBox) {
 
@@ -42,7 +41,7 @@ public class Tile {
     }
 
     public boolean isExploding() {
-        return (this.tileObject instanceof Explosion);
+        return (this.tileObject instanceof Bomb);
     }
 
     public boolean canVisit(Player player) {
@@ -51,7 +50,6 @@ public class Tile {
                     (
                         !(this.tileType.isWalkable()) ||
                         (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
-                            //instanceof explosion rausgenommen, damit man in explosionen laufen kann
                     )
                 );
     }

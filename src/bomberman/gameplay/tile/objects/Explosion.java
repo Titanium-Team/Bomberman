@@ -25,7 +25,7 @@ public class Explosion extends TileObject{
 
     public boolean destroyWall(){
 
-        if(getParent().getTileType() == TileTypes.WALL_BREAKABLE){
+        if(this.getParent().getTileType() == TileTypes.WALL_BREAKABLE){
             this.getParent().setTileType(TileTypes.GROUND);
             return true;
         }

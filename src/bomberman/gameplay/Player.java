@@ -188,14 +188,15 @@ public class Player {
             break;
 
             case LEFT:
-            case RIGHT:
+            case RIGHT: {
                 this.vector.setX(0);
 
                 this.boundingBox.setCenter(
-                    range(minX, location.getX(), maxX),
-                    range(minY, this.boundingBox.getCenter().getY(), maxY)
+                        range(minX, location.getX(), maxX),
+                        range(minY, this.boundingBox.getCenter().getY(), maxY)
                 );
-                break;
+            }
+            break;
 
             case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
 
