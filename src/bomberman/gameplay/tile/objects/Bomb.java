@@ -19,10 +19,13 @@ public class Bomb extends TileObject {
     private List<Player> walkable = new ArrayList<>();
     private Player player;
 
+    private final int range;
+
     public Bomb(Player player, Tile parent, float lifespan) {
 
         super(parent, lifespan);
         this.player = player;
+        this.range = this.player.getPropertyRepository().<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS);
 
         Main.instance.getGameplayManager().getPlayers().forEach(e -> {
             if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())) {
@@ -49,15 +52,15 @@ public class Bomb extends TileObject {
         this.createExplosion(x, y, 1);
 
         //--- effect surrounding tiles
-        boolean stopUp = false,stopLeft= false,stopDown = false,stopRight = false;
+        boolean stopUp = false, stopLeft= false, stopDown = false, stopRight = false;
 
-        for(int i = 1; i < this.player.getPropertyRepository().<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + 1; i++){
+        for(int i = 1; i < this.range + 1; i++){
 
-            if((x + i) < this.player.getGameMap().getWidth() && !stopRight ){
+            if((x + i) < this.player.getGameMap().getWidth() && (!stopRight)){
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
 
-            if((x - i) > 1 && !stopLeft){
+            if((x - i) > 0 && !stopLeft){
                 stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
 
@@ -65,7 +68,7 @@ public class Bomb extends TileObject {
                 stopUp = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
 
-            if((y-i) > 1 && !stopDown) {
+            if((y-i) > 0 && !stopDown) {
                 stopDown = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
             }
 
@@ -88,7 +91,7 @@ public class Bomb extends TileObject {
 
         //--- spawning explosion
         if(this.player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
-            this.player.getGameMap().getTile(x,y).getTileObject().execute();
+                this.player.getGameMap().getTile(x,y).getTileObject().execute();
         }
 
         this.player.getGameMap().getTile(x, y).spawn(explosion);

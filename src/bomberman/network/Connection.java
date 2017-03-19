@@ -1,5 +1,8 @@
 package bomberman.network;
 
+import bomberman.gameplay.Player;
+import bomberman.view.engine.utility.Vector2;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -8,8 +11,12 @@ import java.net.UnknownHostException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.*;
+import java.util.zip.Adler32;
+import java.util.zip.Checksum;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public abstract class Connection {
 
@@ -24,7 +31,7 @@ public abstract class Connection {
     private Map<String, Request> requestMap;
 
     public Connection(NetworkController controller) {
-        requestMap = new HashMap<>();
+        requestMap = new LinkedHashMap<>();
 
         KeyPair tempKeys = null;
 
@@ -91,11 +98,15 @@ public abstract class Connection {
         getListener().interrupt();
     }
 
-    public void send(String message, NetworkData networkData) {
+    public void send(String message, NetworkData networkData, boolean resend){
         try {
-            requestMap.put(message, new Request(message, getController().getNetworkPlayerMap().keySet()));
+            Adler32 checksum = new Adler32();
+            checksum.update(message.getBytes());
 
-            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, networkData.getIp(), networkData.getPort());
+            String checkedMessage = checksum.getValue() + "§" + message;
+            requestMap.put(checkedMessage, new Request(checkedMessage, getController().getNetworkPlayerMap().keySet(), resend));
+
+            DatagramPacket packet = new DatagramPacket(checkedMessage.getBytes(), checkedMessage.getBytes().length, networkData.getIp(), networkData.getPort());
 
             getSocket().send(packet);
 
@@ -104,7 +115,16 @@ public abstract class Connection {
         }
     }
 
-    public String decrypt(String message) {
+    public boolean checksum(String[] message){
+        Adler32 checksum = new Adler32();
+        checksum.update(message[1].getBytes());
+        long check = checksum.getValue();
+        long checkOriginal = Long.parseLong(message[0]);
+
+        return check == checkOriginal;
+    }
+
+    public String decrypt(String message){
         return myData.decrpyt(message, keyPair.getPrivate());
     }
 
@@ -112,9 +132,30 @@ public abstract class Connection {
         requestMap.get(message).setRecieved(reciever);
     }
 
+    public void error(NetworkData fromWho){
+        String[] messages = new String[5];
+        final int[] index = {0};
+
+        requestMap.forEach((key, value) -> {
+            if (value.isRecieved(fromWho) && value.isResend()){
+                messages[index[0]] = value.getRequest();
+                index[0]++;
+            }
+        });
+
+        for (String s: messages){
+            send(s, fromWho, true);
+        }
+    }
+
     abstract void update();
 
     abstract void message(String message);
 
     abstract void listen();
+    abstract void move(Vector2 position);
+    abstract void plantBomb();
+    abstract void explodedBomb();
+    abstract void hit(double health);
+
 }

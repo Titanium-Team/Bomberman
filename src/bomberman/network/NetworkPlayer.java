@@ -11,6 +11,8 @@ public class NetworkPlayer extends Player {
 
     public NetworkPlayer(String name, Location center, GameMap map, ConnectionData connectionData) {
         super(PlayerType.NETWORK, map, name, center);
+
+        this.connectionData = connectionData;
     }
 
     //@Override

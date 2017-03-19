@@ -6,6 +6,7 @@ import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.Explosion;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
@@ -109,6 +110,10 @@ public class GameView extends LightingView {
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
                                     //TODO:textures
                                     batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.478f, 0.567f, 0.32f, 1);
+                                }else if (tiles[i][j].getTileObject() instanceof Explosion){
+                                    //TODO:Explosion textures
+                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1f, 0, 0, 1);
+
                                 }
                             }
                         }
