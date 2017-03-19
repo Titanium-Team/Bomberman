@@ -59,7 +59,7 @@ public class Bomb extends TileObject {
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
 
-            if((x - i) > 1 && !stopLeft){
+            if((x - i) > 0 && !stopLeft){
                 stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
 
@@ -67,7 +67,7 @@ public class Bomb extends TileObject {
                 stopUp = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
 
-            if((y-i) > 1 && !stopDown) {
+            if((y-i) > 0 && !stopDown) {
                 stopDown = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
             }
 
