@@ -51,7 +51,6 @@ public class Tile {
                     (
                         !(this.tileType.isWalkable()) ||
                         (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
-                            //instanceof explosion rausgenommen, damit man in explosionen laufen kann
                     )
                 );
     }
