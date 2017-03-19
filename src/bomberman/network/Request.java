@@ -8,10 +8,12 @@ public class Request {
 
     private Map<NetworkData, Boolean> recieved;
     private final String request;
+    private final boolean resend;
 
-    public Request(String request, Set<NetworkData> send) {
+    public Request(String request, Set<NetworkData> send, boolean resend) {
         this.request = request;
         this.recieved = new HashMap<>();
+        this.resend = resend;
 
         for (NetworkData s: send){
             recieved.put(s, false);
@@ -22,7 +24,15 @@ public class Request {
         recieved.put(key, true);
     }
 
+    public boolean isRecieved(NetworkData key){
+        return recieved.get(key);
+    }
+
     public String getRequest() {
         return request;
+    }
+
+    public boolean isResend() {
+        return resend;
     }
 }
