@@ -41,16 +41,8 @@ public class Tile {
         return this.tileObject;
     }
 
-    public double getExplodingTime() {
-        return this.explodingTime;
-    }
-
     public boolean isExploding() {
-        return this.explodingTime > 0;
-    }
-
-    public void setExplodingTime(double explodingTime) {
-        this.explodingTime = explodingTime;
+        return (this.tileObject instanceof Explosion);
     }
 
     public boolean canVisit(Player player) {
@@ -58,8 +50,8 @@ public class Tile {
                     this.boundingBox.intersects(player.getBoundingBox()) &&
                     (
                         !(this.tileType.isWalkable()) ||
-                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player)) ||
-                        (this.tileObject instanceof Explosion)
+                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
+                            //instanceof explosion rausgenommen, damit man in explosionen laufen kann
                     )
                 );
     }

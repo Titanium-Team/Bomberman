@@ -5,6 +5,7 @@ import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 
 public class GameMap {
@@ -198,7 +199,9 @@ public class GameMap {
                     }
 
                     tile.getTileObject().interact(player);
-                    tile.destroyObject();
+                    if(tile.getTileObject() instanceof PowerUp) {
+                        tile.destroyObject();
+                    }
                 }
             }
         }
