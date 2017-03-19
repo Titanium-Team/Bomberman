@@ -37,4 +37,9 @@ public class Location implements Cloneable {
         return Math.sqrt(Math.pow(other.getX() - this.getX(), 2) + Math.pow(other.getY() - this.getY(), 2));
     }
 
+    @Override
+    public Location clone() {
+        return new Location(this.x, this.y);
+    }
+
 }

@@ -20,8 +20,7 @@ public class PowerUp extends TileObject {
 
     @Override
     public void execute() {
-        //@TODO Implement
-        //System.out.println("Despawn");
+        this.parent.destroyObject();
     }
 
     @Override
@@ -84,7 +83,6 @@ public class PowerUp extends TileObject {
         }
 
         this.parent.destroyObject();
-        System.out.println("DONT TOUCH MY TRALALA");
     }
 
 }

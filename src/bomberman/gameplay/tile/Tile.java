@@ -2,6 +2,7 @@ package bomberman.gameplay.tile;
 
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.Explosion;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
@@ -57,7 +58,8 @@ public class Tile {
                     this.boundingBox.intersects(player.getBoundingBox()) &&
                     (
                         !(this.tileType.isWalkable()) ||
-                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
+                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player)) ||
+                        (this.tileObject instanceof Explosion)
                     )
                 );
     }
