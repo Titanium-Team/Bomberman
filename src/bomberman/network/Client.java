@@ -1,5 +1,7 @@
 package bomberman.network;
 
+import bomberman.gameplay.utils.Location;
+import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -33,7 +35,7 @@ public class Client extends Connection {
     @Override
     public void message(String message) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
-            send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getNetworkData());
+            send("message§" + value.getConnectionData().encrypt(message), value.getConnectionData().getNetworkData(), true);
         });
     }
 
@@ -47,35 +49,61 @@ public class Client extends Connection {
             e.printStackTrace();
         }
 
+        NetworkData sender = new NetworkData(packet.getAddress(), packet.getPort());
+
         String message = new String(packet.getData(), 0, packet.getLength());
 
-        String[] splittedMessage = message.split("§");
+        String[] splittedChecksum = message.split("§", 2);
 
-        Gson gson = new Gson();
+        if (checksum(splittedChecksum)) {
+            String[] splittedMessage = splittedChecksum[1].split("§", 2);
 
-        switch (splittedMessage[0]) {
-            case "hello":
-                NetworkData thisPlayer = new NetworkData(packet.getAddress(), packet.getPort());
+            Gson gson = new Gson();
 
-                ConnectionData connectionData = new ConnectionData(thisPlayer, splittedMessage[1]);
+            switch (splittedMessage[0]) {
+                case "hello":
+                    ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
-                //getController().getNetworkPlayerMap().putIfAbsent(thisPlayer, new NetworkPlayer(0, 0, 0, null, connectionData));
+                    getController().getNetworkPlayerMap().putIfAbsent(sender, new NetworkPlayer("", new Location(0, 0), null, connectionData));
 
-                System.out.println("ConnectionData from Server");
+                    System.out.println("ConnectionData from Server");
 
-                break;
-            case "message":
-                String stringMessage = decrypt(splittedMessage[1]);
+                    break;
+                case "message":
+                    String stringMessage = decrypt(splittedMessage[1]);
 
-                System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
+                    System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
 
-                break;
+                    break;
+            }
+        }else {
+            send("error", sender, true);
         }
     }
 
-    private void refreshServers() {
+    @Override
+    void move(Vector2 position) {
+
+    }
+
+    @Override
+    void plantBomb() {
+
+    }
+
+    @Override
+    void explodedBomb() {
+
+    }
+
+    @Override
+    void hit(double health) {
+
+    }
+
+    private void refreshServers(){
         try {
-            send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638));
+            send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638), true);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

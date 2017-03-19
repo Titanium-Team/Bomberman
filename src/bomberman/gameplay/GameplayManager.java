@@ -11,60 +11,61 @@ import java.util.stream.Stream;
 
 public class GameplayManager {
 
+    private final static float POWERUP_TIME = 25;
+    private float powerupTimer = POWERUP_TIME;
+
     private final List<GameMap> maps = new LinkedList<>();
     private final List<Player> players = new LinkedList<>();
-    private Timer timer;
-    private boolean einmalGemacht = false;
 
     public GameplayManager() {
         //map 0
         this.add(
-                GameMap.builder()
-                        .dimension(15, 13)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 2)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 4)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 6)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 8)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 10)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 2)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 4)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 6)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 8)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 10)
+            .build()
         );
 
         //map 1
         this.add(
-                GameMap.builder()
-                        .dimension(15, 13)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .horizontalPattern("WGGBBBBBBBBBGGW", 1)
-                        .horizontalPattern("WGWBWBWBWBWBWGW", 2)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 3)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 4)
-                        .horizontalPattern("WBBBBBGGGBBBBBW", 5)
-                        .horizontalPattern("WBWBWBWGWBWBWBW", 6)
-                        .horizontalPattern("WBBBBBGGGBBBBBW", 7)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 8)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 9)
-                        .horizontalPattern("WGWBWBWBWBWBWGW", 10)
-                        .horizontalPattern("WGGBBBBBBBBBGGW", 11)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 3)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 4)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 5)
+                .horizontalPattern("WBWBWBWGWBWBWBW", 6)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 7)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 8)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 9)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 10)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+            .build()
         );
 
         //map 2
         this.add(
-                GameMap.builder()
-                        .dimension(15, 13)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .horizontalPattern("WGPBBBBBBBBBGGW", 3)
-                        .horizontalPattern("WGPBBBBBBBBBGGW", 4)
-                        .horizontalPattern("WGPBBGGGGGBBGGW", 5)
-                        .horizontalPattern("WGPBBGGGGGBBGGW", 6)
-                        .horizontalPattern("WGPBBGGGGGBBGGW", 7)
-                        .horizontalPattern("WGPBBBBBBBBBGGW", 8)
-                        .horizontalPattern("WGPBBBBBBBBBGGW", 9)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGPBBBBBBBBBGGW", 3)
+                .horizontalPattern("WGPBBBBBBBBBGGW", 4)
+                .horizontalPattern("WGPBBGGGGGBBGGW", 5)
+                .horizontalPattern("WGPBBGGGGGBBGGW", 6)
+                .horizontalPattern("WGPBBGGGGGBBGGW", 7)
+                .horizontalPattern("WGPBBBBBBBBBGGW", 8)
+                .horizontalPattern("WGPBBBBBBBBBGGW", 9)
+            .build()
         );
 
         //@TODO
@@ -90,7 +91,7 @@ public class GameplayManager {
 
     //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(2); //@TODO
+        return this.getMap(1); //@TODO
 
     }
 
@@ -112,36 +113,23 @@ public class GameplayManager {
         this.players.forEach(e -> e.update(delta));
         Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
 
-        this.startPowerups();
+        //--- Powerup Spawn Timer
+        this.powerupTimer -= delta;
+        if(this.powerupTimer <= 0) {
+            this.checkPowerups();
+            this.powerupTimer = POWERUP_TIME;
+        }
+
     }
 
     //powerup start
-    private void startPowerups() {
-        if (einmalGemacht == false) {
-            timedPowerups();
-            einmalGemacht = true;
-        }
-    }
-
-    private void timedPowerups() {
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                checkPowerups();
-            }
-        }, 0, 1000 * 25);
-
-    }
-
-
     private void checkPowerups() {
-        int x = (int) (Math.random() * getCurrentMap().getWidth());
-        int y = (int) (Math.random() * getCurrentMap().getHeight());
-        if (getCurrentMap().getTile(x, y).getTileType() == TileTypes.GROUND && getCurrentMap().getTile(x, y).getTileObject() == null) {
-            getCurrentMap().getTile(x, y).spawnPowerup();
+        int x = (int) (Math.random() * this.getCurrentMap().getWidth());
+        int y = (int) (Math.random() * this.getCurrentMap().getHeight());
+        if (this.getCurrentMap().getTile(x, y).getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).getTileObject() == null) {
+            this.getCurrentMap().getTile(x, y).spawnPowerup();
         } else {
-            checkPowerups();
+            this.checkPowerups();
         }
     }
     //powerup end

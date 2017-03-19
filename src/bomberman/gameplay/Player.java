@@ -20,7 +20,7 @@ public class Player {
     private final static double COLLISION_HEIGHT = .6;
 
 
-    private final static float ACCELERATION_STEP = .02F;
+    private final static float ACCELERATION_STEP = .06F;
     private final static float ACCELERATION_LIMIT = 1;
     private final static float ACCELERATION_TIMER = 0.01F;
 
@@ -55,8 +55,8 @@ public class Player {
         this.name = name;
 
         this.boundingBox = new BoundingBox(
-                new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
-                new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
+            new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
+            new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
 
     }
@@ -136,8 +136,6 @@ public class Player {
 
             this.accelerationTimer = ACCELERATION_TIMER;
 
-            System.out.println(this.vector.getX() + " - " + this.vector.getY());
-
         }
 
 
@@ -171,11 +169,11 @@ public class Player {
         BoundingBox min = this.gameMap.getMin().getBoundingBox();
         BoundingBox max = this.gameMap.getMax().getBoundingBox();
 
-        float minX = (float) (min.getMax().getX() + (COLLISION_WIDTH / 2));
-        float minY = (float) (min.getMax().getY() + (COLLISION_HEIGHT / 2));
+        double minX = (min.getMax().getX() + (COLLISION_WIDTH / 2));
+        double minY = (min.getMax().getY() + (COLLISION_HEIGHT / 2));
 
-        float maxX = (float) (max.getMin().getX() - (COLLISION_WIDTH / 2));
-        float maxY = (float) (max.getMin().getY() - (COLLISION_HEIGHT / 2));
+        double maxX = (max.getMin().getX() - (COLLISION_WIDTH / 2));
+        double maxY = (max.getMin().getY() - (COLLISION_HEIGHT / 2));
 
         switch (direction) {
 
@@ -183,8 +181,8 @@ public class Player {
             case DOWN: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
-                    range(minX, (float) this.boundingBox.getCenter().getX(), maxX),
-                    range(minY, (float) location.getY(), maxY)
+                    range(minX, this.boundingBox.getCenter().getX(), maxX),
+                    range(minY, location.getY(), maxY)
                 );
             }
             break;
@@ -192,17 +190,18 @@ public class Player {
             case LEFT:
             case RIGHT:
                 this.vector.setX(0);
+
                 this.boundingBox.setCenter(
-                    range(minX, (float) location.getX(), maxX),
-                    range(minY, (float) this.boundingBox.getCenter().getY(), maxY)
+                    range(minX, location.getX(), maxX),
+                    range(minY, this.boundingBox.getCenter().getY(), maxY)
                 );
                 break;
 
             case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
 
                 this.boundingBox.setCenter(
-                    range(minX, (float) location.getX(), maxX),
-                    range(minY, (float) location.getY(), maxY)
+                    range(minX, location.getX(), maxX),
+                    range(minY, location.getY(), maxY)
                 );
 
                 //TODO Kollision verbessern
@@ -306,36 +305,23 @@ public class Player {
 
             case UP: {
 
-                if(this.xX > 0) {
-                    this.xY = this.xX;
-                } else {
-                    this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
-                }
-
+                this.xY = (this.xX > this.xY ? this.xX : range(0, this.xY + ACCELERATION_STEP, limit));
                 this.vector.setY((float) -accelerationCurve(this.xY));
+
             }
             break;
 
             case LEFT: {
 
-                if(this.xY > 0) {
-                    this.xX = this.xY;
-                } else {
-                    this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
-                }
-
+                this.xX = (this.xY > this.xX ? this.xY : range(0, this.xX + ACCELERATION_STEP, limit));
                 this.vector.setX((float) -accelerationCurve(this.xX));
+
             }
             break;
 
             case RIGHT: {
 
-                if(this.xY > 0) {
-                    this.xX = this.xY;
-                } else {
-                    this.xX = range(0, this.xX + ACCELERATION_STEP, limit);
-                }
-
+                this.xX = (this.xY > this.xX ? this.xY : range(0, this.xX + ACCELERATION_STEP, limit));
                 this.vector.setX((float) accelerationCurve(this.xX));
 
             }
@@ -343,15 +329,9 @@ public class Player {
 
             case DOWN: {
 
-                if(this.xX > 0) {
-                    this.xY = this.xX;
-                } else {
-                    this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
-                }
-
-                this.xY = range(0, this.xY + ACCELERATION_STEP, limit);
-
+                this.xY = (this.xX > this.xY ? this.xX : range(0, this.xY + ACCELERATION_STEP, limit));
                 this.vector.setY((float) accelerationCurve(this.xY));
+
             }
             break;
 
@@ -373,6 +353,9 @@ public class Player {
     }
 
     private static float range(float min, float value, float max) {
+        return Math.min(Math.max(value, min), max);
+    }
+    private static double range(double min, double value, double max) {
         return Math.min(Math.max(value, min), max);
     }
 
