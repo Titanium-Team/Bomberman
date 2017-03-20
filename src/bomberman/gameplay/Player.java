@@ -92,14 +92,7 @@ public class Player {
 
     public Tile getTile() {
 
-        Location location = this.boundingBox.getCenter();
-
-        if(this.vector.getY() > 0) {
-            location = this.boundingBox.getMax();
-        } else if(this.vector.getY() < 0) {
-            location = this.boundingBox.getMin();
-        }
-
+        Location location = this.boundingBox.getMin();
         return this.gameMap.getTile(
 
                 (int) Math.round(location.getX()),
