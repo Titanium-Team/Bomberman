@@ -1,6 +1,7 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.properties.PropertyRepository;
+import bomberman.gameplay.properties.PropertyType;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
@@ -35,7 +36,7 @@ public class Player {
 
     //--- PlayerProperties
     private final String name;
-    private double health;
+
 
     private final PlayerType playerType;
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
@@ -47,7 +48,7 @@ public class Player {
 
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
-
+    private int health = this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH);
     private int bombsLeft = this.propertyRepository.<Integer>get(PropertyTypes.BOMB_AMOUNT);
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
@@ -119,8 +120,25 @@ public class Player {
         return gameMap;
     }
 
-    public void setHealth(double health) {
-        this.health = health;
+    public void loseHealth() {
+        this.getPropertyRepository().set(PropertyTypes.HEALTH, this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH)-1);
+        if(this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH)>0) {
+            System.out.println("player health: " + this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH));
+            this.getPropertyRepository().set(PropertyTypes.INVINCIBILITY, 3F);
+            getRespawn();
+        }else{
+            System.out.println("gameover");
+        }
+    }
+
+    public void getRespawn(){
+        int x = (int) (Math.random() * gameMap.getWidth());
+        int y = (int) (Math.random() * gameMap.getHeight());
+        if (gameMap.getTile(x, y).getTileType() == TileTypes.GROUND && gameMap.getTile(x, y).getTileObject() == null) {
+            boundingBox.setCenter(gameMap.getTile(x,y).getBoundingBox().getCenter());
+        } else {
+            this.getRespawn();
+        }
     }
 
     public void update(float delta) {
@@ -246,6 +264,9 @@ public class Player {
         }
 
         this.gameMap.checkInteraction(this);
+        if(this.getPropertyRepository().<Float>get(PropertyTypes.INVINCIBILITY)>0F) {
+            this.getPropertyRepository().set(PropertyTypes.INVINCIBILITY, this.getPropertyRepository().<Float>get(PropertyTypes.INVINCIBILITY) - delta);
+        }
 
     }
 

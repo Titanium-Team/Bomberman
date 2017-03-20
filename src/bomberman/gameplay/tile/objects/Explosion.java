@@ -1,5 +1,6 @@
 package bomberman.gameplay.tile.objects;
 
+import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.Main;
 import bomberman.gameplay.Player;
@@ -20,7 +21,10 @@ public class Explosion extends TileObject{
 
     @Override
     public void interact(Player player) {
-        System.out.println("player dead");
+        if(player.getPropertyRepository().<Float>get(PropertyTypes.INVINCIBILITY)<=0){
+            System.out.println("player dead");
+            player.loseHealth();
+        }
     }
 
     public boolean destroyWall(){

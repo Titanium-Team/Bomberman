@@ -54,6 +54,8 @@ public class GameMap {
         return this.startPositions.remove(GameMap.random.nextInt(this.startPositions.size()));
     }
 
+
+
     public Tile getTile(int x,int y) {
 
         assert x >= 0 && x < this.width;

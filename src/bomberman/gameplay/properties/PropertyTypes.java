@@ -21,6 +21,19 @@ public enum PropertyTypes implements PropertyType {
             return 1;
         }
 
+    },
+    HEALTH {
+        @Override
+        public Integer defaultValue() {
+            return 3;
+        }
+
+    },
+    INVINCIBILITY{
+        @Override
+        public Float defaultValue() {
+            return 0F;
+        }
     }
 
 }
