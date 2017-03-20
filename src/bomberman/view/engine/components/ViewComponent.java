@@ -9,12 +9,13 @@ public abstract class ViewComponent {
     private View view;
     private LayoutParams params;
     private float x, y, width, height;
+    private boolean visible;
 
 
     public ViewComponent(LayoutParams params, View v) {
         this.params = params;
         this.view = v;
-
+        this.visible=true;
     }
 
     public abstract void draw(Batch batch);
@@ -74,5 +75,13 @@ public abstract class ViewComponent {
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

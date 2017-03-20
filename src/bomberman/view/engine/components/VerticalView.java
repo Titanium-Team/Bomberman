@@ -13,7 +13,7 @@ public class VerticalView extends Panel {
         super(params, v);
 
         this.setBackgroundColor(0.2f, 0.3f, 0.5f, 0.5f);
-        this.scrollbar = new Scrollbar(LayoutParams.obtain(0.9f, 0, 0.1f, 1), v);
+        this.scrollbar = new Scrollbar(LayoutParams.obtain(0.9f, 0, 0.1f, 1), v,this);
         super.addChild(scrollbar);
     }
 
@@ -29,15 +29,19 @@ public class VerticalView extends Panel {
         this.updateChildren();
     }
 
-    private void updateChildren() {
+    public void updateChildren() {
         scrollbar.setElements(this.getChildren().size() - 1);
-        float size = 1 / (float) (this.getChildren().size() - 1);
+        float size = 1 / (float) (this.scrollbar.getIndexOfLastElement()-scrollbar.getIndexOfFirstElement());
         int count = 0;
         for (int i = 0; i < this.getChildren().size(); i++) {
             ViewComponent childComponent = this.getChildren().get(i);
             if (!(childComponent instanceof Scrollbar)) {
-                childComponent.setParams(LayoutParams.obtain(0, count * size, 0.9f, size));
-                count++;
+                if(i<= scrollbar.getIndexOfLastElement() && i >= scrollbar.getIndexOfFirstElement()) {
+                    childComponent.setParams(LayoutParams.obtain(0, count * size, 0.9f, size));
+                    count++;
+                }else{
+                    childComponent.setParams(LayoutParams.obtain(50f,50f,0,0));
+                }
             }
         }
 
