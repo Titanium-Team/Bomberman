@@ -29,21 +29,20 @@ public class LobbyView extends BaseMenuView {
 
 
         //Game Options Panel :
-        this.gameOptionsPanel = new Panel(LayoutParams.obtain(0.7f,0f,0.3f,1f),this);
+        this.gameOptionsPanel = new Panel(LayoutParams.obtain(0.7f, 0f, 0.3f, 1f), this);
         this.getRoot().addChild(gameOptionsPanel);
 
-        this.mapIndexTextField = new TextField(LayoutParams.obtain(0f , 0f , 1f , 0f ),this,"","Map Index");
+        this.mapIndexTextField = new TextField(LayoutParams.obtain(0f, 0f, 1f, 0f), this, "", "Map Index");
         this.gameOptionsPanel.addChild(mapIndexTextField);
 
         //TODO Color anzeigen, und so .... mit Buttón eventuell.
-        this.playerColorTextField = new TextField(LayoutParams.obtain(0f , 0f , 1f , 0f ),this,"","Player Color");
+        this.playerColorTextField = new TextField(LayoutParams.obtain(0f, 0f, 1f, 0f), this, "", "Player Color");
         this.gameOptionsPanel.addChild(playerColorTextField);
 
 
-
-        float gameOptionsPanelChildrenHeight = (1/(float)gameOptionsPanel.getChildren().size());
-        for(int i = 0 ; i < gameOptionsPanel.getChildren().size(); i++){
-            gameOptionsPanel.getChildren().get(i).setParams(LayoutParams.obtain(0f,( i * gameOptionsPanel.getParams().h * gameOptionsPanelChildrenHeight), 1f, gameOptionsPanelChildrenHeight));
+        float gameOptionsPanelChildrenHeight = (1 / (float) gameOptionsPanel.getChildren().size());
+        for (int i = 0; i < gameOptionsPanel.getChildren().size(); i++) {
+            gameOptionsPanel.getChildren().get(i).setParams(LayoutParams.obtain(0f, (i * gameOptionsPanel.getParams().h * gameOptionsPanelChildrenHeight), 1f, gameOptionsPanelChildrenHeight));
         }
         //Game Options Panel End
 

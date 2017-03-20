@@ -76,7 +76,7 @@ public class Client extends Connection {
 
                     break;
             }
-        }else {
+        } else {
             send("error", sender, true);
         }
     }
@@ -101,7 +101,7 @@ public class Client extends Connection {
 
     }
 
-    private void refreshServers(){
+    private void refreshServers() {
         try {
             send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638), true);
         } catch (UnknownHostException e) {

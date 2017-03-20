@@ -22,18 +22,18 @@ public class TextField extends ViewComponent {
 
     public TextField(LayoutParams params, View v, String text, String backText) {
         super(params, v);
-        if(text != null) {
+        if (text != null) {
             this.text = text;
-        }else{
+        } else {
             this.text = "";
         }
         this.backText = backText;
 
     }
 
-    public TextField(LayoutParams params, View v, String text ) {this(params,v,text,"");
+    public TextField(LayoutParams params, View v, String text) {
+        this(params, v, text, "");
     }
-
 
 
     public void addChar(char c) {
@@ -94,7 +94,7 @@ public class TextField extends ViewComponent {
         if (text.length() != 0 && text != null) {
             ViewManager.font.drawText(batch, text, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
 
-        }else if (text.length() == 0 && state == State.Unfocussed)
+        } else if (text.length() == 0 && state == State.Unfocussed)
             ViewManager.font.drawText(batch, backText, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
     }
 }

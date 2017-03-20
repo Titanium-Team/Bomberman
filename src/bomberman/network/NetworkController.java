@@ -14,14 +14,14 @@ public class NetworkController implements Runnable {
 
     private Map<NetworkData, NetworkPlayer> networkPlayerMap;
 
-    public NetworkController(boolean hosting){
+    public NetworkController(boolean hosting) {
         this.hosting = hosting;
         networkPlayerMap = new HashMap<>();
 
         try {
-            if (hosting){
+            if (hosting) {
                 connection = new Server(this);
-            }else {
+            } else {
                 connection = new Client(this);
             }
         } catch (IOException e) {
@@ -29,7 +29,7 @@ public class NetworkController implements Runnable {
         }
     }
 
-    public NetworkController(int customPort){
+    public NetworkController(int customPort) {
         hosting = true;
         networkPlayerMap = new HashMap<>();
 
@@ -56,23 +56,23 @@ public class NetworkController implements Runnable {
         connection.message(message);
     }
 
-    public void move(Vector2 position){
+    public void move(Vector2 position) {
         connection.move(position);
     }
 
-    public void plantBomb(){
+    public void plantBomb() {
         connection.plantBomb();
     }
 
-    public void explodedBomb(){
+    public void explodedBomb() {
         connection.explodedBomb();
     }
 
-    public void hit(double healthLeft){
+    public void hit(double healthLeft) {
         connection.hit(healthLeft);
     }
 
-    public void joinServer(String ip, int port){
+    public void joinServer(String ip, int port) {
 
     }
 }
