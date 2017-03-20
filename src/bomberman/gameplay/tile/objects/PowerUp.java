@@ -28,58 +28,55 @@ public class PowerUp extends TileObject {
 
         PropertyRepository repo = player.getPropertyRepository();
 
-        switch (powerUpType) {
+        switch (this.powerUpType) {
 
-            case SPEEDUP:
-                repo.set(
+            case SPEEDUP: {
+                repo.setValue(
                         PropertyTypes.SPEED_FACTOR,
-                        repo.<Float>get(PropertyTypes.SPEED_FACTOR) + (float) powerUpType.value()
+                        repo.getValue(PropertyTypes.SPEED_FACTOR) + (float) PowerUpTypes.SPEEDUP.value()
                 );
+            }
+            break;
 
-                System.out.println("SpeedUP");
-                System.out.println(repo.get(PropertyTypes.SPEED_FACTOR));
-                break;
-
-            case SPEEDDOWN:
-                /*if(player.getPLAYER_speedFactor()>((float)powerUpType.SPEEDDOWN.value()*-1)){
-                    player.setPLAYER_speedFactor(player.getPLAYER_speedFactor()+(float)powerUpType.SPEEDDOWN.value());
-                    System.out.println("SpeedDOWN");
-                }*/
-                break;
-
-            case FIREUP:
-                repo.set(
-                        PropertyTypes.BOMB_BLAST_RADIUS,
-                        repo.<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS) + (int) powerUpType.value()
+            case SPEEDDOWN: {
+                repo.setValue(
+                    PropertyTypes.SPEED_FACTOR,
+                    repo.getValue(PropertyTypes.SPEED_FACTOR) + (float) PowerUpTypes.SPEEDDOWN.value()
                 );
+            }
+            break;
 
-                System.out.println("FireUP");
-                System.out.println(repo.get(PropertyTypes.BOMB_BLAST_RADIUS));
-                break;
-
-            case FIREDOWN:
-                /*if(player.getBOMB_blastRadius()>1){
-                    player.setBOMB_blastRadius(player.getBOMB_blastRadius()+(int)powerUpType.FIREDOWN.value());
-                    System.out.println("FireDOWN");
-                }*/
-                break;
-
-            case BOMBUP:
-                repo.set(
-                        PropertyTypes.BOMB_AMOUNT,
-                        repo.<Integer>get(PropertyTypes.BOMB_AMOUNT) + (int) powerUpType.value()
+            case FIREUP: {
+                repo.setValue(
+                    PropertyTypes.BOMB_BLAST_RADIUS,
+                    repo.getValue(PropertyTypes.BOMB_BLAST_RADIUS) + (int) PowerUpTypes.FIREUP.value()
                 );
+            }
+            break;
 
-                System.out.println("BombUP");
-                System.out.println(repo.get(PropertyTypes.BOMB_AMOUNT));
-                break;
+            case FIREDOWN: {
+                repo.setValue(
+                    PropertyTypes.BOMB_BLAST_RADIUS,
+                    repo.getValue(PropertyTypes.BOMB_BLAST_RADIUS) + (float) PowerUpTypes.FIREDOWN.value()
+                );
+            }
+            break;
 
-            case BOMBDOWN:
-                /*if(player.getBOMB_amount()>1){
-                    player.setBOMB_amount(player.getBOMB_amount()+(int)powerUpType.BOMBDOWN.value());
-                    System.out.println("BombDOWN");
-                }*/
-                break;
+            case BOMBUP: {
+                repo.setValue(
+                    PropertyTypes.BOMB_AMOUNT,
+                    repo.getValue(PropertyTypes.BOMB_AMOUNT) + (float) PowerUpTypes.BOMBUP.value()
+                );
+            }
+            break;
+
+            case BOMBDOWN: {
+                repo.setValue(
+                    PropertyTypes.BOMB_BLAST_RADIUS,
+                    Math.max(1, repo.getValue(PropertyTypes.BOMB_BLAST_RADIUS) + (float) PowerUpTypes.BOMBDOWN.value())
+                );
+            }
+            break;
         }
 
         this.parent.destroyObject();

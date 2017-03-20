@@ -17,38 +17,44 @@ public class GameplayManager {
     public GameplayManager() {
         //map 0
         this.add(
-                GameMap.builder()
-                        .dimension(15, 13)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 2)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 4)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 6)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 8)
-                        .horizontalPattern("WGBGBGBGBGBGBGW", 10)
-                        .startPosition(1, 1)
-                        .startPosition(12, 11)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 2)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 4)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 6)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 8)
+                .horizontalPattern("WGBGBGBGBGBGBGW", 10)
+                .startPosition(1, 1)
+                .startPosition(13, 1)
+                .startPosition(1, 11)
+                .startPosition(12, 11)
+            .build()
         );
 
         //map 1
         this.add(
-                GameMap.builder()
-                        .dimension(15, 13)
-                        .frame(TileTypes.WALL)
-                        .fillEmpty(TileTypes.GROUND)
-                        .horizontalPattern("WGGBBBBBBBBBGGW", 1)
-                        .horizontalPattern("WGWBWBWBWBWBWGW", 2)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 3)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 4)
-                        .horizontalPattern("WBBBBBGGGBBBBBW", 5)
-                        .horizontalPattern("WBWBWBWGWBWBWBW", 6)
-                        .horizontalPattern("WBBBBBGGGBBBBBW", 7)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 8)
-                        .horizontalPattern("WBBBBBBBBBBBBBW", 9)
-                        .horizontalPattern("WGWBWBWBWBWBWGW", 10)
-                        .horizontalPattern("WGGBBBBBBBBBGGW", 11)
-                        .build()
+            GameMap.builder()
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 3)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 4)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 5)
+                .horizontalPattern("WBWBWBWGWBWBWBW", 6)
+                .horizontalPattern("WBBBBBGGGBBBBBW", 7)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 8)
+                .horizontalPattern("WBBBBBBBBBBBBBW", 9)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 10)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                .startPosition(1, 1)
+                .startPosition(13, 1)
+                .startPosition(1, 11)
+                .startPosition(12, 11)
+            .build()
         );
 
         //map 2
@@ -65,6 +71,7 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBBBBBBBBGGW", 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", 9)
                 .startPosition(1, 1)
+                .startPosition(12, 11)
             .build()
 
         );
@@ -127,8 +134,8 @@ public class GameplayManager {
     private void checkPowerups() {
         int x = (int) (Math.random() * this.getCurrentMap().getWidth());
         int y = (int) (Math.random() * this.getCurrentMap().getHeight());
-        if (this.getCurrentMap().getTile(x, y).getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).getTileObject() == null) {
-            this.getCurrentMap().getTile(x, y).spawnPowerup();
+        if (this.getCurrentMap().getTile(x, y).get().getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).get().getTileObject() == null) {
+            this.getCurrentMap().getTile(x, y).get().spawnPowerup();
         } else {
             this.checkPowerups();
         }
