@@ -2,6 +2,7 @@ package bomberman.gameplay.tile.objects;
 
 import bomberman.Main;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
@@ -26,7 +27,7 @@ public class Bomb extends TileObject {
 
         super(parent, lifespan);
         this.player = player;
-        this.range = this.player.getPropertyRepository().<Integer>get(PropertyTypes.BOMB_BLAST_RADIUS);
+        this.range = (int) this.player.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS);
 
         Main.instance.getGameplayManager().getPlayers().forEach(e -> {
             if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())) {
@@ -43,7 +44,8 @@ public class Bomb extends TileObject {
     public void execute() {
 
         //--- Add new bomb
-        this.player.setBombsLeft(this.player.getBombsLeft() + 1);
+        PropertyRepository repo = this.player.getPropertyRepository();
+        repo.setValue(PropertyTypes.BOMB_AMOUNT, repo.getValue(PropertyTypes.BOMB_AMOUNT) + 1);
 
         //--- coordinates of the bomb
         int x = (int) this.getParent().getBoundingBox().getMin().getX();
@@ -93,14 +95,14 @@ public class Bomb extends TileObject {
 
     private boolean createExplosion(int x, int y, float lifespan){
 
-        Explosion explosion = new Explosion(this.player.getGameMap().getTile(x, y), lifespan);
+        Explosion explosion = new Explosion(this.player.getGameMap().getTile(x, y).get(), lifespan);
 
         //--- spawning explosion
-        if(this.player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
-            this.player.getGameMap().getTile(x,y).getTileObject().execute();
+        if(this.player.getGameMap().getTile(x,y).get().getTileObject() instanceof Bomb) {
+            this.player.getGameMap().getTile(x,y).get().getTileObject().execute();
         }
 
-        this.player.getGameMap().getTile(x, y).spawn(explosion);
+        this.player.getGameMap().getTile(x, y).get().spawn(explosion);
 
         return explosion.destroyWall();
 

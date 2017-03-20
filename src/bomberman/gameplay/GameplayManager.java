@@ -30,6 +30,8 @@ public class GameplayManager {
                 .horizontalPattern("WGBGBGBGBGBGBGW", 8)
                 .horizontalPattern("WGBGBGBGBGBGBGW", 10)
                 .startPosition(1, 1)
+                .startPosition(13, 1)
+                .startPosition(1, 11)
                 .startPosition(12, 11)
             .build()
         );
@@ -51,6 +53,10 @@ public class GameplayManager {
                 .horizontalPattern("WBBBBBBBBBBBBBW", 9)
                 .horizontalPattern("WGWBWBWBWBWBWGW", 10)
                 .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                .startPosition(1, 1)
+                .startPosition(13, 1)
+                .startPosition(1, 11)
+                .startPosition(12, 11)
             .build()
         );
 
@@ -67,6 +73,8 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBGGGGGBBGGW", 7)
                 .horizontalPattern("WGPBBBBBBBBBGGW", 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", 9)
+                .startPosition(1, 1)
+                .startPosition(12, 11)
             .build()
         );
 
@@ -93,7 +101,7 @@ public class GameplayManager {
 
     //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(0); //@TODO
+        return this.getMap(2); //@TODO
 
     }
 
@@ -128,8 +136,8 @@ public class GameplayManager {
     private void checkPowerups() {
         int x = (int) (Math.random() * this.getCurrentMap().getWidth());
         int y = (int) (Math.random() * this.getCurrentMap().getHeight());
-        if (this.getCurrentMap().getTile(x, y).getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).getTileObject() == null) {
-            this.getCurrentMap().getTile(x, y).spawnPowerup();
+        if (this.getCurrentMap().getTile(x, y).get().getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).get().getTileObject() == null) {
+            this.getCurrentMap().getTile(x, y).get().spawnPowerup();
         } else {
             this.checkPowerups();
         }

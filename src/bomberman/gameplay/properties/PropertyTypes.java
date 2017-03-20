@@ -4,21 +4,51 @@ public enum PropertyTypes implements PropertyType {
 
     SPEED_FACTOR {
         @Override
-        public Float defaultValue() {
+        public float defaultValue() {
             return 1F;
+        }
+
+        @Override
+        public float maxValue() {
+            return 1.3F;
+        }
+
+        @Override
+        public float minValue() {
+            return 0.8F;
         }
 
     },
     BOMB_BLAST_RADIUS {
         @Override
-        public Integer defaultValue() {
+        public float defaultValue() {
+            return 1;
+        }
+
+        @Override
+        public float maxValue() {
+            return 5;
+        }
+
+        @Override
+        public float minValue() {
             return 1;
         }
     },
     BOMB_AMOUNT {
         @Override
-        public Integer defaultValue() {
+        public float defaultValue() {
             return 1;
+        }
+
+        @Override
+        public float maxValue() {
+            return 3;
+        }
+
+        @Override
+        public float minValue() {
+            return 0;
         }
 
     }
