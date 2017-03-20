@@ -92,10 +92,18 @@ public class Player {
 
     public Tile getTile() {
 
+        Location location = this.boundingBox.getCenter();
+
+        if(this.vector.getY() > 0) {
+            location = this.boundingBox.getMax();
+        } else if(this.vector.getY() < 0) {
+            location = this.boundingBox.getMin();
+        }
+
         return this.gameMap.getTile(
 
-                (int) Math.round(this.boundingBox.getMin().getX()),
-                (int) Math.round(this.boundingBox.getMin().getY())
+                (int) Math.round(location.getX()),
+                (int) Math.round(location.getY())
 
         ).get();
 
@@ -273,7 +281,8 @@ public class Player {
         switch (keyCode) {
 
             case Keyboard.KEY_Q:
-                System.out.println(this.getTile().getTileType() + " - " + this.getTile().isExploding() + " - " + this.getTile().canVisit(this));
+                GameMap.STICKY_WALLS_OR_BUGS = !GameMap.STICKY_WALLS_OR_BUGS;
+                System.out.println(GameMap.STICKY_WALLS_OR_BUGS ? "YOU ENABLED STICKY WALLS!" : "YOU ENABLED AWESOME MOVEMENT BUGS!");
                 break;
 
             case Keyboard.KEY_UP:
