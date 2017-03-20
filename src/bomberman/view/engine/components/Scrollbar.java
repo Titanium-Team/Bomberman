@@ -22,14 +22,19 @@ public class Scrollbar extends ViewComponent {
     @Override
     public void draw(Batch batch) {
         this.calculateScrolltabHeight();
+        if(this.verticalDistance!=-1){
+            scrollPos =  Math.max(0,Math.min((float)((this.getView().getHeight()-Mouse.getY()-this.getY()-verticalDistance)/ this.getHeight()) , 1-(scrollTabHeight)));
+        }
         batch.draw(null, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0.3f, 0.3f, 0.3f, 1);
-        batch.draw(null, this.getX(), this.getY() * (1.05f), this.getWidth(), (this.getHeight() - 0.1f * this.getY()) * scrollTabHeight, 0.2f, 0.7f, 0.7f, 0.7f);
+        batch.draw(null, this.getX(), this.getY() + (this.getHeight() * (scrollPos)), this.getWidth(), this.getHeight() * scrollTabHeight<this.getY()+this.getHeight()? this.getHeight() * scrollTabHeight : this.getHeight() - (this.getHeight() * scrollPos), 0.2f, 0.7f, 0.7f, 0.7f);
         this.getView().requestLayout();
     }
 
     private void calculateScrolltabHeight() {
         if (elements > visibleElements) {
             this.scrollTabHeight = (float) (visibleElements) / (float) elements;
+        }else{
+            scrollTabHeight=1;
         }
     }
 
@@ -45,14 +50,10 @@ public class Scrollbar extends ViewComponent {
         super.onMouseDown(button, mouseX, mouseY);
         if (visibleElements < elements && Utility.viewComponentIsCollidingWithMouse(this, mouseX, mouseY) && mouseY > this.getY() * (1 + scrollPos) && mouseY < this.getY() * (1 + scrollPos) + (this.getHeight() - 0.1f * this.getY()) * scrollTabHeight) {
             if (verticalDistance == -1) {
-                this.verticalDistance = ((int) (this.getY() * (1 + scrollPos)));
+                this.verticalDistance = ((int) (mouseY-this.getY()));
             }
-            scrollPos = Math.max(0, (float) mouseY / this.getHeight());
+            scrollPos =  Math.max(0,(float)((mouseY-this.getY()-verticalDistance) / this.getHeight()));
         }
-    }
-
-    public void update(float deltaTime) {
-        scrollPos = Math.max(0, (float) Mouse.getY() / this.getHeight());
     }
 
     @Override
@@ -60,4 +61,5 @@ public class Scrollbar extends ViewComponent {
         super.onMouseUp(button, mouseX, mouseY);
         verticalDistance = -1;
     }
+
 }
