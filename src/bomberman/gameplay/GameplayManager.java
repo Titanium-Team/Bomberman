@@ -1,12 +1,9 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileTypes;
-import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Stream;
 
 public class GameplayManager {
@@ -76,6 +73,7 @@ public class GameplayManager {
                 .startPosition(1, 1)
                 .startPosition(12, 11)
             .build()
+
         );
 
         //@TODO
@@ -125,7 +123,7 @@ public class GameplayManager {
 
         //--- Powerup Spawn Timer
         this.powerupTimer -= delta;
-        if(this.powerupTimer <= 0) {
+        if (this.powerupTimer <= 0) {
             this.checkPowerups();
             this.powerupTimer = POWERUP_TIME;
         }

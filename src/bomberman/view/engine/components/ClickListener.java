@@ -1,8 +1,7 @@
 package bomberman.view.engine.components;
 
 
-public interface ButtonListener {
-
+public interface ClickListener {
     void onClick();
 
 }

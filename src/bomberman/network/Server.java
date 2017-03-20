@@ -1,21 +1,15 @@
 package bomberman.network;
 
-import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.*;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPublicKeySpec;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Server extends Connection {
 
@@ -99,7 +93,7 @@ public class Server extends Connection {
 
                     System.out.println("ERROR");
             }
-        }else {
+        } else {
             send("error", sender, true);
         }
     }
@@ -131,7 +125,7 @@ public class Server extends Connection {
     }
 
 
-    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend){
+    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend) {
         System.out.println(networkData.getPort());
         getController().getNetworkPlayerMap().forEach((key, value) -> {
             System.out.println(value.getConnectionData().getNetworkData().getPort());

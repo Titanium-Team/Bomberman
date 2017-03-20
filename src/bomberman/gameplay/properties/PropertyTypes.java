@@ -51,6 +51,43 @@ public enum PropertyTypes implements PropertyType {
             return 0;
         }
 
+    },
+
+    HEALTH {
+
+        @Override
+        public float defaultValue() {
+            return 3;
+        }
+
+        @Override
+        public float maxValue() {
+            return 5;
+        }
+
+        @Override
+        public float minValue() {
+            return 0;
+        }
+
+    },
+
+    INVINCIBILITY{
+        @Override
+        public float defaultValue() {
+            return 0F;
+        }
+
+        @Override
+        public float maxValue() {
+            return 3;
+        }
+
+        @Override
+        public float minValue() {
+            return 0;
+        }
+
     }
 
 }

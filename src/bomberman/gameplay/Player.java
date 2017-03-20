@@ -4,6 +4,7 @@ import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
@@ -34,7 +35,7 @@ public class Player {
 
     //--- PlayerProperties
     private final String name;
-    private double health;
+
 
     private final PlayerType playerType;
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
@@ -55,18 +56,14 @@ public class Player {
         this.name = name;
 
         this.boundingBox = new BoundingBox(
-            new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
-            new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
+                new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
+                new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
 
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public double getHealth() {
-        return health;
     }
 
     public FacingDirection getFacingDirection() {
@@ -104,12 +101,33 @@ public class Player {
 
     }
 
-    public GameMap getGameMap(){
+    public GameMap getGameMap() {
         return gameMap;
     }
 
-    public void setHealth(double health) {
-        this.health = health;
+    public void loseHealth() {
+        this.getPropertyRepository().setValue(
+            PropertyTypes.HEALTH,
+            this.getPropertyRepository().getValue(PropertyTypes.HEALTH) - 1
+        );
+
+        if(this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0) {
+            System.out.println("player health: " + this.getPropertyRepository().getValue(PropertyTypes.HEALTH));
+            this.getPropertyRepository().setValue(PropertyTypes.INVINCIBILITY, 3F);
+            this.respawn();
+        }else{
+            System.out.println("gameover");
+        }
+    }
+
+    private void respawn(){
+        int x = (int) (Math.random() * this.gameMap.getWidth());
+        int y = (int) (Math.random() * this.gameMap.getHeight());
+        if (this.gameMap.getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameMap.getTile(x, y).get().getTileObject() == null) {
+            this.boundingBox.setCenter(this.gameMap.getTile(x,y).get().getBoundingBox().getCenter());
+        } else {
+            this.respawn();
+        }
     }
 
     public void update(float delta) {
@@ -149,20 +167,20 @@ public class Player {
 
 
         /**
-        this.gameMap.checkInteraction(this);
+         this.gameMap.checkInteraction(this);
 
-        switch (this.gameMap.checkCollision(this)) {
+         switch (this.gameMap.checkCollision(this)) {
 
-            case LEFT:
-            case RIGHT:
-                this.vector.setX(0);
-                this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
-                break;
-            case UP:
-            case DOWN:
-                this.vector.setY(0);
-                this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
-                break;
+         case LEFT:
+         case RIGHT:
+         this.vector.setX(0);
+         this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
+         break;
+         case UP:
+         case DOWN:
+         this.vector.setY(0);
+         this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
+         break;
          **/
         Direction direction = this.gameMap.checkCollision(this);
 
@@ -181,8 +199,8 @@ public class Player {
             case DOWN: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
-                    range(minX, this.boundingBox.getCenter().getX(), maxX),
-                    range(minY, location.getY(), maxY)
+                        range(minX, this.boundingBox.getCenter().getX(), maxX),
+                        range(minY, location.getY(), maxY)
                 );
             }
             break;
@@ -200,8 +218,8 @@ public class Player {
 
             case STOP_VERTICAL_MOVEMENT:
                 this.boundingBox.setCenter(
-                    range(minX, location.getX(), maxX),
-                    range(minY, location.getY(), maxY)
+                        range(minX, location.getX(), maxX),
+                        range(minY, location.getY(), maxY)
                 );
                 this.vector.setY(0);
                 this.vector.setX(0);
@@ -215,6 +233,12 @@ public class Player {
         }
 
         this.gameMap.checkInteraction(this);
+
+        //--- Update INVINCIBILITY Timer
+        this.getPropertyRepository().setValue(
+            PropertyTypes.INVINCIBILITY,
+            this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
+        );
 
     }
 
@@ -249,7 +273,7 @@ public class Player {
         switch (keyCode) {
 
             case Keyboard.KEY_Q:
-                System.out.println(this.getTile().getTileType() +  " - " + this.getTile().isExploding() + " - " + this.getTile().canVisit(this));
+                System.out.println(this.getTile().getTileType() + " - " + this.getTile().isExploding() + " - " + this.getTile().canVisit(this));
                 break;
 
             case Keyboard.KEY_UP:
@@ -350,6 +374,7 @@ public class Player {
     private static float range(float min, float value, float max) {
         return Math.min(Math.max(value, min), max);
     }
+
     private static double range(double min, double value, double max) {
         return Math.min(Math.max(value, min), max);
     }

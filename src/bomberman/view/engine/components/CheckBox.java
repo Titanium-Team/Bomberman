@@ -6,39 +6,21 @@ import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
 
 
-public class CheckBox extends ViewComponent {
-
-    public enum State {
-        Default, Pressed;
-    }
+public class CheckBox extends ViewComponentClickable {
 
     private String text;
-    private State state = State.Default;
     private boolean checked = false;
 
     public CheckBox(LayoutParams params, View v, String text) {
         super(params, v);
         this.text = text;
-    }
 
-    @Override
-    public void onMouseDown(int button, int mouseX, int mouseY) {
-        super.onMouseDown(button, mouseX, mouseY);
-        if (Utility.viewComponentIsCollidingWithMouse(this, mouseX, mouseY)) {
-            if (button == 0) {
-                state = State.Pressed;
+        this.addListener(new ClickListener() {
+            @Override
+            public void onClick() {
+                CheckBox.this.checked = !CheckBox.this.checked;
             }
-        }
-    }
-
-    @Override
-    public void onMouseUp(int button, int mouseX, int mouseY) {
-        super.onMouseUp(button, mouseX, mouseY);
-
-        if (button == 0 && state == State.Pressed) {
-            state = State.Default;
-            this.checked = !this.checked;
-        }
+        });
     }
 
     @Override
