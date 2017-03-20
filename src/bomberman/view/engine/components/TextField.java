@@ -3,18 +3,17 @@ package bomberman.view.engine.components;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
-import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Keyboard;
 
-public class TextField extends ViewComponent {
+public class TextField extends ViewComponentClickable {
 
-    public enum State {
+    private enum State{
         Focussed, Unfocussed;
     }
 
     private String text, backText;
-    private State state = State.Unfocussed;
     private int pointer;
+    private State state;
 
     public TextField(LayoutParams params, View v) {
         this(params, v, "");
@@ -29,9 +28,16 @@ public class TextField extends ViewComponent {
         }
         this.backText = backText;
 
+        this.addListener(new ClickListener() {
+            @Override
+            public void onClick() {
+                pointer = text.length();
+            }
+        });
+
     }
 
-    public TextField(LayoutParams params, View v, String text ) {this(params,v,text,"");
+    public TextField(LayoutParams params, View v, String text ) {this(params, v, text, "");
     }
 
 
@@ -41,18 +47,6 @@ public class TextField extends ViewComponent {
         pointer++;
     }
 
-    @Override
-    public void onMouseDown(int button, int mouseX, int mouseY) {
-        super.onMouseDown(button, mouseX, mouseY);
-        if (Utility.viewComponentIsCollidingWithMouse(this, mouseX, mouseY)) {
-            if (button == 0) {
-                state = State.Focussed;
-                pointer = text.length();
-            }
-        } else {
-            state = State.Unfocussed;
-        }
-    }
 
     @Override
     public void onKeyDown(int key, char c) {

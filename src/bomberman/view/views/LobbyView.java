@@ -17,14 +17,15 @@ public class LobbyView extends BaseMenuView {
 
     private Button startButton;
 
-    private TextField mapIndexTextField, playerColorTextField;
+    private TextField mapIndexTextField;
     private Panel gameOptionsPanel;
+    private boolean gameOptionsPanelChildChangeable;
 
     public LobbyView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
         this.startButton = new Button(LayoutParams.obtain(0.4f, 0.6f, 0.2f, 0.1f), this, "Start Game");
-        this.startButton.setListener(() -> LobbyView.this.changeView(GameView.class));
+        this.startButton.addListener(() -> LobbyView.this.changeView(GameView.class));
         this.getRoot().addChild(startButton);
 
 
@@ -36,8 +37,6 @@ public class LobbyView extends BaseMenuView {
         this.gameOptionsPanel.addChild(mapIndexTextField);
 
         //TODO Color anzeigen, und so .... mit Buttón eventuell.
-        this.playerColorTextField = new TextField(LayoutParams.obtain(0f , 0f , 1f , 0f ),this,"","Player Color");
-        this.gameOptionsPanel.addChild(playerColorTextField);
 
 
 
@@ -49,5 +48,11 @@ public class LobbyView extends BaseMenuView {
 
 
     }
-
+/*
+    public void setGameOptionsPanelChildChangeable(boolean b){
+        for(int i = 0 ; i < gameOptionsPanel.getChildren().size() ; i++ ){
+            gameOptionsPanel.getChildren().get(i).setChangeable(b);
+        }
+    }
+*/
 }

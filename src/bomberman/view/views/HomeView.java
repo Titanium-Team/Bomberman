@@ -22,11 +22,11 @@ public class HomeView extends BaseMenuView {
         this.getRoot().removeChild(this.backButton);
 
         this.playButton = new Button(LayoutParams.obtain(0.4f, 0.4f, 0.2f, 0.1f), this, "Play");
-        this.playButton.setListener(() -> HomeView.this.changeView(PlayMenuView.class));
+        this.playButton.addListener(() -> HomeView.this.changeView(PlayMenuView.class));
         this.getRoot().addChild(playButton);
 
         this.optionsButton = new Button(LayoutParams.obtain(0.4f, 0.6f, 0.2f, 0.1f), this, "Options");
-        this.optionsButton.setListener(() -> HomeView.this.changeView(OptionsView.class));
+        this.optionsButton.addListener(() -> HomeView.this.changeView(OptionsView.class));
         this.getRoot().addChild(optionsButton);
     }
 
