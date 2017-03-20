@@ -5,17 +5,15 @@ import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
-import bomberman.gameplay.utils.Location;
-import org.lwjgl.Sys;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
 
 public class Bomb extends TileObject {
 
 
-    private final static float EXPLOSION_LIFESPAN = 1F;
+    public final static float EXPLOSION_LIFESPAN = 1F;
 
     private List<Player> walkable = new ArrayList<>();
     private Player player;
@@ -60,21 +58,21 @@ public class Bomb extends TileObject {
         //--- effect surrounding tiles
         boolean stopUp = false, stopLeft = false, stopDown = false, stopRight = false;
 
-        for(int i = 1; i < this.range + 1; i++){
+        for (int i = 1; i < this.range + 1; i++) {
 
-            if((x + i) < this.player.getGameMap().getWidth() && (!stopRight)){
+            if ((x + i) < this.player.getGameMap().getWidth() && (!stopRight)) {
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
 
-            if((x - i) > 0 && !stopLeft){
+            if ((x - i) > 0 && !stopLeft) {
                 stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
 
-            if((y + i) < this.player.getGameMap().getHeight() && !stopUp) {
+            if ((y + i) < this.player.getGameMap().getHeight() && !stopUp) {
                 stopUp = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
 
-            if((y-i) > 0 && !stopDown) {
+            if ((y - i) > 0 && !stopDown) {
                 stopDown = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
             }
 
@@ -83,7 +81,8 @@ public class Bomb extends TileObject {
     }
 
     @Override
-    public void interact(Player player) {}
+    public void interact(Player player) {
+    }
 
     @Override
     public void update(float delta) {
@@ -91,13 +90,13 @@ public class Bomb extends TileObject {
         super.update(delta);
     }
 
-    private boolean createExplosion(int x, int y, float lifespan){
+    private boolean createExplosion(int x, int y, float lifespan) {
 
         Explosion explosion = new Explosion(this.player.getGameMap().getTile(x, y), lifespan);
 
         //--- spawning explosion
-        if(this.player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
-            this.player.getGameMap().getTile(x,y).getTileObject().execute();
+        if (this.player.getGameMap().getTile(x, y).getTileObject() instanceof Bomb) {
+            this.player.getGameMap().getTile(x, y).getTileObject().execute();
         }
 
         this.player.getGameMap().getTile(x, y).spawn(explosion);

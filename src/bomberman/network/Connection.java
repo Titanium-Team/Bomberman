@@ -1,6 +1,5 @@
 package bomberman.network;
 
-import bomberman.gameplay.Player;
 import bomberman.view.engine.utility.Vector2;
 
 import java.io.IOException;
@@ -11,11 +10,9 @@ import java.net.UnknownHostException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
-import java.util.zip.Adler32;
-import java.util.zip.Checksum;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.zip.Adler32;
 
 
 public abstract class Connection {
@@ -98,7 +95,7 @@ public abstract class Connection {
         getListener().interrupt();
     }
 
-    public void send(String message, NetworkData networkData, boolean resend){
+    public void send(String message, NetworkData networkData, boolean resend) {
         try {
             Adler32 checksum = new Adler32();
             checksum.update(message.getBytes());
@@ -115,7 +112,7 @@ public abstract class Connection {
         }
     }
 
-    public boolean checksum(String[] message){
+    public boolean checksum(String[] message) {
         Adler32 checksum = new Adler32();
         checksum.update(message[1].getBytes());
         long check = checksum.getValue();
@@ -124,7 +121,7 @@ public abstract class Connection {
         return check == checkOriginal;
     }
 
-    public String decrypt(String message){
+    public String decrypt(String message) {
         return myData.decrpyt(message, keyPair.getPrivate());
     }
 
@@ -132,18 +129,18 @@ public abstract class Connection {
         requestMap.get(message).setRecieved(reciever);
     }
 
-    public void error(NetworkData fromWho){
+    public void error(NetworkData fromWho) {
         String[] messages = new String[5];
         final int[] index = {0};
 
         requestMap.forEach((key, value) -> {
-            if (value.isRecieved(fromWho) && value.isResend()){
+            if (value.isRecieved(fromWho) && value.isResend()) {
                 messages[index[0]] = value.getRequest();
                 index[0]++;
             }
         });
 
-        for (String s: messages){
+        for (String s : messages) {
             send(s, fromWho, true);
         }
     }
@@ -153,9 +150,13 @@ public abstract class Connection {
     abstract void message(String message);
 
     abstract void listen();
+
     abstract void move(Vector2 position);
+
     abstract void plantBomb();
+
     abstract void explodedBomb();
+
     abstract void hit(double health);
 
 }

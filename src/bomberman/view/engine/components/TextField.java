@@ -7,13 +7,13 @@ import org.lwjgl.input.Keyboard;
 
 public class TextField extends ViewComponentClickable {
 
-    private enum State{
+    private enum TextFieldState{
         Focussed, Unfocussed;
     }
 
     private String text, backText;
     private int pointer;
-    private State state;
+    private TextFieldState textFieldState = TextFieldState.Unfocussed;
 
     public TextField(LayoutParams params, View v) {
         this(params, v, "");
@@ -31,6 +31,7 @@ public class TextField extends ViewComponentClickable {
         this.addListener(new ClickListener() {
             @Override
             public void onClick() {
+                textFieldState = TextFieldState.Focussed;
                 pointer = text.length();
             }
         });
@@ -51,7 +52,7 @@ public class TextField extends ViewComponentClickable {
     @Override
     public void onKeyDown(int key, char c) {
         super.onKeyDown(key, c);
-        if (state == State.Focussed) {
+        if (textFieldState == TextFieldState.Focussed) {
             if (key == Keyboard.KEY_BACK) {
                 if (text != null && !text.isEmpty()) {
                     this.text = text.substring(0, pointer - 1) + text.substring(pointer, text.length());
@@ -75,7 +76,7 @@ public class TextField extends ViewComponentClickable {
 
     @Override
     public void draw(Batch batch) {
-        if (state == State.Unfocussed) {
+        if (textFieldState == TextFieldState.Unfocussed) {
             batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .4f, .4f, .4f, 1f);
         } else {
@@ -88,7 +89,7 @@ public class TextField extends ViewComponentClickable {
         if (text.length() != 0 && text != null) {
             ViewManager.font.drawText(batch, text, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
 
-        }else if (text.length() == 0 && state == State.Unfocussed)
+        }else if (text.length() == 0 && textFieldState == TextFieldState.Unfocussed)
             ViewManager.font.drawText(batch, backText, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
     }
 }

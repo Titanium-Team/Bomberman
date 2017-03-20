@@ -3,7 +3,6 @@ package bomberman.view.views;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.Button;
 import bomberman.view.engine.components.LayoutParams;
-import bomberman.view.engine.components.TextField;
 
 /**
  * View for Start

@@ -2,7 +2,6 @@ package bomberman.gameplay.tile;
 
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.objects.Bomb;
-import bomberman.gameplay.tile.objects.Explosion;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
@@ -28,7 +27,7 @@ public class Tile {
         return this.tileType;
     }
 
-    public void setTileType(TileType tileType){
+    public void setTileType(TileType tileType) {
         this.tileType = tileType;
     }
 
@@ -46,12 +45,12 @@ public class Tile {
 
     public boolean canVisit(Player player) {
         return !(
-                    this.boundingBox.intersects(player.getBoundingBox()) &&
-                    (
-                        !(this.tileType.isWalkable()) ||
-                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
-                    )
-                );
+                this.boundingBox.intersects(player.getBoundingBox()) &&
+                        (
+                                !(this.tileType.isWalkable()) ||
+                                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
+                        )
+        );
     }
 
     public void spawn(TileObject tileObject) {

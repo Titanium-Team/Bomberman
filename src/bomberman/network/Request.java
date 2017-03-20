@@ -24,7 +24,7 @@ public class Request {
         recieved.put(key, true);
     }
 
-    public boolean isRecieved(NetworkData key){
+    public boolean isRecieved(NetworkData key) {
         return recieved.get(key);
     }
 

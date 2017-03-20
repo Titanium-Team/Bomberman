@@ -20,6 +20,7 @@ public class Main {
 
     private ViewManager viewManager;
     private GameplayManager gameplayManager;
+    private float lastDeltaTime;
 
     private File saveDir;
     private Config config;
@@ -61,6 +62,9 @@ public class Main {
                 totalTime = currentTime;
             }
 
+            // #hacky
+            this.lastDeltaTime = deltaTime;
+
             if (viewManager.getCurrentView() instanceof GameView) {
                 gameplayManager.update(deltaTime);
             }
@@ -94,5 +98,9 @@ public class Main {
 
     public File getSaveDir() {
         return saveDir;
+    }
+
+    public float getLastDeltaTime() {
+        return lastDeltaTime;
     }
 }

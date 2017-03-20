@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class ViewComponentClickable extends ViewComponent {
 
-    private enum State {
+    public enum State {
         Default, Pressed;
     }
 
@@ -28,6 +28,8 @@ public abstract class ViewComponentClickable extends ViewComponent {
             if (button == 0) {
                 state = State.Pressed;
             }
+        }else{
+            state = State.Default;
         }
     }
 
