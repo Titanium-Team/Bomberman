@@ -1,12 +1,9 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileTypes;
-import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Stream;
 
 public class GameplayManager {
@@ -20,38 +17,38 @@ public class GameplayManager {
     public GameplayManager() {
         //map 0
         this.add(
-            GameMap.builder()
-                .dimension(15, 13)
-                .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 2)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 4)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 6)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 8)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 10)
-                .startPosition(1, 1)
-                .startPosition(12, 11)
-            .build()
+                GameMap.builder()
+                        .dimension(15, 13)
+                        .frame(TileTypes.WALL)
+                        .fillEmpty(TileTypes.GROUND)
+                        .horizontalPattern("WGBGBGBGBGBGBGW", 2)
+                        .horizontalPattern("WGBGBGBGBGBGBGW", 4)
+                        .horizontalPattern("WGBGBGBGBGBGBGW", 6)
+                        .horizontalPattern("WGBGBGBGBGBGBGW", 8)
+                        .horizontalPattern("WGBGBGBGBGBGBGW", 10)
+                        .startPosition(1, 1)
+                        .startPosition(12, 11)
+                        .build()
         );
 
         //map 1
         this.add(
-            GameMap.builder()
-                .dimension(15, 13)
-                .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
-                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 3)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 4)
-                .horizontalPattern("WBBBBBGGGBBBBBW", 5)
-                .horizontalPattern("WBWBWBWGWBWBWBW", 6)
-                .horizontalPattern("WBBBBBGGGBBBBBW", 7)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 8)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 9)
-                .horizontalPattern("WGWBWBWBWBWBWGW", 10)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
-            .build()
+                GameMap.builder()
+                        .dimension(15, 13)
+                        .frame(TileTypes.WALL)
+                        .fillEmpty(TileTypes.GROUND)
+                        .horizontalPattern("WGGBBBBBBBBBGGW", 1)
+                        .horizontalPattern("WGWBWBWBWBWBWGW", 2)
+                        .horizontalPattern("WBBBBBBBBBBBBBW", 3)
+                        .horizontalPattern("WBBBBBBBBBBBBBW", 4)
+                        .horizontalPattern("WBBBBBGGGBBBBBW", 5)
+                        .horizontalPattern("WBWBWBWGWBWBWBW", 6)
+                        .horizontalPattern("WBBBBBGGGBBBBBW", 7)
+                        .horizontalPattern("WBBBBBBBBBBBBBW", 8)
+                        .horizontalPattern("WBBBBBBBBBBBBBW", 9)
+                        .horizontalPattern("WGWBWBWBWBWBWGW", 10)
+                        .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                        .build()
         );
 
         //map 2
@@ -69,6 +66,7 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBBBBBBBBGGW", 9)
                 .startPosition(1, 1)
             .build()
+
         );
 
         //@TODO
@@ -118,7 +116,7 @@ public class GameplayManager {
 
         //--- Powerup Spawn Timer
         this.powerupTimer -= delta;
-        if(this.powerupTimer <= 0) {
+        if (this.powerupTimer <= 0) {
             this.checkPowerups();
             this.powerupTimer = POWERUP_TIME;
         }

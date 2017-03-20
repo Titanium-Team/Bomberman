@@ -7,16 +7,21 @@ import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
 import bomberman.view.views.GameView;
-import net.java.games.input.*;
+import net.java.games.input.Controller;
+import net.java.games.input.ControllerEnvironment;
+import net.java.games.input.Event;
+import net.java.games.input.EventQueue;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
+
+import net.java.games.input.EventQueue;
 
 public class ViewManager {
 
@@ -31,7 +36,7 @@ public class ViewManager {
         try {
             font = new BitmapFont(ViewManager.class.getResource("/bomberman/resources/font/font.fnt"), ViewManager.class.getResource("/bomberman/resources/font/font.png"));
 
-            // loadTexture here
+            loadTexture("explosion.png");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,7 +69,9 @@ public class ViewManager {
         this.gameplayManager = gameplayManager;
 
         try {
+            System.out.print("Loading natives...");
             LwjglNativesLoader.load();
+            System.out.println("finished!");
 
             setDisplayMode(800, 600, false);
 

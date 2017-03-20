@@ -20,7 +20,7 @@ public abstract class BaseMenuView extends LightingView {
         super(width, height, viewManager);
 
         this.backButton = new Button(LayoutParams.obtain(0.05f, 0.05f, 0.1f, 0.1f), this, "Back");
-        this.backButton.setListener(() -> BaseMenuView.this.navigateBack());
+        this.backButton.addListener(() -> BaseMenuView.this.navigateBack());
         this.getRoot().addChild(backButton);
 
         this.demoLight = new Light(0, 0, 300, 1f, 1f, 1f);

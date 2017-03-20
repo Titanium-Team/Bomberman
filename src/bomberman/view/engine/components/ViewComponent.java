@@ -10,9 +10,11 @@ public abstract class ViewComponent {
     private LayoutParams params;
     private float x, y, width, height;
 
+
     public ViewComponent(LayoutParams params, View v) {
         this.params = params;
         this.view = v;
+
     }
 
     public abstract void draw(Batch batch);
@@ -30,6 +32,7 @@ public abstract class ViewComponent {
             this.height = parent.getHeight() * params.h;
         }
     }
+
 
     public View getView() {
         return view;

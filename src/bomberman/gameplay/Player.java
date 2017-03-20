@@ -59,8 +59,8 @@ public class Player {
         this.name = name;
 
         this.boundingBox = new BoundingBox(
-            new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
-            new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
+                new Location(center.getX() - (COLLISION_WIDTH / 2), center.getY() - (COLLISION_HEIGHT / 2)),
+                new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
 
     }
@@ -116,7 +116,7 @@ public class Player {
 
     }
 
-    public GameMap getGameMap(){
+    public GameMap getGameMap() {
         return gameMap;
     }
 
@@ -178,20 +178,20 @@ public class Player {
 
 
         /**
-        this.gameMap.checkInteraction(this);
+         this.gameMap.checkInteraction(this);
 
-        switch (this.gameMap.checkCollision(this)) {
+         switch (this.gameMap.checkCollision(this)) {
 
-            case LEFT:
-            case RIGHT:
-                this.vector.setX(0);
-                this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
-                break;
-            case UP:
-            case DOWN:
-                this.vector.setY(0);
-                this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
-                break;
+         case LEFT:
+         case RIGHT:
+         this.vector.setX(0);
+         this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
+         break;
+         case UP:
+         case DOWN:
+         this.vector.setY(0);
+         this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
+         break;
          **/
         Direction direction = this.gameMap.checkCollision(this);
 
@@ -210,8 +210,8 @@ public class Player {
             case DOWN: {
                 this.vector.setY(0);
                 this.boundingBox.setCenter(
-                    range(minX, this.boundingBox.getCenter().getX(), maxX),
-                    range(minY, location.getY(), maxY)
+                        range(minX, this.boundingBox.getCenter().getX(), maxX),
+                        range(minY, location.getY(), maxY)
                 );
             }
             break;
@@ -231,8 +231,8 @@ public class Player {
 
 
                 this.boundingBox.setCenter(
-                    range(minX, location.getX(), maxX),
-                    range(minY, location.getY(), maxY)
+                        range(minX, location.getX(), maxX),
+                        range(minY, location.getY(), maxY)
                 );
 
 
@@ -301,7 +301,7 @@ public class Player {
         switch (keyCode) {
 
             case Keyboard.KEY_Q:
-                System.out.println(this.getTile().getTileType() +  " - " + this.getTile().isExploding() + " - " + this.getTile().canVisit(this));
+                System.out.println(this.getTile().getTileType() + " - " + this.getTile().isExploding() + " - " + this.getTile().canVisit(this));
                 break;
 
             case Keyboard.KEY_UP:
@@ -328,7 +328,7 @@ public class Player {
 
                 Tile tile = this.getTile();
 
-                if(tile.getTileObject() instanceof Bomb || this.bombsLeft <= 0) {
+                if (tile.getTileObject() instanceof Bomb || this.bombsLeft <= 0) {
                     assert this.bombsLeft == 0;
                     return;
                 }
@@ -401,6 +401,7 @@ public class Player {
     private static float range(float min, float value, float max) {
         return Math.min(Math.max(value, min), max);
     }
+
     private static double range(double min, double value, double max) {
         return Math.min(Math.max(value, min), max);
     }
