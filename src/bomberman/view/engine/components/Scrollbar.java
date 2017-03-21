@@ -33,25 +33,22 @@ public class Scrollbar extends ViewComponent {
         this.calculateScrolltabHeight();
         if(this.verticalDistance!=-1){
             scrollPos =  Math.max(0,Math.min((float)((this.getView().getHeight()-Mouse.getY()-this.getY()-verticalDistance)/ this.getHeight()) , 1-(scrollTabHeight)));
+            //System.out.println(scrollPos+","+verticalDistance);
             parent.updateChildren();
         }
         batch.draw(null, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0.3f, 0.3f, 0.3f, 1);
-        batch.draw(null, this.getX(), this.getY() + (this.getHeight() * (scrollPos)), this.getWidth(), this.getHeight() * scrollTabHeight<this.getY()+this.getHeight()? this.getHeight() * scrollTabHeight : this.getHeight() - (this.getHeight() * scrollPos), 0.2f, 0.7f, 0.7f, 0.7f);
+        batch.draw(null, this.getX(), this.getY() + (this.getHeight() * (scrollPos)), this.getWidth(), this.getY() + this.getHeight() * scrollPos + this.getHeight() * scrollTabHeight<this.getY()+this.getHeight()? this.getHeight() * scrollTabHeight : this.getHeight() - (this.getHeight() * scrollPos), 0.2f, 0.7f, 0.7f, 0.7f);
         this.getView().requestLayout();
 
     }
 
     private void calculateScrolltabHeight() {
-        if (elements > visibleElements) {
-            this.scrollTabHeight = (float) (visibleElements) / (float) elements;
-        }else{
-            scrollTabHeight=1;
-        }
+        this.scrollTabHeight = (float) (visibleElements) / (float) elements;
     }
 
     public void setElements(int elements) {
         this.elements = elements;
-        if (this.elements <= 8) {
+        if (this.elements < 9) {
             this.visibleElements = elements;
         }
     }
@@ -61,7 +58,7 @@ public class Scrollbar extends ViewComponent {
         super.onMouseDown(button, mouseX, mouseY);
         if (visibleElements < elements && Utility.viewComponentIsCollidingWithMouse(this, mouseX, mouseY) && mouseY > this.getY() + this.getHeight()*scrollPos && mouseY < this.getY() * (1 + scrollPos) + (this.getHeight() * scrollTabHeight)){
             if (verticalDistance == -1) {
-                this.verticalDistance = ((int) (mouseY-this.getY()*(1+scrollPos)));
+                this.verticalDistance =  (mouseY-this.getY()*(1+scrollPos));
             }
         }
     }
@@ -73,10 +70,10 @@ public class Scrollbar extends ViewComponent {
     }
 
     public int getIndexOfFirstElement(){
-        return this.elements== visibleElements? 0: ((int) (elements * scrollPos));
+        return this.elements== visibleElements? 0: ( Math.round(elements * scrollPos));
     }
 
     public int getIndexOfLastElement(){
-        return this.elements>visibleElements? this.getIndexOfFirstElement()+7:elements-1;
+        return this.elements>visibleElements? this.getIndexOfFirstElement()+7: elements-1;
     }
 }
