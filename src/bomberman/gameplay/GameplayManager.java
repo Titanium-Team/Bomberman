@@ -8,11 +8,15 @@ import java.util.stream.Stream;
 
 public class GameplayManager {
 
+    private GameState gameState = GameState.IN_GAME;
+
     private final static float POWERUP_TIME = 25;
     private float powerupTimer = POWERUP_TIME;
 
     private final List<GameMap> maps = new LinkedList<>();
     private final List<Player> players = new LinkedList<>();
+
+    private int mapIndex = 0;
 
     public GameplayManager() {
         //map 0
@@ -77,6 +81,7 @@ public class GameplayManager {
         );
 
         //@TODO
+        this.setMapIndex(2);
         this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
 
     }
@@ -97,27 +102,40 @@ public class GameplayManager {
         return this.players.get(index);
     }
 
-    //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(2); //@TODO
-
+        return this.getMap(this.mapIndex);
     }
 
     public GameMap getMap(int index) {
-
         assert index >= 0 && index < this.maps.size();
         return this.maps.get(index);
-
     }
 
     public void add(GameMap map) {
-
         assert !(this.maps.contains(map));
         this.maps.add(map);
+    }
 
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void setMapIndex(int mapIndex) {
+
+        //@TODO
+        /*if(!(this.gameState == GameState.IN_MENU)) {
+            throw new IllegalStateException();
+        }*/
+
+        this.mapIndex = mapIndex;
     }
 
     public void update(float delta) {
+
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
         this.players.forEach(e -> e.update(delta));
         Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
 
@@ -143,17 +161,28 @@ public class GameplayManager {
     //powerup end
 
     public void onKeyDown(int key, char c) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
         this.players.forEach(e -> e.keyDown(key, c));
     }
 
     public void onKeyUp(int key, char c) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
         this.players.forEach(e -> e.keyUp(key, c));
     }
 
-    public void onMouseDown(int button, int mouseX, int mouseY) {
-    }
+    public void onMouseDown(int button, int mouseX, int mouseY) {}
 
-    public void onMouseUp(int button, int mouseX, int mouseY) {
+    public void onMouseUp(int button, int mouseX, int mouseY) {}
+
+    public static enum GameState {
+
+        IN_MENU,
+        IN_GAME
+
     }
 
 }
