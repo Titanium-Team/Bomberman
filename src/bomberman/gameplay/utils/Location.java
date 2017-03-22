@@ -1,5 +1,12 @@
 package bomberman.gameplay.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Location implements Cloneable {
 
     private double x;
@@ -8,6 +15,18 @@ public class Location implements Cloneable {
     public Location(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Location(String json){
+        Gson gson = new Gson();
+
+        Type type = new TypeToken<Map<String, Double>>() {}.getType();
+
+        Map<String, Float> vectorMap = gson.fromJson(json, type);
+
+        this.x = vectorMap.get("x");
+        this.y = vectorMap.get("y");
+
     }
 
     public double getX() {
@@ -40,6 +59,16 @@ public class Location implements Cloneable {
     @Override
     public Location clone() {
         return new Location(this.x, this.y);
+    }
+
+    public String toJson(){
+        Gson gson = new Gson();
+
+        Map<String, Double> data = new HashMap<>();
+        data.put("x", getX());
+        data.put("y", getY());
+
+        return gson.toJson(data);
     }
 
 }

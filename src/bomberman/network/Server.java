@@ -100,13 +100,7 @@ public class Server extends Connection {
 
     @Override
     void move(Vector2 position) {
-        Map<String, Float> data = new HashMap<>();
-        data.put("xCoord", position.getX());
-        data.put("yCoord", position.getY());
 
-        Gson gson = new Gson();
-
-        String json = gson.toJson(data);
     }
 
     @Override

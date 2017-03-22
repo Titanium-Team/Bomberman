@@ -9,10 +9,15 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Client extends Connection {
 
     private ConnectionData server;
+    private List<ConnectionData> serverList;
 
     public Client(NetworkController controller) throws IOException {
         super(controller);
@@ -21,6 +26,8 @@ public class Client extends Connection {
         getSocket().setBroadcast(true);
 
         init();
+
+        serverList = new ArrayList<>();
 
         refreshServers();
 
@@ -64,7 +71,7 @@ public class Client extends Connection {
                 case "hello":
                     ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
-                    getController().getNetworkPlayerMap().putIfAbsent(sender, new NetworkPlayer("", new Location(0, 0), null, connectionData));
+                    serverList.add(connectionData);
 
                     System.out.println("ConnectionData from Server");
 
@@ -101,7 +108,13 @@ public class Client extends Connection {
 
     }
 
-    private void refreshServers() {
+    public List<ConnectionData> getServerList() {
+        return serverList;
+    }
+
+    public void refreshServers(){
+        serverList.clear();
+
         try {
             send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638), true);
         } catch (UnknownHostException e) {

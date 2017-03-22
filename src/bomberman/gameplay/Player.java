@@ -62,6 +62,11 @@ public class Player {
 
     }
 
+    public int getIndex(){
+        //TODO JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN ICH BRAUCHE DAS
+        return 0;
+    }
+
     public String getName() {
         return this.name;
     }

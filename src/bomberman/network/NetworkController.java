@@ -3,11 +3,11 @@ package bomberman.network;
 import bomberman.view.engine.utility.Vector2;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class NetworkController implements Runnable {
+
+    private final long resendWaitTime = 1000;
 
     private final boolean hosting;
     private Connection connection;
@@ -46,10 +46,23 @@ public class NetworkController implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            Scanner scanner = new Scanner(System.in);
-            chatMessage(scanner.nextLine());
+        try {
+
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+
+                }
+            }, 0, resendWaitTime);
+
+            Thread.sleep(0);
+        } catch (InterruptedException e) {
+            connection.close();
+
+            e.printStackTrace();
         }
+
     }
 
     public void chatMessage(String message) {
@@ -74,5 +87,19 @@ public class NetworkController implements Runnable {
 
     public void joinServer(String ip, int port) {
 
+    }
+
+    public List<ConnectionData> getServerList(){
+        if (!hosting){
+            return ((Client) connection).getServerList();
+        }
+
+        return null;
+    }
+
+    public void refreshServers(){
+        if (!hosting){
+            ((Client) connection).refreshServers();
+        }
     }
 }
