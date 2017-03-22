@@ -1,10 +1,10 @@
 package bomberman.view.views;
 
+import bomberman.Main;
+import bomberman.network.ConnectionData;
+import bomberman.network.NetworkData;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.components.Button;
-import bomberman.view.engine.components.LayoutParams;
-import bomberman.view.engine.components.TextField;
-import bomberman.view.engine.components.VerticalView;
+import bomberman.view.engine.components.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +32,6 @@ public class PlayMenuView extends BaseMenuView {
         this.hostGameButton.addListener(() -> PlayMenuView.this.changeView(LobbyView.class));
         this.getRoot().addChild(hostGameButton);
 
-        this.joinGameButton = new Button(LayoutParams.obtain(0.4f, 0.6f, 0.2f, 0.1f), this, "Join Game");
-        this.joinGameButton.addListener(() -> PlayMenuView.this.changeView(LobbyView.class));
-        this.getRoot().addChild(joinGameButton);
-
         this.portTextField = new TextField(LayoutParams.obtain(0f, 0.5f, 0.25f, 0.1f), this, "", "Port Number");
 
         this.getRoot().addChild(portTextField);
@@ -44,15 +40,30 @@ public class PlayMenuView extends BaseMenuView {
         this.getRoot().addChild(scurrMitDemVert);
 
 
+
+       updateVerticalView(Main.instance.getNetworkController().getServerList());
+
+
     }
 
-    public void listToVerticalView(ArrayList l){
-        for(int i = 0 ; i < l.size() ; i++){
-            String text = "test";
-            serverButtons.add(new Button(LayoutParams.obtain(0f , 0f, 0f, 0f), this, text));
+    public void updateVerticalView(List<ConnectionData> list){
+        for(int i = 0 ; i < list.size() ; i++){
+            String text = list.get(i).getNetworkData().getIp().getHostAddress();
+            NetworkData data = list.get(i).getNetworkData();
+            if(!serverButtons.contains(text)) {
+                Button button = new Button(LayoutParams.obtain(0f, 0f, 0f, 0f), this, text);
+                button.addListener(new ClickListener() {
+                    @Override
+                    public void onClick() {
+                        Main.instance.getNetworkController().joinServer(data);
+                    }
+                });
+                serverButtons.add(button);
+            }
         }
         for(int i = 0 ; i < serverButtons.size() ; i++){
-            scurrMitDemVert.addChild(serverButtons.get(i));
+            if(!scurrMitDemVert.getChildren().contains(serverButtons.get(i)))
+                scurrMitDemVert.addChild(serverButtons.get(i));
         }
     }
 

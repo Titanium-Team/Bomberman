@@ -1,5 +1,7 @@
 package bomberman.view.engine;
 
+import bomberman.view.views.PlayMenuView;
+
 import java.lang.reflect.Constructor;
 
 public class ViewFactory {

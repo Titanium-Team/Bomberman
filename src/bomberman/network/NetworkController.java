@@ -11,10 +11,14 @@ public class NetworkController implements Runnable {
 
     private final boolean hosting;
     private Connection connection;
+    private Thread thread;
 
     private Map<NetworkData, NetworkPlayer> networkPlayerMap;
 
     public NetworkController(boolean hosting) {
+        thread = new Thread(this);
+        thread.start();
+
         this.hosting = hosting;
         networkPlayerMap = new HashMap<>();
 
@@ -85,9 +89,10 @@ public class NetworkController implements Runnable {
         connection.hit(healthLeft);
     }
 
-    public void joinServer(String ip, int port) {
+    public void joinServer(NetworkData data) {
 
     }
+
 
     public List<ConnectionData> getServerList(){
         if (!hosting){
@@ -101,5 +106,9 @@ public class NetworkController implements Runnable {
         if (!hosting){
             ((Client) connection).refreshServers();
         }
+    }
+
+    public void close(){
+        thread.interrupt();
     }
 }
