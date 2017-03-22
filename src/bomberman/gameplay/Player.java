@@ -117,7 +117,10 @@ public class Player {
             this.getPropertyRepository().setValue(PropertyTypes.INVINCIBILITY, 3F);
             this.respawn();
         }else{
-            System.out.println("gameover");
+            System.out.println(name + "is dead!");
+            //spieler in die mitte
+            //this.boundingBox.setCenter(this.gameMap.getTile(this.gameMap.getWidth()/2,this.gameMap.getHeight()/2).get().getBoundingBox().getCenter());
+            //anstatt spieler in die mitte: player bild entfernen, bounding box entfernen -> noclip
         }
     }
 
@@ -132,114 +135,116 @@ public class Player {
     }
 
     public void update(float delta) {
+        //SIEHE LOSEHEALTH
+        //if(this.getPropertyRepository().getValue(PropertyTypes.HEALTH)>0){
+            this.accelerationTimer -= delta;
 
-        this.accelerationTimer -= delta;
+            //--- Accelerating
+            if (this.accelerationTimer <= 0) {
+                if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
+                    this.move(Direction.UP);
+                }
 
-        //--- Accelerating
-        if (this.accelerationTimer <= 0) {
-            if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
-                this.move(Direction.UP);
+                if (this.acceleratingDirections.getOrDefault(Direction.DOWN, false)) {
+                    this.move(Direction.DOWN);
+                }
+
+                if (this.acceleratingDirections.getOrDefault(Direction.LEFT, false)) {
+                    this.move(Direction.LEFT);
+                }
+
+                if (this.acceleratingDirections.getOrDefault(Direction.RIGHT, false)) {
+                    this.move(Direction.RIGHT);
+                }
+
+                this.accelerationTimer = ACCELERATION_TIMER;
+
             }
 
-            if (this.acceleratingDirections.getOrDefault(Direction.DOWN, false)) {
-                this.move(Direction.DOWN);
-            }
 
-            if (this.acceleratingDirections.getOrDefault(Direction.LEFT, false)) {
-                this.move(Direction.LEFT);
-            }
+            //--- Facing Direction
+            FacingDirection facing = FacingDirection.from(this.vector);
+            this.facingDirection = (facing == FacingDirection.DEFAULT ? this.facingDirection : facing);
 
-            if (this.acceleratingDirections.getOrDefault(Direction.RIGHT, false)) {
-                this.move(Direction.RIGHT);
-            }
-
-            this.accelerationTimer = ACCELERATION_TIMER;
-
-        }
+            //--- Collision
+            Location location = this.boundingBox.getCenter();
+            this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
 
-        //--- Facing Direction
-        FacingDirection facing = FacingDirection.from(this.vector);
-        this.facingDirection = (facing == FacingDirection.DEFAULT ? this.facingDirection : facing);
+            /**
+             this.gameMap.checkInteraction(this);
 
-        //--- Collision
-        Location location = this.boundingBox.getCenter();
-        this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
+             switch (this.gameMap.checkCollision(this)) {
 
+             case LEFT:
+             case RIGHT:
+             this.vector.setX(0);
+             this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
+             break;
+             case UP:
+             case DOWN:
+             this.vector.setY(0);
+             this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
+             break;
+             **/
+            Direction direction = this.gameMap.checkCollision(this);
 
-        /**
-         this.gameMap.checkInteraction(this);
+            BoundingBox min = this.gameMap.getMin().get().getBoundingBox();
+            BoundingBox max = this.gameMap.getMax().get().getBoundingBox();
 
-         switch (this.gameMap.checkCollision(this)) {
+            double minX = (min.getMax().getX() + (COLLISION_WIDTH / 2));
+            double minY = (min.getMax().getY() + (COLLISION_HEIGHT / 2));
 
-         case LEFT:
-         case RIGHT:
-         this.vector.setX(0);
-         this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
-         break;
-         case UP:
-         case DOWN:
-         this.vector.setY(0);
-         this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
-         break;
-         **/
-        Direction direction = this.gameMap.checkCollision(this);
+            double maxX = (max.getMin().getX() - (COLLISION_WIDTH / 2));
+            double maxY = (max.getMin().getY() - (COLLISION_HEIGHT / 2));
 
-        BoundingBox min = this.gameMap.getMin().get().getBoundingBox();
-        BoundingBox max = this.gameMap.getMax().get().getBoundingBox();
+            switch (direction) {
 
-        double minX = (min.getMax().getX() + (COLLISION_WIDTH / 2));
-        double minY = (min.getMax().getY() + (COLLISION_HEIGHT / 2));
-
-        double maxX = (max.getMin().getX() - (COLLISION_WIDTH / 2));
-        double maxY = (max.getMin().getY() - (COLLISION_HEIGHT / 2));
-
-        switch (direction) {
-
-            case UP:
-            case DOWN: {
-                this.vector.setY(0);
-                this.boundingBox.setCenter(
-                        range(minX, this.boundingBox.getCenter().getX(), maxX),
-                        range(minY, location.getY(), maxY)
-                );
-            }
-            break;
-
-            case LEFT:
-            case RIGHT: {
-                this.vector.setX(0);
-
-                this.boundingBox.setCenter(
-                        range(minX, location.getX(), maxX),
-                        range(minY, this.boundingBox.getCenter().getY(), maxY)
-                );
-            }
-            break;
-
-            case STOP_VERTICAL_MOVEMENT:
-                this.boundingBox.setCenter(
-                        range(minX, location.getX(), maxX),
-                        range(minY, location.getY(), maxY)
-                );
-                this.vector.setY(0);
-                this.vector.setX(0);
+                case UP:
+                case DOWN: {
+                    this.vector.setY(0);
+                    this.boundingBox.setCenter(
+                            range(minX, this.boundingBox.getCenter().getX(), maxX),
+                            range(minY, location.getY(), maxY)
+                    );
+                }
                 break;
 
-            case STOP_HORIZONTAL_MOVEMENT: break;
+                case LEFT:
+                case RIGHT: {
+                    this.vector.setX(0);
 
-            default:
-                throw new IllegalStateException(String.format("Unknown collision direction: %s", direction.name()));
+                    this.boundingBox.setCenter(
+                            range(minX, location.getX(), maxX),
+                            range(minY, this.boundingBox.getCenter().getY(), maxY)
+                    );
+                }
+                break;
 
-        }
+                case STOP_VERTICAL_MOVEMENT:
+                    this.boundingBox.setCenter(
+                            range(minX, location.getX(), maxX),
+                            range(minY, location.getY(), maxY)
+                    );
+                    this.vector.setY(0);
+                    this.vector.setX(0);
+                    break;
 
-        this.gameMap.checkInteraction(this);
+                case STOP_HORIZONTAL_MOVEMENT: break;
 
-        //--- Update INVINCIBILITY Timer
-        this.getPropertyRepository().setValue(
-            PropertyTypes.INVINCIBILITY,
-            this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
-        );
+                default:
+                    throw new IllegalStateException(String.format("Unknown collision direction: %s", direction.name()));
+
+            }
+
+            this.gameMap.checkInteraction(this);
+
+            //--- Update INVINCIBILITY Timer
+            this.getPropertyRepository().setValue(
+                PropertyTypes.INVINCIBILITY,
+                this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
+            );
+        //}
 
     }
 

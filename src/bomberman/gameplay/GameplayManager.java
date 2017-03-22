@@ -1,7 +1,10 @@
 package bomberman.gameplay;
 
+import bomberman.ai.AiManager;
+import bomberman.ai.AiPlayer;
 import bomberman.gameplay.tile.TileTypes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -12,7 +15,8 @@ public class GameplayManager {
     private float powerupTimer = POWERUP_TIME;
 
     private final List<GameMap> maps = new LinkedList<>();
-    private final List<Player> players = new LinkedList<>();
+    private final ArrayList<Player> players = new ArrayList<>();
+    private AiManager aimanager = new AiManager(this.getCurrentMap(),players);
 
     public GameplayManager() {
         //map 0
@@ -78,6 +82,8 @@ public class GameplayManager {
 
         //@TODO
         this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
+        //aimanager.createAi("name",this.getCurrentMap().getRandomStartPosition());
+
 
     }
 
