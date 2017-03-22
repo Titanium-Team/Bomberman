@@ -3,6 +3,8 @@ package bomberman.view.views;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.*;
 
+import java.util.Random;
+
 /**
  * shows gamesettings
  **/
@@ -30,7 +32,7 @@ public class OptionsView extends BaseMenuView {
         this.getRoot().addChild(vSyncCheckBox);
 
         this.testButton = new Button(LayoutParams.obtain(0.2f, 0.3f, 0.2f, 0.1f), this, "Test");
-        this.testButton.addListener(() -> this.verticalView.addChild(new Label(LayoutParams.obtain(0, 0, 0.9f, 1), this, "Test12345")));
+        this.testButton.addListener(() -> this.verticalView.addChild(new Label(LayoutParams.obtain(0, 0, 0.9f, 1), this,(int)(Math.random()*10) +"")));
         this.getRoot().addChild(testButton);
 
         this.delButton = new Button(LayoutParams.obtain(0.2f, 0.4f, 0.2f, 0.1f), this, "Delete");

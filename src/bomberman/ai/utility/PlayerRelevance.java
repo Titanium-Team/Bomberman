@@ -1,6 +1,7 @@
 package bomberman.ai.utility;
 
 import bomberman.gameplay.Player;
+import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.utils.Location;
 
 /**
@@ -17,7 +18,7 @@ public class PlayerRelevance {
 
     public void update() {
         //TODO: Inventar,Score etc.
-        relevance = player.getHealth();
+        relevance = player.getPropertyRepository().getValue(PropertyTypes.HEALTH);
     }
 
     public double getRelevance() {

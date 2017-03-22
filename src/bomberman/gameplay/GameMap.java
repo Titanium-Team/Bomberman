@@ -11,6 +11,7 @@ import bomberman.gameplay.utils.Location;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public class GameMap {
@@ -54,22 +55,21 @@ public class GameMap {
         return this.startPositions.remove(GameMap.random.nextInt(this.startPositions.size()));
     }
 
+    public Optional<Tile> getTile(int x, int y) {
 
+        if(x >= 0 && x < this.width && y >= 0 && y < this.height) {
+            return Optional.ofNullable(this.tiles[x][y]);
+        }
 
-    public Tile getTile(int x,int y) {
-
-        assert x >= 0 && x < this.width;
-        assert y >= 0 && y < this.height;
-
-        return this.tiles[x][y];
+        return Optional.empty();
 
     }
 
-    public Tile getMin() {
+    public Optional<Tile> getMin() {
         return this.getTile(0, 0);
     }
 
-    public Tile getMax() {
+    public Optional<Tile> getMax() {
         return this.getTile(this.width - 1, this.height - 1);
     }
 
@@ -82,39 +82,113 @@ public class GameMap {
 
     }
 
-    public Player.Direction checkCollision(Player player) {
+    //@TODO Fix buuuuuuuuuuuuuuuugs
+    public static boolean STICKY_WALLS_OR_BUGS = false;
 
+    public Player.Direction checkCollision(Player player) {
 
         BoundingBox playerBox = player.getBoundingBox();
 
         for (int x = (int) playerBox.getMin().getX(); x < playerBox.getMax().getX(); x++) {
             for (int y = (int) playerBox.getMin().getY(); y < playerBox.getMax().getY(); y++) {
 
-                Tile tile = this.getTile(x, y);
+                Tile tile = this.getTile(x, y).get();
 
                 if (!(tile.canVisit(player))) {
 
                     int pX = (int) playerBox.getCenter().getX();
                     int pY = (int) playerBox.getCenter().getY();
 
-                    int tX = (int) tile.getBoundingBox().getCenter().getX();
-                    int tY = (int) tile.getBoundingBox().getCenter().getY();
+                    Player.FacingDirection facingDirection = player.getFacingDirection();
+                    switch (facingDirection) {
 
-                    if (pX == tX) {
-                        if (pY > tY) {
-                            return Player.Direction.UP;
-                        } else if (pY < tY) {
-                            return Player.Direction.DOWN;
+                        case NORTH: return Player.Direction.UP;
+                        case SOUTH: return Player.Direction.DOWN;
+                        case EAST: return Player.Direction.LEFT;
+                        case WEST: return Player.Direction.RIGHT;
+
+                        case SOUTH_EAST:
+                        case SOUTH_WEST:
+                        case NORTH_WEST:
+                        case NORTH_EAST: {
+
+                            Optional<Tile> up = this.getTile(pX, pY - 1);
+                            Optional<Tile> down = this.getTile(pX, pY + 1);
+                            Optional<Tile> left = this.getTile(pX - 1, pY);
+                            Optional<Tile> right = this.getTile(pX + 1, pY);
+
+                            if(!(up.isPresent())) return Player.Direction.UP;
+                            else if (!(down.isPresent())) return Player.Direction.DOWN;
+                            else if(!(left.isPresent())) return Player.Direction.LEFT;
+                            else if(!(right.isPresent())) return Player.Direction.RIGHT;
+
+                            Location min = player.getBoundingBox().getCenter();
+                            Location max = player.getBoundingBox().getCenter();
+
+                            switch (facingDirection) {
+
+                                case NORTH_EAST: {
+                                    Optional<Tile> diagonalTile = this.getTile((int) min.getX() + 1, (int) min.getY() - 1);
+
+                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
+                                        if (right.get().canVisit(player)) {
+                                            return Player.Direction.UP;
+                                        } else if (up.get().canVisit(player)) {
+                                            return Player.Direction.RIGHT;
+                                        }
+                                    }
+                                }
+                                break;
+
+                                case SOUTH_EAST: {
+                                    Optional<Tile> diagonalTile = this.getTile((int) max.getX() + 1, (int) max.getY() + 1);
+
+                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
+                                        if (right.get().canVisit(player)) {
+                                            return Player.Direction.DOWN;
+                                        } else if (down.get().canVisit(player)) {
+                                            return Player.Direction.RIGHT;
+                                        }
+                                    }
+                                }
+                                break;
+
+                                case NORTH_WEST: {
+
+                                    Optional<Tile> diagonalTile = this.getTile((int) min.getX() - 1, (int) min.getY() - 1);
+
+                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
+                                        if(left.get().canVisit(player)) {
+                                            return Player.Direction.UP;
+                                        } else if(up.get().canVisit(player)) {
+                                            return Player.Direction.LEFT;
+                                        }
+                                    }
+
+                                }
+                                break;
+
+                                case SOUTH_WEST: {
+
+                                    Optional<Tile> diagonalTile = this.getTile((int) max.getX() - 1, (int) max.getY() + 1);
+
+                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
+                                        if (left.get().canVisit(player)) {
+                                            return Player.Direction.DOWN;
+                                        } else if (down.get().canVisit(player)) {
+                                            return Player.Direction.LEFT;
+                                        }
+                                    }
+                                }
+                                break;
+
+                            }
+
+                            return Player.Direction.STOP_VERTICAL_MOVEMENT;
                         }
-                    } else if (pY == tY) {
-                        if (pX > tX) {
-                            return Player.Direction.RIGHT;
-                        } else if (pX < tX) {
-                            return Player.Direction.LEFT;
-                        }
-                    } else {
-                        return Player.Direction.STOP_VERTICAL_MOVEMENT;
+
                     }
+
                 }
 
             }
@@ -222,6 +296,10 @@ public class GameMap {
             }
         }
 
+    }
+
+    private static int range(int min, int value, int max) {
+        return Math.min(Math.max(value, min), max);
     }
 
     public static Builder builder() {

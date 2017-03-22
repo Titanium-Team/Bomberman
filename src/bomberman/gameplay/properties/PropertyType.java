@@ -1,7 +1,11 @@
 package bomberman.gameplay.properties;
 
-public interface PropertyType<T> {
+public interface PropertyType {
 
-    T defaultValue();
+    float defaultValue();
+
+    float maxValue();
+
+    float minValue();
 
 }

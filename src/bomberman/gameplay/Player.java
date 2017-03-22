@@ -1,7 +1,6 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.properties.PropertyRepository;
-import bomberman.gameplay.properties.PropertyType;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.tile.Tile;
@@ -23,7 +22,7 @@ public class Player {
 
 
     private final static float ACCELERATION_STEP = .06F;
-    private final static float ACCELERATION_LIMIT = 1;
+    private final static float ACCELERATION_LIMIT = 1F;
     private final static float ACCELERATION_TIMER = 0.01F;
 
 
@@ -48,8 +47,6 @@ public class Player {
 
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
-    private int health = this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH);
-    private int bombsLeft = this.propertyRepository.<Integer>get(PropertyTypes.BOMB_AMOUNT);
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
@@ -67,18 +64,6 @@ public class Player {
 
     public String getName() {
         return this.name;
-    }
-
-    public int getBombsLeft() {
-        return this.bombsLeft;
-    }
-
-    public void setBombsLeft(int bombsLeft) {
-        this.bombsLeft = Math.min(bombsLeft, this.getPropertyRepository().<Integer>get(PropertyTypes.BOMB_AMOUNT));
-    }
-
-    public double getHealth() {
-        return health;
     }
 
     public FacingDirection getFacingDirection() {
@@ -107,12 +92,13 @@ public class Player {
 
     public Tile getTile() {
 
+        Location location = this.boundingBox.getMin();
         return this.gameMap.getTile(
 
-                (int) Math.round(this.boundingBox.getMin().getX()),
-                (int) Math.round(this.boundingBox.getMin().getY())
+                (int) Math.round(location.getX()),
+                (int) Math.round(location.getY())
 
-        );
+        ).get();
 
     }
 
@@ -121,23 +107,27 @@ public class Player {
     }
 
     public void loseHealth() {
-        this.getPropertyRepository().set(PropertyTypes.HEALTH, this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH)-1);
-        if(this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH)>0) {
-            System.out.println("player health: " + this.getPropertyRepository().<Integer>get(PropertyTypes.HEALTH));
-            this.getPropertyRepository().set(PropertyTypes.INVINCIBILITY, 3F);
-            getRespawn();
+        this.getPropertyRepository().setValue(
+            PropertyTypes.HEALTH,
+            this.getPropertyRepository().getValue(PropertyTypes.HEALTH) - 1
+        );
+
+        if(this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0) {
+            System.out.println("player health: " + this.getPropertyRepository().getValue(PropertyTypes.HEALTH));
+            this.getPropertyRepository().setValue(PropertyTypes.INVINCIBILITY, 3F);
+            this.respawn();
         }else{
             System.out.println("gameover");
         }
     }
 
-    public void getRespawn(){
-        int x = (int) (Math.random() * gameMap.getWidth());
-        int y = (int) (Math.random() * gameMap.getHeight());
-        if (gameMap.getTile(x, y).getTileType() == TileTypes.GROUND && gameMap.getTile(x, y).getTileObject() == null) {
-            boundingBox.setCenter(gameMap.getTile(x,y).getBoundingBox().getCenter());
+    private void respawn(){
+        int x = (int) (Math.random() * this.gameMap.getWidth());
+        int y = (int) (Math.random() * this.gameMap.getHeight());
+        if (this.gameMap.getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameMap.getTile(x, y).get().getTileObject() == null) {
+            this.boundingBox.setCenter(this.gameMap.getTile(x,y).get().getBoundingBox().getCenter());
         } else {
-            this.getRespawn();
+            this.respawn();
         }
     }
 
@@ -195,8 +185,8 @@ public class Player {
          **/
         Direction direction = this.gameMap.checkCollision(this);
 
-        BoundingBox min = this.gameMap.getMin().getBoundingBox();
-        BoundingBox max = this.gameMap.getMax().getBoundingBox();
+        BoundingBox min = this.gameMap.getMin().get().getBoundingBox();
+        BoundingBox max = this.gameMap.getMax().get().getBoundingBox();
 
         double minX = (min.getMax().getX() + (COLLISION_WIDTH / 2));
         double minY = (min.getMax().getY() + (COLLISION_HEIGHT / 2));
@@ -227,36 +217,16 @@ public class Player {
             }
             break;
 
-            case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
-
-
+            case STOP_VERTICAL_MOVEMENT:
                 this.boundingBox.setCenter(
                         range(minX, location.getX(), maxX),
                         range(minY, location.getY(), maxY)
                 );
-
-
-                //TODO Kollision verbessern
-
-                switch (this.facingDirection) {
-
-                    case NORTH_WEST:
-                    case NORTH_EAST: {
-                        this.vector.setX(0);
-                    }
-                    break;
-
-                    case SOUTH_WEST:
-                    case SOUTH_EAST: {
-                        this.vector.setY(0);
-                    }
-                    break;
-
-                }
+                this.vector.setY(0);
+                this.vector.setX(0);
                 break;
 
-            case STOP_HORIZONTAL_MOVEMENT:
-                break;
+            case STOP_HORIZONTAL_MOVEMENT: break;
 
             default:
                 throw new IllegalStateException(String.format("Unknown collision direction: %s", direction.name()));
@@ -264,9 +234,12 @@ public class Player {
         }
 
         this.gameMap.checkInteraction(this);
-        if(this.getPropertyRepository().<Float>get(PropertyTypes.INVINCIBILITY)>0F) {
-            this.getPropertyRepository().set(PropertyTypes.INVINCIBILITY, this.getPropertyRepository().<Float>get(PropertyTypes.INVINCIBILITY) - delta);
-        }
+
+        //--- Update INVINCIBILITY Timer
+        this.getPropertyRepository().setValue(
+            PropertyTypes.INVINCIBILITY,
+            this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
+        );
 
     }
 
@@ -301,7 +274,8 @@ public class Player {
         switch (keyCode) {
 
             case Keyboard.KEY_Q:
-                System.out.println(this.getTile().getTileType() + " - " + this.getTile().isExploding() + " - " + this.getTile().canVisit(this));
+                GameMap.STICKY_WALLS_OR_BUGS = !GameMap.STICKY_WALLS_OR_BUGS;
+                System.out.println(GameMap.STICKY_WALLS_OR_BUGS ? "YOU ENABLED STICKY WALLS!" : "YOU ENABLED AWESOME MOVEMENT BUGS!");
                 break;
 
             case Keyboard.KEY_UP:
@@ -328,12 +302,13 @@ public class Player {
 
                 Tile tile = this.getTile();
 
-                if (tile.getTileObject() instanceof Bomb || this.bombsLeft <= 0) {
-                    assert this.bombsLeft == 0;
+                int bombsLeft = (int) this.getPropertyRepository().getValue(PropertyTypes.BOMB_AMOUNT);
+                if(tile.getTileObject() instanceof Bomb || bombsLeft <= 0) {
+                    assert bombsLeft == 0;
                     return;
                 }
 
-                this.bombsLeft--;
+                this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
                 tile.spawn(new Bomb(this, tile, 2));
 
             }
@@ -345,7 +320,7 @@ public class Player {
 
     public void move(Direction d) {
 
-        float limit = this.propertyRepository.<Float>get(PropertyTypes.SPEED_FACTOR) * ACCELERATION_LIMIT;
+        float limit = this.propertyRepository.getValue(PropertyTypes.SPEED_FACTOR) * ACCELERATION_LIMIT;
 
         switch (d) {
 

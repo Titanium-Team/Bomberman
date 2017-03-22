@@ -32,7 +32,7 @@ public class Explosion extends TileObject {
 
     @Override
     public void interact(Player player) {
-        if(player.getPropertyRepository().<Float>get(PropertyTypes.INVINCIBILITY)<=0){
+        if(player.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) <= 0){
             System.out.println("player dead");
             player.loseHealth();
         }
