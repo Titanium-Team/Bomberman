@@ -17,10 +17,11 @@ public class Vector2 {
         this.y = y;
     }
 
-    public Vector2(String json){
+    public Vector2(String json) {
         Gson gson = new Gson();
 
-        Type type = new TypeToken<Map<String, Float>>() {}.getType();
+        Type type = new TypeToken<Map<String, Float>>() {
+        }.getType();
 
         Map<String, Float> vectorMap = gson.fromJson(json, type);
 
@@ -56,7 +57,7 @@ public class Vector2 {
         y *= r;
     }
 
-    public String toJson(){
+    public String toJson() {
         Gson gson = new Gson();
 
         Map<String, Float> data = new HashMap<>();

@@ -2,7 +2,10 @@ package bomberman.view.engine.components;
 
 
 import bomberman.view.engine.View;
+import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +13,7 @@ import java.util.List;
 public abstract class ViewComponentClickable extends ViewComponent {
 
     public enum State {
-        Default, Pressed;
+        Default, Pressed, Hover;
     }
 
     protected boolean clickable = true;
@@ -21,6 +24,14 @@ public abstract class ViewComponentClickable extends ViewComponent {
         super(params, v);
     }
 
+    protected void updateState() {
+        if (Utility.viewComponentIsCollidingWithMouse(this, Mouse.getX(), Display.getHeight() - Mouse.getY()) && state != State.Pressed) {
+            state = State.Hover;
+        } else if (state == State.Hover){
+            state = State.Default;
+        }
+    }
+
     @Override
     public void onMouseDown(int button, int mouseX, int mouseY) {
         super.onMouseDown(button, mouseX, mouseY);
@@ -28,7 +39,7 @@ public abstract class ViewComponentClickable extends ViewComponent {
             if (button == 0) {
                 state = State.Pressed;
             }
-        }else{
+        } else {
             state = State.Default;
         }
     }

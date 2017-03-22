@@ -1,6 +1,7 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileTypes;
+import net.java.games.input.Component;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -183,6 +184,10 @@ public class GameplayManager {
     public void onMouseDown(int button, int mouseX, int mouseY) {}
 
     public void onMouseUp(int button, int mouseX, int mouseY) {}
+
+    public void onGamepadEvent(Component component, float value) {
+        // TODO: Implementiert das plz
+    }
 
     public static enum GameState {
 

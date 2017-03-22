@@ -5,6 +5,7 @@ import bomberman.view.engine.components.Panel;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
+import net.java.games.input.Component;
 
 public abstract class View {
 
@@ -127,5 +128,13 @@ public abstract class View {
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
         root.onMouseUp(button, mouseX, mouseY);
+    }
+
+    public void onGamepadEvent(Component component, float value) {
+        if (component.getIdentifier() == Component.Identifier.Button._1 && value == 0) {
+            navigateBack();
+        }
+
+        root.onGamepadEvent(component, value);
     }
 }
