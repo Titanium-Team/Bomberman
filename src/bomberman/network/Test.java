@@ -1,6 +1,7 @@
 package bomberman.network;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Test {
 
@@ -9,6 +10,11 @@ public class Test {
 
         Thread thread = new Thread(networkController);
         thread.start();
+
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            networkController.chatMessage(scanner.nextLine());
+        }
     }
 
 }

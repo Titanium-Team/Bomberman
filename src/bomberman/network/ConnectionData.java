@@ -31,8 +31,7 @@ public class ConnectionData {
 
         Gson gson = new Gson();
 
-        Type type = new TypeToken<Map<String, byte[]>>() {
-        }.getType();
+        Type type = new TypeToken<Map<String, byte[]>>() {}.getType();
 
 
         Map<String, byte[]> connectionData = gson.fromJson(json, type);
