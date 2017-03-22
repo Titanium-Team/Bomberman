@@ -63,7 +63,6 @@ public class ViewManager {
     private boolean fullscreen = false;
 
     private Controller selectedGamepad = null;
-    private GamepadConfig gamepadConfig = null;
 
     public ViewManager(GameplayManager gameplayManager) {
         this.gameplayManager = gameplayManager;
@@ -94,7 +93,6 @@ public class ViewManager {
                 System.out.println("Found suitable Gamepad: " + controller.getName());
 
                 this.selectedGamepad = controller;
-                this.gamepadConfig = new GamepadConfig(selectedGamepad);
 
                 break;
             }
@@ -155,7 +153,7 @@ public class ViewManager {
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
             Display.setTitle("Bomberman");
-            Display.setVSyncEnabled(true);
+            Display.setVSyncEnabled(Main.instance.getConfig().isvSync());
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
@@ -168,8 +166,6 @@ public class ViewManager {
 
         GL11.glClearColor(0f, 0f, 0f, 1f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-
-        processInput();
 
         batch.begin();
 
@@ -188,7 +184,7 @@ public class ViewManager {
             Display.sync(60);
     }
 
-    private void processInput() {
+    public void processInput() {
         while (Mouse.next()) {
             if (Mouse.getEventButtonState()) {
                 int button = Mouse.getEventButton();
@@ -246,7 +242,9 @@ public class ViewManager {
             EventQueue gamepadEventQueue = selectedGamepad.getEventQueue();
             Event event = new Event();
             while (gamepadEventQueue.getNextEvent(event)) {
-                System.out.println(event.getComponent().getIdentifier());
+                float value = event.getValue();
+
+                currentView.onGamepadEvent(event.getComponent(), value);
             }
         }
     }
@@ -294,5 +292,9 @@ public class ViewManager {
             GameView gameView = (GameView) currentView;
             gameView.setGameplayManager(this.gameplayManager);
         }
+    }
+
+    public Controller getSelectedGamepad() {
+        return selectedGamepad;
     }
 }

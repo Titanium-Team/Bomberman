@@ -2,6 +2,7 @@ package bomberman.view.engine.components;
 
 import bomberman.view.engine.View;
 import bomberman.view.engine.rendering.Batch;
+import net.java.games.input.Component;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -86,6 +87,12 @@ public abstract class ViewGroup extends ViewComponent {
     public void onMouseUp(int button, int mouseX, int mouseY) {
         for (ViewComponent v : children) {
             v.onMouseUp(button, mouseX, mouseY);
+        }
+    }
+
+    public void onGamepadEvent(Component component, float value) {
+        for (ViewComponent v : children) {
+            v.onGamepadEvent(component, value);
         }
     }
 

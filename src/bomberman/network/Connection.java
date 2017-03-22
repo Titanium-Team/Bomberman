@@ -1,8 +1,13 @@
 package bomberman.network;
 
+import bomberman.gameplay.Player;
+import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -10,9 +15,11 @@ import java.net.UnknownHostException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.Adler32;
+import java.util.zip.Checksum;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public abstract class Connection {
@@ -145,18 +152,21 @@ public abstract class Connection {
         }
     }
 
+    public void movePlayer(NetworkData networkData, String locationJson){
+
+        Location location = new Location(locationJson);
+
+        controller.getNetworkPlayerMap().get(networkData).getBoundingBox().setCenter(location);
+    }
+
     abstract void update();
 
     abstract void message(String message);
 
     abstract void listen();
-
     abstract void move(Vector2 position);
-
     abstract void plantBomb();
-
     abstract void explodedBomb();
-
     abstract void hit(double health);
 
 }

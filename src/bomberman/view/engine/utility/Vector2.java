@@ -1,5 +1,12 @@
 package bomberman.view.engine.utility;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Vector2 {
 
     private float x;
@@ -8,6 +15,19 @@ public class Vector2 {
     public Vector2(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Vector2(String json) {
+        Gson gson = new Gson();
+
+        Type type = new TypeToken<Map<String, Float>>() {
+        }.getType();
+
+        Map<String, Float> vectorMap = gson.fromJson(json, type);
+
+        this.x = vectorMap.get("xCoord");
+        this.y = vectorMap.get("yCoord");
+
     }
 
     public float getLength() {
@@ -35,5 +55,15 @@ public class Vector2 {
 
         x *= r;
         y *= r;
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+
+        Map<String, Float> data = new HashMap<>();
+        data.put("xCoord", getX());
+        data.put("yCoord", getY());
+
+        return gson.toJson(data);
     }
 }

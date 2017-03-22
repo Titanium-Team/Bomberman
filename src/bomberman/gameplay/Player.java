@@ -3,6 +3,7 @@ package bomberman.gameplay;
 import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
@@ -13,6 +14,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Player {
 
@@ -25,6 +27,8 @@ public class Player {
     private final static float ACCELERATION_LIMIT = 1F;
     private final static float ACCELERATION_TIMER = 0.01F;
 
+    private final UUID identifier = UUID.randomUUID();
+    private int index;
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
     private float accelerationTimer = ACCELERATION_TIMER;
@@ -41,15 +45,19 @@ public class Player {
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
 
     //--- Position
+    private Location lastLocation;
+
     private final Vector2 vector = new Vector2(0, 0);
     private float xX = 0;
     private float xY = 0;
 
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
+    private Direction direction = null;
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
+        this.lastLocation = center;
         this.playerType = playerType;
 
         this.gameMap = gameMap;
@@ -62,12 +70,31 @@ public class Player {
 
     }
 
+    public int getIndex(){
+
+        if(this.index < 0) {
+            throw new IllegalStateException("ASSIGN. AN. INDEX.");
+        }
+
+        //TODO JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN ICH BRAUCHE DAS
+        //DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE - Jan
+        return this.index;
+    }
+
     public String getName() {
         return this.name;
     }
 
+    public boolean isAlive() {
+        return this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0;
+    }
+
     public FacingDirection getFacingDirection() {
         return this.facingDirection;
+    }
+
+    public Direction getDirection() {
+        return this.direction;
     }
 
     public Vector2 getVector() {
@@ -106,13 +133,17 @@ public class Player {
         return gameMap;
     }
 
+    protected void setIndex(int index) {
+        this.index = index;
+    }
+
     public void loseHealth() {
         this.getPropertyRepository().setValue(
             PropertyTypes.HEALTH,
             this.getPropertyRepository().getValue(PropertyTypes.HEALTH) - 1
         );
 
-        if(this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0) {
+        if(this.isAlive()) {
             System.out.println("player health: " + this.getPropertyRepository().getValue(PropertyTypes.HEALTH));
             this.getPropertyRepository().setValue(PropertyTypes.INVINCIBILITY, 3F);
             this.respawn();
@@ -145,13 +176,20 @@ public class Player {
                     this.move(Direction.UP);
                 }
 
-                if (this.acceleratingDirections.getOrDefault(Direction.DOWN, false)) {
-                    this.move(Direction.DOWN);
-                }
+            //--- Distance Travelled
+            if(this.isAlive()) {
+                this.gameStatistic.update(Statistics.DISTANCE_TRAVELLED, this.lastLocation.distanceTo(this.boundingBox.getCenter()));
+                this.lastLocation = this.boundingBox.getCenter();
+            }
 
-                if (this.acceleratingDirections.getOrDefault(Direction.LEFT, false)) {
-                    this.move(Direction.LEFT);
+            //--- Accelerating
+            this.accelerationTimer -= delta;
+
+            if (this.accelerationTimer <= 0) {
+                if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
+                    this.move(Direction.UP);
                 }
+            }
 
                 if (this.acceleratingDirections.getOrDefault(Direction.RIGHT, false)) {
                     this.move(Direction.RIGHT);
@@ -278,11 +316,6 @@ public class Player {
 
         switch (keyCode) {
 
-            case Keyboard.KEY_Q:
-                GameMap.STICKY_WALLS_OR_BUGS = !GameMap.STICKY_WALLS_OR_BUGS;
-                System.out.println(GameMap.STICKY_WALLS_OR_BUGS ? "YOU ENABLED STICKY WALLS!" : "YOU ENABLED AWESOME MOVEMENT BUGS!");
-                break;
-
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
                 this.acceleratingDirections.put(Direction.UP, true);
@@ -316,6 +349,8 @@ public class Player {
                 this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
                 tile.spawn(new Bomb(this, tile, 2));
 
+                this.gameStatistic.update(Statistics.BOMBS_PLANTED, 1);
+
             }
             break;
 
@@ -325,6 +360,7 @@ public class Player {
 
     public void move(Direction d) {
 
+        this.direction = d;
         float limit = this.propertyRepository.getValue(PropertyTypes.SPEED_FACTOR) * ACCELERATION_LIMIT;
 
         switch (d) {
@@ -372,6 +408,17 @@ public class Player {
                 break;
 
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if(!(o instanceof Player)) {
+            return false;
+        }
+
+        return ((Player) o).identifier.equals(this.identifier);
+
     }
 
     private static double accelerationCurve(float value) {

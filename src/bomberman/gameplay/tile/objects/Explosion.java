@@ -1,5 +1,6 @@
 package bomberman.gameplay.tile.objects;
 
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.view.engine.ViewManager;
 
 import bomberman.gameplay.properties.PropertyTypes;
@@ -15,11 +16,13 @@ import bomberman.view.engine.rendering.Texture;
 
 public class Explosion extends TileObject {
 
+    private Player owner;
     private Animation animation;
 
-    public Explosion(Tile parent, float lifespan) {
+    public Explosion(Player owner, Tile parent, float lifespan) {
         super(parent, lifespan);
 
+        this.owner = owner;
         this.animation = new Animation((Texture) ViewManager.getTexture("explosion.png"), 64, 64, Bomb.EXPLOSION_LIFESPAN / 25f);
 
     }
@@ -34,6 +37,12 @@ public class Explosion extends TileObject {
     public void interact(Player player) {
         if(player.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) <= 0){
             player.loseHealth();
+
+            if(!(player == this.owner)) {
+                this.owner.getGameStatistic().update(Statistics.KILLS, 1);
+            } else {
+                this.owner.getGameStatistic().update(Statistics.SUICIDES, 1);
+            }
         }
     }
 

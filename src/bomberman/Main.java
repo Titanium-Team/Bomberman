@@ -1,6 +1,7 @@
 package bomberman;
 
 import bomberman.gameplay.GameplayManager;
+import bomberman.network.NetworkController;
 import bomberman.view.engine.Config;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.views.GameView;
@@ -18,6 +19,7 @@ public class Main {
         instance.mainLoop();
     }
 
+    private NetworkController networkController;
     private ViewManager viewManager;
     private GameplayManager gameplayManager;
     private float lastDeltaTime;
@@ -39,6 +41,7 @@ public class Main {
         } else {
             this.config = new Config();
         }
+        this.networkController = new NetworkController(false);
 
         this.gameplayManager = new GameplayManager();
         this.viewManager = new ViewManager(this.gameplayManager);
@@ -65,12 +68,16 @@ public class Main {
             // #hacky
             this.lastDeltaTime = deltaTime;
 
+            viewManager.processInput();
+
             if (viewManager.getCurrentView() instanceof GameView) {
                 gameplayManager.update(deltaTime);
             }
 
             viewManager.render(deltaTime, fpsCounter);
         }
+
+        networkController.close();
 
         viewManager.dispose();
 
@@ -83,6 +90,8 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public NetworkController getNetworkController() {return networkController;}
 
     public ViewManager getViewManager() {
         return viewManager;
