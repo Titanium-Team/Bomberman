@@ -19,13 +19,14 @@ public abstract class ViewComponentClickable extends ViewComponent {
     protected boolean clickable = true;
     protected List<ClickListener> listeners = new ArrayList<>();
     protected State state = State.Default;
+    private boolean selected = false;
 
     public ViewComponentClickable(LayoutParams params, View v) {
         super(params, v);
     }
 
     protected void updateState() {
-        if (Utility.viewComponentIsCollidingWithMouse(this, Mouse.getX(), Display.getHeight() - Mouse.getY()) && state != State.Pressed) {
+        if ((Utility.viewComponentIsCollidingWithMouse(this, Mouse.getX(), Display.getHeight() - Mouse.getY()) || this.selected) && state != State.Pressed) {
             state = State.Hover;
         } else if (state == State.Hover){
             state = State.Default;
@@ -54,6 +55,28 @@ public abstract class ViewComponentClickable extends ViewComponent {
                 listeners.get(i).onClick();
             }
         }
+    }
+
+    public void simulateClick() {
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onClick();
+        }
+    }
+
+    public boolean isClickable() {
+        return clickable;
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public List<ClickListener> getListeners() {
