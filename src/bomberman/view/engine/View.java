@@ -80,7 +80,9 @@ public abstract class View {
             }
         }
 
-        selectClickable(clickableList.get(0));
+        if (clickableList.size() > 0 && viewManager.getSelectedGamepad() != null) {
+            selectClickable(clickableList.get(0));
+        }
     }
 
     private void selectClickable(ViewComponentClickable clickable) {
