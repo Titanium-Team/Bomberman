@@ -47,6 +47,7 @@ public class Player {
 
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
+    private Direction direction = null;
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
@@ -73,6 +74,10 @@ public class Player {
 
     public FacingDirection getFacingDirection() {
         return this.facingDirection;
+    }
+
+    public Direction getDirection() {
+        return this.direction;
     }
 
     public Vector2 getVector() {
@@ -278,11 +283,6 @@ public class Player {
 
         switch (keyCode) {
 
-            case Keyboard.KEY_Q:
-                GameMap.STICKY_WALLS_OR_BUGS = !GameMap.STICKY_WALLS_OR_BUGS;
-                System.out.println(GameMap.STICKY_WALLS_OR_BUGS ? "YOU ENABLED STICKY WALLS!" : "YOU ENABLED AWESOME MOVEMENT BUGS!");
-                break;
-
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
                 this.acceleratingDirections.put(Direction.UP, true);
@@ -325,6 +325,7 @@ public class Player {
 
     public void move(Direction d) {
 
+        this.direction = d;
         float limit = this.propertyRepository.getValue(PropertyTypes.SPEED_FACTOR) * ACCELERATION_LIMIT;
 
         switch (d) {
