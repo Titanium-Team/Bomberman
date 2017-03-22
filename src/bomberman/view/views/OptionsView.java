@@ -19,7 +19,7 @@ public class OptionsView extends BaseMenuView {
 
     public OptionsView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
-        this.verticalView = new VerticalView(LayoutParams.obtain(0.75f, 0.2f, 0.25f, 0.8f), this);
+        this.verticalView = new VerticalView(LayoutParams.obtain(0.75f, 0.2f, 0.25f, 0.6f), this);
         this.getRoot().addChild(verticalView);
 
         this.titleLabel = new Label(LayoutParams.obtain(0.4f, 0.1f, 0.2f, 0.1f), this, "Options");
