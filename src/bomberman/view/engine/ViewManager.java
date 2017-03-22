@@ -155,7 +155,7 @@ public class ViewManager {
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
             Display.setTitle("Bomberman");
-            Display.setVSyncEnabled(true);
+            Display.setVSyncEnabled(Main.instance.getConfig().isvSync());
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }

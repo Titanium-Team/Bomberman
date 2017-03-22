@@ -45,4 +45,11 @@ public class CheckBox extends ViewComponentClickable {
         this.text = text;
     }
 
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 }
