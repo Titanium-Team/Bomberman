@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public class GameplayManager {
 
-    private GameState gameState = GameState.IN_GAME;
+    private GameState gameState = GameState.IN_MENU;
 
     private final static float POWERUP_TIME = 25;
     private float powerupTimer = POWERUP_TIME;
@@ -20,7 +20,7 @@ public class GameplayManager {
 
     public GameplayManager() {
         //map 0
-        this.add(
+        this.addMap(
             GameMap.builder()
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
@@ -38,7 +38,7 @@ public class GameplayManager {
         );
 
         //map 1
-        this.add(
+        this.addMap(
             GameMap.builder()
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
@@ -62,7 +62,7 @@ public class GameplayManager {
         );
 
         //map 2
-        this.add(
+        this.addMap(
             GameMap.builder()
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
@@ -82,12 +82,19 @@ public class GameplayManager {
 
         //@TODO
         this.setMapIndex(2);
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
+        this.addPlayer(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
 
     }
 
-    public void add(Player player) {
+    public synchronized void addPlayer(Player player) {
+
+        if(this.players.contains(player)) {
+            throw new IllegalStateException("Do not add the same instance more than once.");
+        }
+
         this.players.add(player);
+        player.setIndex(this.players.indexOf(player));
+
     }
 
     public List<Player> getPlayers() {
@@ -111,7 +118,7 @@ public class GameplayManager {
         return this.maps.get(index);
     }
 
-    public void add(GameMap map) {
+    public void addMap(GameMap map) {
         assert !(this.maps.contains(map));
         this.maps.add(map);
     }
@@ -122,10 +129,9 @@ public class GameplayManager {
 
     public void setMapIndex(int mapIndex) {
 
-        //@TODO
-        /*if(!(this.gameState == GameState.IN_MENU)) {
+        if(!(this.gameState == GameState.IN_MENU)) {
             throw new IllegalStateException();
-        }*/
+        }
 
         this.mapIndex = mapIndex;
     }

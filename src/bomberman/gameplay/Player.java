@@ -13,6 +13,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Player {
 
@@ -25,6 +26,8 @@ public class Player {
     private final static float ACCELERATION_LIMIT = 1F;
     private final static float ACCELERATION_TIMER = 0.01F;
 
+    private final UUID identifier = UUID.randomUUID();
+    private int index;
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
     private float accelerationTimer = ACCELERATION_TIMER;
@@ -50,7 +53,6 @@ public class Player {
     private Direction direction = null;
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
-
         this.playerType = playerType;
 
         this.gameMap = gameMap;
@@ -64,8 +66,18 @@ public class Player {
     }
 
     public int getIndex(){
+
+        if(this.index < 0) {
+            throw new IllegalStateException("ASSIGN. AN. INDEX.");
+        }
+
         //TODO JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN ICH BRAUCHE DAS
-        return 0;
+        //DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE - Jan
+        return this.index;
+    }
+
+    protected void setIndex(int index) {
+        this.index = index;
     }
 
     public String getName() {
@@ -373,6 +385,17 @@ public class Player {
                 break;
 
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if(!(o instanceof Player)) {
+            return false;
+        }
+
+        return ((Player) o).identifier.equals(this.identifier);
+
     }
 
     private static double accelerationCurve(float value) {
