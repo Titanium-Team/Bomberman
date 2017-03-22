@@ -9,18 +9,15 @@ import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public class GameMap {
 
     private final static Random random = new Random();
 
     private final Tile[][] tiles;
-
     private final List<Location> startPositions;
+    private final Map<Player, Player.Direction> lastDirection = new HashMap<>();
 
     private final int width;
     private final int height;
@@ -82,9 +79,6 @@ public class GameMap {
 
     }
 
-    //@TODO Fix buuuuuuuuuuuuuuuugs
-    public static boolean STICKY_WALLS_OR_BUGS = false;
-
     public Player.Direction checkCollision(Player player) {
 
         BoundingBox playerBox = player.getBoundingBox();
@@ -122,31 +116,47 @@ public class GameMap {
                             else if(!(left.isPresent())) return Player.Direction.LEFT;
                             else if(!(right.isPresent())) return Player.Direction.RIGHT;
 
-                            Location min = player.getBoundingBox().getCenter();
-                            Location max = player.getBoundingBox().getCenter();
+                            Player.Direction last = this.lastDirection.get(player);
 
                             switch (facingDirection) {
 
                                 case NORTH_EAST: {
-                                    Optional<Tile> diagonalTile = this.getTile((int) min.getX() + 1, (int) min.getY() - 1);
-
-                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
+                                    if(last == Player.Direction.UP && player.getDirection() == Player.Direction.RIGHT) {
+                                        if (up.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.UP);
+                                            return Player.Direction.RIGHT;
+                                        } else if (right.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.RIGHT);
+                                            return Player.Direction.UP;
+                                        }
+                                    } else {
                                         if (right.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.RIGHT);
                                             return Player.Direction.UP;
                                         } else if (up.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.RIGHT;
                                         }
                                     }
+
                                 }
                                 break;
 
                                 case SOUTH_EAST: {
-                                    Optional<Tile> diagonalTile = this.getTile((int) max.getX() + 1, (int) max.getY() + 1);
-
-                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
+                                    if(last == Player.Direction.DOWN && player.getDirection() == Player.Direction.RIGHT) {
+                                        if (down.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.DOWN);
+                                            return Player.Direction.RIGHT;
+                                        } else if (right.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.RIGHT);
+                                            return Player.Direction.DOWN;
+                                        }
+                                    } else {
                                         if (right.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.RIGHT);
                                             return Player.Direction.DOWN;
                                         } else if (down.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.DOWN);
                                             return Player.Direction.RIGHT;
                                         }
                                     }
@@ -154,28 +164,41 @@ public class GameMap {
                                 break;
 
                                 case NORTH_WEST: {
-
-                                    Optional<Tile> diagonalTile = this.getTile((int) min.getX() - 1, (int) min.getY() - 1);
-
-                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
-                                        if(left.get().canVisit(player)) {
+                                    if(last == Player.Direction.UP && player.getDirection() == Player.Direction.LEFT) {
+                                        if (up.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.UP);
+                                            return Player.Direction.LEFT;
+                                        } else if (left.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.LEFT);
                                             return Player.Direction.UP;
-                                        } else if(up.get().canVisit(player)) {
+                                        }
+                                    } else {
+                                        if (left.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.LEFT);
+                                            return Player.Direction.UP;
+                                        } else if (up.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.LEFT;
                                         }
                                     }
-
                                 }
                                 break;
 
                                 case SOUTH_WEST: {
-
-                                    Optional<Tile> diagonalTile = this.getTile((int) max.getX() - 1, (int) max.getY() + 1);
-
-                                    if((diagonalTile.isPresent() && !(diagonalTile.get().canVisit(player))) || !STICKY_WALLS_OR_BUGS) {
+                                    if(last == Player.Direction.DOWN && player.getDirection() == Player.Direction.LEFT) {
+                                        if (down.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.DOWN);
+                                            return Player.Direction.LEFT;
+                                        } else if (left.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.LEFT);
+                                            return Player.Direction.DOWN;
+                                        }
+                                    } else {
                                         if (left.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.LEFT);
                                             return Player.Direction.DOWN;
                                         } else if (down.get().canVisit(player)) {
+                                            this.lastDirection.put(player, Player.Direction.DOWN);
                                             return Player.Direction.LEFT;
                                         }
                                     }
