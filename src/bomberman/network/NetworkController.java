@@ -51,7 +51,6 @@ public class NetworkController implements Runnable {
     @Override
     public void run() {
         try {
-
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override

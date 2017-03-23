@@ -8,8 +8,8 @@ import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 import net.java.games.input.Component;
+import net.java.games.input.Controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class View {
@@ -18,9 +18,6 @@ public abstract class View {
     protected int width, height;
     protected final ViewManager viewManager;
     private View parentView = null;
-
-    private List<ViewComponentClickable> clickableList = new ArrayList<>();
-    private ViewComponentClickable selectedClickable = null;
 
     private Camera uiCamera;
     private Camera sceneCamera;
@@ -65,32 +62,6 @@ public abstract class View {
         this.sceneCamera.resize(width, height);
         this.uiCamera.resize(width, height);
         this.uiCamera.setTranslation(new Vector2(width / 2, height / 2));
-
-        updateClickables();
-    }
-
-    private void updateClickables() {
-        clickableList.clear();
-
-        List<ViewComponent> descendants = root.getDescendants();
-
-        for (ViewComponent c : descendants) {
-            if (c != null && c instanceof ViewComponentClickable) {
-                clickableList.add((ViewComponentClickable) c);
-            }
-        }
-
-        if (clickableList.size() > 0 && viewManager.getSelectedGamepad() != null) {
-            selectClickable(clickableList.get(0));
-        }
-    }
-
-    private void selectClickable(ViewComponentClickable clickable) {
-        if (selectedClickable != null)
-            selectedClickable.setSelected(false);
-
-        selectedClickable = clickable;
-        selectedClickable.setSelected(true);
     }
 
     public void requestLayout() {
@@ -165,16 +136,6 @@ public abstract class View {
     }
 
     public void onGamepadEvent(Component component, float value) {
-        if (component.getIdentifier() == Component.Identifier.Button._1 && value == 0) {
-            navigateBack();
-        }
-
-        if (component.getIdentifier() == Component.Identifier.Button._0 && value == 0) {
-            if (selectedClickable != null) {
-                selectedClickable.simulateClick();
-            }
-        }
-
         root.onGamepadEvent(component, value);
     }
 }
