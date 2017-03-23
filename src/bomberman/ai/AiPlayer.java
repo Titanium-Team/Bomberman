@@ -5,30 +5,34 @@ import bomberman.ai.utility.PlayerRelevance;
 import bomberman.ai.utility.Stack;
 import bomberman.gameplay.GameMap;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.TileType;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 
 /**
  * Created by Daniel on 05.03.2017.
  */
 public class AiPlayer extends Player {
-    private ArrayList<PlayerRelevance> playerRelevances;
+    private static ArrayList<PlayerRelevance> playerRelevances;
     private PlayerRelevance target;
     private float timeTillUpdate;
-    private ArrayList<Step> steps;
+    private Stack<Step> steps;
     private NavigationNode[][] navigationMap;
-
+    private boolean ignoreBombs;
+    private static boolean[][] dangerTiles;
 
     private final static float updateTime = 2;
     private final static double updateDistance = 5;
     private final static int wallDistBase = 20;
 
-    public AiPlayer(String name, Location center, GameMap map, ArrayList<PlayerRelevance> playerRelevances) {
+    public AiPlayer(String name, Location center, GameMap map, ArrayList<PlayerRelevance> playerRelevances, boolean[][] dangerTiles) {
         super(Player.PlayerType.AI, map, name, center);
+        this.dangerTiles = dangerTiles;
         this.playerRelevances = playerRelevances;
-        playerRelevances.sort((o1, o2) -> (int) Math.round(o1.getRelevance(this.getBoundingBox().getCenter()) - o2.getRelevance(this.getBoundingBox().getCenter())));
-        target = playerRelevances.get(0);
+        searchTarget();
         //TODO: Gegner greift sich selber an
         if (target.getPlayer() == this) {
             target = playerRelevances.get(1);
@@ -43,36 +47,72 @@ public class AiPlayer extends Player {
     }
 
     public void update(float delta) {
-        timeTillUpdate = -delta;
-        if (timeTillUpdate < 0 && target.getPlayer().getBoundingBox().getCenter().distanceTo(this.getBoundingBox().getCenter()) > updateDistance) {
-            playerRelevances.sort((o1, o2) -> (int) Math.round(o1.getRelevance(this.getBoundingBox().getCenter()) - o2.getRelevance(this.getBoundingBox().getCenter())));
-            target = playerRelevances.get(0);
-            //TODO: Gegner greift sich selber an
-            if (target.getPlayer() == this) {
-                target = playerRelevances.get(1);
+        int currX = (int) Math.round(this.getBoundingBox().getCenter().getX());
+        int currY = (int) Math.round(this.getBoundingBox().getCenter().getY());
+        if(navigationMap[currX][currY].getTile().isExploding()){
+            //Weiche Explosion aus
+        }else{
+            if(!ignoreBombs && dangerTiles[currX][currY]){
+                //Weiche Bombe aus
+                planEvade();
+            }else{
+                if(!steps.isEmpty()){
+                    if(targetDistance() < updateDistance){
+                        switch (steps.top()){
+                            case MOVEUP:
+                                break;
+                            case MOVEDOWN:
+                                break;
+                            case MOVELEFT:
+                                break;
+                            case MOVERIGHT:
+                                break;
+                            case PLACEBOMB:
+                                break;
+                            case EVADE:
+                                break;
+                            case FLEE:
+                                break;
+                            case IGNORE:
+                                if(ignoreBombs){
+                                    ignoreBombs = false;
+                                }else {
+                                    ignoreBombs = true;
+                                }
+                                break;
+                        }
+                        steps.pop();
+                    }else{
+                        searchTarget();
+                    }
+                }else{
+                    if(target == null){
+                        searchTarget();
+                    }
+                    findPath();
+                }
             }
-            timeTillUpdate = updateTime;
         }
+    }
 
-        if (steps.isEmpty()) {
-            if (target != null) {
-                findPath();
-            } else {
+    private double targetDistance(){
+        return this.getBoundingBox().getCenter().distanceTo(target.getPlayer().getBoundingBox().getCenter());
+    }
 
-            }
-        } else {
-
-        }
+    private void searchTarget(){
+        playerRelevances.sort((o1, o2) -> (int) Math.round(o1.getRelevance(this.getBoundingBox().getCenter()) - o2.getRelevance(this.getBoundingBox().getCenter())));
+        target = playerRelevances.get(0);
     }
 
     private void findPath() {
         int targetX = (int) Math.round(target.getPlayer().getBoundingBox().getCenter().getX());
         int targetY = (int) Math.round(target.getPlayer().getBoundingBox().getCenter().getY());
-        int startX = (int) Math.round(this.getBoundingBox().getCenter().getY());
+        int startX = (int) Math.round(this.getBoundingBox().getCenter().getX());
         int startY = (int) Math.round(this.getBoundingBox().getCenter().getY());
         int currX = startX;
         int currY = startY;
 
+        setUnmarked();
         navigationMap[currX][currY].setDist(0);
 
         while (currX != targetX || currY != targetY) {
@@ -112,7 +152,7 @@ public class AiPlayer extends Player {
                 }
             }
         }
-        Stack<Step> steps = new Stack<>();
+
         while (currX != startX || currY != startY) {
             int nextX = navigationMap[currX][currY].getPrevX();
             int nextY = navigationMap[currX][currY].getPrevY();
@@ -134,11 +174,20 @@ public class AiPlayer extends Player {
         }
     }
 
-    private void evade() {
+    private void setUnmarked(){
+        for(NavigationNode[] nodeArr : navigationMap){
+            for(NavigationNode node : nodeArr){
+                node.setMarked(false);
+                node.setDist(Integer.MAX_VALUE);
+            }
+        }
+    }
+
+    private void planEvade() {
 
     }
 
-    private void flee() {
+    private void planFlee() {
 
     }
 
@@ -150,5 +199,6 @@ public class AiPlayer extends Player {
         PLACEBOMB, //Ai platziert eine Bombe
         EVADE, //Ai plant Ausweichen vor Bombe
         FLEE, //Ai flieht vor anderen Spielern
+        IGNORE, //Ai ignoriert Bomben oder hört auf Bomben zu ignorieren
     }
 }
