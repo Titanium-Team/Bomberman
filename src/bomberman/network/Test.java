@@ -6,7 +6,11 @@ import java.util.Scanner;
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        NetworkController networkController = new NetworkController(args[0].equals("true"));
+        NetworkController networkController = new NetworkController();
+
+        if (args[0].equals("true")){
+            networkController.startServer();
+        }
 
         while (true) {
             Scanner scanner = new Scanner(System.in);

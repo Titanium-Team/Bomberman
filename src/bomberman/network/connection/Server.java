@@ -1,6 +1,10 @@
-package bomberman.network;
+package bomberman.network.connection;
 
 import bomberman.gameplay.utils.Location;
+import bomberman.network.ConnectionData;
+import bomberman.network.NetworkController;
+import bomberman.network.NetworkData;
+import bomberman.network.NetworkPlayer;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
@@ -8,8 +12,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Server extends Connection {
 
@@ -46,7 +48,7 @@ public class Server extends Connection {
     }
 
     @Override
-    void listen() {
+    public void listen() {
         DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
 
         try {
@@ -99,22 +101,22 @@ public class Server extends Connection {
     }
 
     @Override
-    void move(Vector2 position) {
+    public void move(Location location, int playerId) {
 
     }
 
     @Override
-    void plantBomb() {
+    public void plantBomb(Location location) {
 
     }
 
     @Override
-    void explodedBomb() {
+    public void explodedBomb(Location location) {
 
     }
 
     @Override
-    void hit(double health) {
+    public void hit(double health, int playerId) {
 
     }
 
