@@ -29,8 +29,10 @@ public class TestView extends BaseMenuView{
 
 		this.deleteButton = new Button(LayoutParams.obtain(0.5f,0.4f,0.1f,0.1f),this,"Delete");
 		deleteButton.addListener(() -> {
-			verticalView.removeChild(verticalView.getChildren().get(verticalView.getChildren().size()-1));
-			verticalView.updateChildren();
+			if(verticalView.getChildren().size() > 1) {
+				verticalView.removeChild(verticalView.getChildren().get(verticalView.getChildren().size() - 1));
+				verticalView.updateChildren();
+			}
 		});
 		this.getRoot().addChild(deleteButton);
 	}
