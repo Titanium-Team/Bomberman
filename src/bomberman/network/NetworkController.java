@@ -126,7 +126,7 @@ public class NetworkController implements Runnable {
     }
 
     public void close(){
-        Thread.currentThread().interrupt();
+        thread.interrupt();
     }
 
     public void startServer(){
