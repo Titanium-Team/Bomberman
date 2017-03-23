@@ -27,8 +27,7 @@ public class NetworkController implements Runnable {
     public NetworkController() {
         requestDataQueue = new LinkedBlockingQueue<>();
 
-        thread = new Thread(this);
-        thread.start();
+        init();
 
         networkPlayerMap = new HashMap<>();
 
@@ -37,6 +36,11 @@ public class NetworkController implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void init(){
+        thread = new Thread(this);
+        thread.start();
     }
 
     public Map<NetworkData, NetworkPlayer> getNetworkPlayerMap() {
@@ -130,27 +134,27 @@ public class NetworkController implements Runnable {
     }
 
     public void startServer(){
-        try {
-            connection = new Server(this);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
+        startServer(1638);
     }
 
     public void startServer(int customPort){
+        close();
         try {
             connection = new Server(this, customPort);
         } catch (SocketException e) {
             e.printStackTrace();
         }
+        init();
     }
 
     public void startClient(){
+        close();
         try {
             connection = new Client(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        init();
     }
 
     private class RequestData{
