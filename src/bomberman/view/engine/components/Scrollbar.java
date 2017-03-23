@@ -8,6 +8,7 @@ import org.lwjgl.input.Mouse;
 /**
  * Created by Tim Bolz on 17.03.2017.
  */
+
 public class Scrollbar extends ViewGroup {
 	private VerticalView parent;
 	private ScrollTab tab;
@@ -55,7 +56,11 @@ public class Scrollbar extends ViewGroup {
 
 		public void setScrollHeight(float scrollHeight) {
 			this.scrollHeight = scrollHeight;
-			this.setParams(LayoutParams.obtain(0, pos, 1, scrollHeight));
+			if(this.getY() + Scrollbar.this.getHeight()*scrollHeight > Scrollbar.this.getHeight()){
+				this.setPos(0f);
+			}else {
+				this.setParams(LayoutParams.obtain(0, pos, 1, scrollHeight));
+			}
 		}
 
 		public float getPos() {

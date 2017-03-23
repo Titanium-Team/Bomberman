@@ -3,6 +3,8 @@ package bomberman.gameplay.tile.objects;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
+import bomberman.gameplay.statistic.Statistic;
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 
@@ -11,7 +13,7 @@ public class PowerUp extends TileObject {
     private Tile parent;
     private PowerUpTypes powerUpType;
 
-    public PowerUp(Tile parent, float lifespan, PowerUpTypes pPowerUpType) {
+    public PowerUp( Tile parent, float lifespan, PowerUpTypes pPowerUpType) {
         super(parent, lifespan);
 
         this.parent = parent;
@@ -27,6 +29,7 @@ public class PowerUp extends TileObject {
     public void interact(Player player) {
 
         PropertyRepository repo = player.getPropertyRepository();
+        player.getGameStatistic().update(Statistics.COLLECTED_POWERUPS, 1);
 
         switch (this.powerUpType) {
 

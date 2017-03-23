@@ -2,9 +2,15 @@ package bomberman.view.engine;
 
 import bomberman.view.engine.components.LayoutParams;
 import bomberman.view.engine.components.Panel;
+import bomberman.view.engine.components.ViewComponent;
+import bomberman.view.engine.components.ViewComponentClickable;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
+import net.java.games.input.Component;
+import net.java.games.input.Controller;
+
+import java.util.List;
 
 public abstract class View {
 
@@ -127,5 +133,9 @@ public abstract class View {
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
         root.onMouseUp(button, mouseX, mouseY);
+    }
+
+    public void onGamepadEvent(Component component, float value) {
+        root.onGamepadEvent(component, value);
     }
 }

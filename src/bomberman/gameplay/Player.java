@@ -3,6 +3,7 @@ package bomberman.gameplay;
 import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.GameStatistic;
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
@@ -13,6 +14,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Player {
 
@@ -25,6 +27,8 @@ public class Player {
     private final static float ACCELERATION_LIMIT = 1F;
     private final static float ACCELERATION_TIMER = 0.01F;
 
+    private final UUID identifier = UUID.randomUUID();
+    private int index;
 
     private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
     private float accelerationTimer = ACCELERATION_TIMER;
@@ -41,6 +45,8 @@ public class Player {
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
 
     //--- Position
+    private Location lastLocation;
+
     private final Vector2 vector = new Vector2(0, 0);
     private float xX = 0;
     private float xY = 0;
@@ -51,6 +57,7 @@ public class Player {
 
     public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
 
+        this.lastLocation = center;
         this.playerType = playerType;
 
         this.gameMap = gameMap;
@@ -64,12 +71,22 @@ public class Player {
     }
 
     public int getIndex(){
+
+        if(this.index < 0) {
+            throw new IllegalStateException("ASSIGN. AN. INDEX.");
+        }
+
         //TODO JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN ICH BRAUCHE DAS
-        return 0;
+        //DOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONE - Jan
+        return this.index;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public boolean isAlive() {
+        return this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0;
     }
 
     public FacingDirection getFacingDirection() {
@@ -116,13 +133,17 @@ public class Player {
         return gameMap;
     }
 
+    protected void setIndex(int index) {
+        this.index = index;
+    }
+
     public void loseHealth() {
         this.getPropertyRepository().setValue(
             PropertyTypes.HEALTH,
             this.getPropertyRepository().getValue(PropertyTypes.HEALTH) - 1
         );
 
-        if(this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0) {
+        if(this.isAlive()) {
             System.out.println("player health: " + this.getPropertyRepository().getValue(PropertyTypes.HEALTH));
             this.getPropertyRepository().setValue(PropertyTypes.INVINCIBILITY, 3F);
             this.respawn();
@@ -143,9 +164,15 @@ public class Player {
 
     public void update(float delta) {
 
-        this.accelerationTimer -= delta;
+        //--- Distance Travelled
+        if(this.isAlive()) {
+            this.gameStatistic.update(Statistics.DISTANCE_TRAVELLED, this.lastLocation.distanceTo(this.boundingBox.getCenter()));
+            this.lastLocation = this.boundingBox.getCenter();
+        }
 
         //--- Accelerating
+        this.accelerationTimer -= delta;
+
         if (this.accelerationTimer <= 0) {
             if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
                 this.move(Direction.UP);
@@ -316,6 +343,8 @@ public class Player {
                 this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
                 tile.spawn(new Bomb(this, tile, 2));
 
+                this.gameStatistic.update(Statistics.BOMBS_PLANTED, 1);
+
             }
             break;
 
@@ -373,6 +402,17 @@ public class Player {
                 break;
 
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if(!(o instanceof Player)) {
+            return false;
+        }
+
+        return ((Player) o).identifier.equals(this.identifier);
+
     }
 
     private static double accelerationCurve(float value) {

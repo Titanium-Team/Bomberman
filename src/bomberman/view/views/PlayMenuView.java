@@ -36,21 +36,20 @@ public class PlayMenuView extends BaseMenuView {
 
         this.getRoot().addChild(portTextField);
 
-        this.scurrMitDemVert = new VerticalView(LayoutParams.obtain(0.7f,0f,0.3f,1f), this);
+        this.scurrMitDemVert = new VerticalView(LayoutParams.obtain(0.7f, 0f, 0.3f, 1f), this);
         this.getRoot().addChild(scurrMitDemVert);
 
 
-
-       updateVerticalView(Main.instance.getNetworkController().getServerList());
+        updateVerticalView(Main.instance.getNetworkController().getServerList());
 
 
     }
 
-    public void updateVerticalView(List<ConnectionData> list){
-        for(int i = 0 ; i < list.size() ; i++){
+    public void updateVerticalView(List<ConnectionData> list) {
+        for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getNetworkData().getIp().getHostAddress();
             NetworkData data = list.get(i).getNetworkData();
-            if(!serverButtons.contains(text)) {
+            if (!serverButtons.contains(text)) {
                 Button button = new Button(LayoutParams.obtain(0f, 0f, 0f, 0f), this, text);
                 button.addListener(new ClickListener() {
                     @Override
@@ -61,8 +60,8 @@ public class PlayMenuView extends BaseMenuView {
                 serverButtons.add(button);
             }
         }
-        for(int i = 0 ; i < serverButtons.size() ; i++){
-            if(!scurrMitDemVert.getChildren().contains(serverButtons.get(i)))
+        for (int i = 0; i < serverButtons.size(); i++) {
+            if (!scurrMitDemVert.getChildren().contains(serverButtons.get(i)))
                 scurrMitDemVert.addChild(serverButtons.get(i));
         }
     }
