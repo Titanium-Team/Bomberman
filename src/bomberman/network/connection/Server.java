@@ -95,7 +95,7 @@ public class Server extends Connection {
 
                     System.out.println("ERROR");
             }
-        } else {
+        } else if (sender.getPort() != -1){
             send("error", sender, true);
         }
     }
