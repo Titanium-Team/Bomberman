@@ -3,10 +3,10 @@ package bomberman.view.views;
 import bomberman.Main;
 import bomberman.view.engine.Config;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.components.*;
-import org.lwjgl.opengl.Display;
-
-import java.util.Random;
+import bomberman.view.engine.components.CheckBox;
+import bomberman.view.engine.components.ClickListener;
+import bomberman.view.engine.components.Label;
+import bomberman.view.engine.components.LayoutParams;
 
 /**
  * shows gamesettings

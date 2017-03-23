@@ -1,5 +1,6 @@
 package bomberman.view.views;
 
+import bomberman.Main;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
@@ -8,6 +9,8 @@ import bomberman.view.engine.components.LayoutParams;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
+import net.java.games.input.Component;
+import net.java.games.input.Controller;
 import org.lwjgl.input.Mouse;
 
 public abstract class BaseMenuView extends LightingView {

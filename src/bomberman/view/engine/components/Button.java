@@ -3,7 +3,6 @@ package bomberman.view.engine.components;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
-import bomberman.view.engine.utility.Utility;
 
 
 public class Button extends ViewComponentClickable {
@@ -17,12 +16,17 @@ public class Button extends ViewComponentClickable {
 
     @Override
     public void draw(Batch batch) {
-        if ( this.state == ViewComponentClickable.State.Default) {
+        updateState();
+
+        if (this.state == State.Default) {
             batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .4f, .4f, .4f, 1f);
-        } else {
+        } else if (this.state == State.Pressed) {
             batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .2f, .2f, .2f, 1f);
+        } else if (this.state == State.Hover) {
+            batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
+            batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .3f, .3f, .3f, 1f);
         }
 
 

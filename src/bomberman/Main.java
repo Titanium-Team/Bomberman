@@ -68,6 +68,8 @@ public class Main {
             // #hacky
             this.lastDeltaTime = deltaTime;
 
+            viewManager.processInput();
+
             if (viewManager.getCurrentView() instanceof GameView) {
                 gameplayManager.update(deltaTime);
             }

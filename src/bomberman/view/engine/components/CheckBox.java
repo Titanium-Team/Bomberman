@@ -3,7 +3,6 @@ package bomberman.view.engine.components;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
-import bomberman.view.engine.utility.Utility;
 
 
 public class CheckBox extends ViewComponentClickable {
@@ -25,6 +24,8 @@ public class CheckBox extends ViewComponentClickable {
 
     @Override
     public void draw(Batch batch) {
+        updateState();
+
         if (!checked) {
             batch.draw(null, (getX()), (getY()), (getHeight()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getHeight() - 10), (getHeight() - 10), .4f, .4f, .4f, 1f);

@@ -48,6 +48,7 @@ public class GameView extends LightingView {
             playerLightMap.put(gameplayManager.getPlayer(i), playerLight);
             this.addLight(playerLight);
         }
+        gameplayManager.setGameState(GameplayManager.GameState.IN_GAME);
     }
 
     public void update(float deltaTime) {

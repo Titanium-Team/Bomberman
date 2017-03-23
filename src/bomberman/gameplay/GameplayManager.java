@@ -1,6 +1,7 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileTypes;
+import net.java.games.input.Component;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,15 +9,19 @@ import java.util.stream.Stream;
 
 public class GameplayManager {
 
+    private GameState gameState = GameState.IN_MENU;
+
     private final static float POWERUP_TIME = 25;
     private float powerupTimer = POWERUP_TIME;
 
     private final List<GameMap> maps = new LinkedList<>();
     private final List<Player> players = new LinkedList<>();
 
+    private int mapIndex = 0;
+
     public GameplayManager() {
         //map 0
-        this.add(
+        this.addMap(
             GameMap.builder()
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
@@ -34,7 +39,7 @@ public class GameplayManager {
         );
 
         //map 1
-        this.add(
+        this.addMap(
             GameMap.builder()
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
@@ -58,7 +63,7 @@ public class GameplayManager {
         );
 
         //map 2
-        this.add(
+        this.addMap(
             GameMap.builder()
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
@@ -77,12 +82,20 @@ public class GameplayManager {
         );
 
         //@TODO
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
+        this.setMapIndex(2);
+        this.addPlayer(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
 
     }
 
-    public void add(Player player) {
+    public synchronized void addPlayer(Player player) {
+
+        if(this.players.contains(player)) {
+            throw new IllegalStateException("Do not add the same instance more than once.");
+        }
+
         this.players.add(player);
+        player.setIndex(this.players.indexOf(player));
+
     }
 
     public List<Player> getPlayers() {
@@ -97,27 +110,39 @@ public class GameplayManager {
         return this.players.get(index);
     }
 
-    //index ändern um andere map zu spielen, index 0 = erste map
     public GameMap getCurrentMap() {
-        return this.getMap(2); //@TODO
-
+        return this.getMap(this.mapIndex);
     }
 
     public GameMap getMap(int index) {
-
         assert index >= 0 && index < this.maps.size();
         return this.maps.get(index);
-
     }
 
-    public void add(GameMap map) {
-
+    public void addMap(GameMap map) {
         assert !(this.maps.contains(map));
         this.maps.add(map);
+    }
 
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void setMapIndex(int mapIndex) {
+
+        if(!(this.gameState == GameState.IN_MENU)) {
+            throw new IllegalStateException();
+        }
+
+        this.mapIndex = mapIndex;
     }
 
     public void update(float delta) {
+
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
         this.players.forEach(e -> e.update(delta));
         Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
 
@@ -143,17 +168,32 @@ public class GameplayManager {
     //powerup end
 
     public void onKeyDown(int key, char c) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
         this.players.forEach(e -> e.keyDown(key, c));
     }
 
     public void onKeyUp(int key, char c) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
         this.players.forEach(e -> e.keyUp(key, c));
     }
 
-    public void onMouseDown(int button, int mouseX, int mouseY) {
+    public void onMouseDown(int button, int mouseX, int mouseY) {}
+
+    public void onMouseUp(int button, int mouseX, int mouseY) {}
+
+    public void onGamepadEvent(Component component, float value) {
+        // TODO: Implementiert das plz
     }
 
-    public void onMouseUp(int button, int mouseX, int mouseY) {
+    public static enum GameState {
+
+        IN_MENU,
+        IN_GAME
+
     }
 
 }
