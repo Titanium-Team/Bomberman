@@ -30,7 +30,7 @@ public class Bomb extends TileObject {
         this.range = (int) this.player.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS);
         this.damage = damage;
 
-        Main.instance.getGameplayManager().getPlayers().forEach(e -> {
+        Main.instance.getGameplayManager().getCurrentSession().getPlayers().forEach(e -> {
             if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())) {
                 this.walkable.add(e);
             }
@@ -69,7 +69,7 @@ public class Bomb extends TileObject {
 
         for (int i = 1; i < this.range + 1; i++) {
 
-            if ((x + i) < this.player.getGameMap().getWidth() && (!stopRight)) {
+            if ((x + i) < this.player.getGameSession().getGameMap().getWidth() && (!stopRight)) {
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
 
@@ -77,7 +77,7 @@ public class Bomb extends TileObject {
                 stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
 
-            if ((y + i) < this.player.getGameMap().getHeight() && !stopUp) {
+            if ((y + i) < this.player.getGameSession().getGameMap().getHeight() && !stopUp) {
                 stopUp = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
 
@@ -101,20 +101,17 @@ public class Bomb extends TileObject {
 
     private boolean createExplosion(int x, int y, float lifespan) {
 
-        Explosion explosion = new Explosion(this.player, this.player.getGameMap().getTile(x, y).get(), lifespan, this.damage);
+        Explosion explosion = new Explosion(this.player, this.player.getGameSession().getGameMap().getTile(x, y).get(), lifespan, this.damage);
 
         //--- spawning explosion
-        if(this.player.getGameMap().getTile(x,y).get().getTileObject() instanceof Bomb) {
-            this.player.getGameMap().getTile(x,y).get().getTileObject().execute();
+        if(this.player.getGameSession().getGameMap().getTile(x,y).get().getTileObject() instanceof Bomb) {
+            this.player.getGameSession().getGameMap().getTile(x,y).get().getTileObject().execute();
         }
 
-        this.player.getGameMap().getTile(x, y).get().spawn(explosion);
+        this.player.getGameSession().getGameMap().getTile(x, y).get().spawn(explosion);
 
         return explosion.destroyWall();
 
     }
 
-    public int getRange() {
-        return range;
-    }
 }

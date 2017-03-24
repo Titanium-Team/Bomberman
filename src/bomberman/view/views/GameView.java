@@ -42,10 +42,10 @@ public class GameView extends LightingView {
     public void setGameplayManager(GameplayManager gameplayManager) {
         this.gameplayManager = gameplayManager;
         playerLightMap.clear();
-        for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
-            Location playerLocation = gameplayManager.getPlayer(i).getBoundingBox().getCenter();
+        for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
+            Location playerLocation = gameplayManager.getCurrentSession().getPlayer(i).getBoundingBox().getCenter();
             Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize);
-            playerLightMap.put(gameplayManager.getPlayer(i), playerLight);
+            playerLightMap.put(gameplayManager.getCurrentSession().getPlayer(i), playerLight);
             this.addLight(playerLight);
         }
         gameplayManager.setGameState(GameplayManager.GameState.IN_GAME);
@@ -54,7 +54,7 @@ public class GameView extends LightingView {
     public void update(float deltaTime) {
         time += deltaTime;
 
-        Player localPlayer = gameplayManager.getLocalPlayer();
+        Player localPlayer = gameplayManager.getCurrentSession().getLocalPlayer();
         Location center = localPlayer.getBoundingBox().getCenter();
         this.getSceneCamera().setTranslation(new Vector2((float) center.getX() * tileSize, (float) center.getY() * tileSize));
 
@@ -68,7 +68,7 @@ public class GameView extends LightingView {
 
     @Override
     public void renderOccluders(Batch batch, Camera camera) {
-        GameMap map = gameplayManager.getCurrentMap();
+        GameMap map = gameplayManager.getCurrentSession().getGameMap();
         Tile[][] tiles = map.getTiles();
         for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
                 i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
@@ -92,7 +92,7 @@ public class GameView extends LightingView {
 
     @Override
     public void renderNonOccluders(Batch batch, Camera camera) {
-        GameMap map = gameplayManager.getCurrentMap();
+        GameMap map = gameplayManager.getCurrentSession().getGameMap();
         Tile[][] tiles = map.getTiles();
         for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
                 i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
@@ -123,8 +123,8 @@ public class GameView extends LightingView {
             }
         }
 
-        for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
-            Player player = gameplayManager.getPlayer(i);
+        for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
+            Player player = gameplayManager.getCurrentSession().getPlayer(i);
             BoundingBox b = player.getBoundingBox();
 
             batch.draw(null, (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize);

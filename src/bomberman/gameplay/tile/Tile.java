@@ -108,4 +108,19 @@ public class Tile {
 
     }
 
+    @Override
+    public Tile clone() {
+        Tile tile = new Tile(this.tileType, new BoundingBox(
+                this.boundingBox.getMin().getX(), this.boundingBox.getMin().getY(),
+                this.boundingBox.getMax().getX(), this.boundingBox.getMax().getY()
+        ));
+        tile.setHealth(this.health);
+
+        if(!(this.tileObject == null)) {
+            tile.spawn(this.tileObject);
+        }
+
+        return tile;
+    }
+
 }

@@ -73,7 +73,7 @@ public class Server extends Connection {
                     ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
                     if (!getController().getNetworkPlayerMap().containsKey(sender)) {
-                        getController().getNetworkPlayerMap().put(sender, new NetworkPlayer("", new Location(0, 0), null, connectionData));
+                        getController().getNetworkPlayerMap().put(sender, new NetworkPlayer(null, "", new Location(0, 0), connectionData));
 
                         send("hello§" + getMyData().toJson(), sender, true);
 

@@ -44,4 +44,8 @@ public abstract class TileObject {
         }
     }
 
+    public TileObject clone(Tile parent) {
+        throw new IllegalStateException();
+    }
+
 }

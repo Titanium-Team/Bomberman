@@ -20,8 +20,8 @@ import java.util.stream.Stream;
 public class Player {
 
     //--- Settings
-    private final static double COLLISION_WIDTH = .8;
-    private final static double COLLISION_HEIGHT = .8;
+    private final static double COLLISION_WIDTH = .6;
+    private final static double COLLISION_HEIGHT = .6;
 
 
     private final static float ACCELERATION_STEP = .09F;
@@ -36,7 +36,7 @@ public class Player {
 
     //--- Game
     private final GameStatistic gameStatistic = new GameStatistic();
-    private final GameMap gameMap;
+    private final GameSession gameSession;
 
     //--- PlayerProperties
     private final String name;
@@ -56,12 +56,12 @@ public class Player {
     private FacingDirection facingDirection = FacingDirection.NORTH;
     private Direction direction = null;
 
-    public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
+    public Player(GameSession gameSession, PlayerType playerType, String name, Location center) {
 
         this.lastLocation = center;
         this.playerType = playerType;
+        this.gameSession = gameSession;
 
-        this.gameMap = gameMap;
         this.name = name;
 
         this.boundingBox = new BoundingBox(
@@ -128,7 +128,7 @@ public class Player {
     public Tile getTile() {
 
         Location location = this.boundingBox.getMin();
-        return this.gameMap.getTile(
+        return this.gameSession.getGameMap().getTile(
 
                 (int) Math.round(location.getX()),
                 (int) Math.round(location.getY())
@@ -137,8 +137,8 @@ public class Player {
 
     }
 
-    public GameMap getGameMap() {
-        return gameMap;
+    public GameSession getGameSession() {
+        return this.gameSession;
     }
 
     protected void setIndex(int index) {
@@ -161,10 +161,10 @@ public class Player {
     }
 
     private void respawn(){
-        int x = (int) (Math.random() * this.gameMap.getWidth());
-        int y = (int) (Math.random() * this.gameMap.getHeight());
-        if (this.gameMap.getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameMap.getTile(x, y).get().getTileObject() == null) {
-            this.boundingBox.setCenter(this.gameMap.getTile(x,y).get().getBoundingBox().getCenter());
+        int x = (int) (Math.random() * this.gameSession.getGameMap().getWidth());
+        int y = (int) (Math.random() * this.gameSession.getGameMap().getHeight());
+        if (this.gameSession.getGameMap().getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameSession.getGameMap().getTile(x, y).get().getTileObject() == null) {
+            this.boundingBox.setCenter(this.gameSession.getGameMap().getTile(x,y).get().getBoundingBox().getCenter());
         } else {
             this.respawn();
         }
@@ -211,10 +211,10 @@ public class Player {
         Location location = this.boundingBox.getCenter();
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
-        Direction direction = this.gameMap.checkCollision(this);
+        Direction direction = this.gameSession.getGameMap().checkCollision(this);
 
-        BoundingBox min = this.gameMap.getMin().get().getBoundingBox();
-        BoundingBox max = this.gameMap.getMax().get().getBoundingBox();
+        BoundingBox min = this.gameSession.getGameMap().getMin().get().getBoundingBox();
+        BoundingBox max = this.gameSession.getGameMap().getMax().get().getBoundingBox();
 
         double minX = (min.getMax().getX() + (COLLISION_WIDTH / 2));
         double minY = (min.getMax().getY() + (COLLISION_HEIGHT / 2));
@@ -261,7 +261,7 @@ public class Player {
 
         }
 
-        this.gameMap.checkInteraction(this);
+        this.gameSession.getGameMap().checkInteraction(this);
 
         //--- Update INVINCIBILITY Timer
         this.getPropertyRepository().setValue(

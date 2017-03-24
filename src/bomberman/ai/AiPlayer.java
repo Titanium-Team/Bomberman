@@ -4,6 +4,7 @@ import bomberman.ai.utility.NavigationNode;
 import bomberman.ai.utility.PlayerRelevance;
 import bomberman.ai.utility.Stack;
 import bomberman.gameplay.GameMap;
+import bomberman.gameplay.GameSession;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.utils.Location;
@@ -28,8 +29,10 @@ public class AiPlayer extends Player {
     private final static double UPDATE_DISTANCE = 5;
     private final static int WALL_DIST_BASE = 20;
 
-    public AiPlayer(String name, Location center, GameMap map, ArrayList<PlayerRelevance> playerRelevances, boolean[][] dangerTiles) {
-        super(Player.PlayerType.AI, map, name, center);
+    public AiPlayer(GameSession gameSession, String name, Location center, ArrayList<PlayerRelevance> playerRelevances, boolean[][] dangerTiles) {
+        super(gameSession, Player.PlayerType.AI, name, center);
+
+        GameMap map = gameSession.getGameMap();
         AiPlayer.dangerTiles = dangerTiles;
         AiPlayer.playerRelevances = playerRelevances;
         searchTarget();
