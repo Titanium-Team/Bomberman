@@ -32,7 +32,7 @@ public class VerticalView extends Panel {
 	public void draw(Batch batch) {
 		batch.flush();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor((int) getX(), (int) (this.getY() + (this.getView().getHeight()-this.getHeight())), (int) getWidth(), (int) getHeight());
+		GL11.glScissor((int) getX(), (int) (getView().getHeight() - this.getY() - getHeight()), (int) getWidth(), (int) getHeight());
 
 		super.draw(batch);
 

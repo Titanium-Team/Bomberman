@@ -17,7 +17,7 @@ public class PlayerRelevance {
 
     public void update() {
         //TODO: Inventar,Score etc.
-        relevance = player.getHealth();
+        //relevance = player.getHealth();
     }
 
     public double getRelevance() {

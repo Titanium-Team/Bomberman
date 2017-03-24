@@ -1,10 +1,10 @@
 package bomberman.view.views;
 
+import bomberman.Main;
+import bomberman.gameplay.GameMap;
+import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.components.Button;
-import bomberman.view.engine.components.LayoutParams;
-import bomberman.view.engine.components.Panel;
-import bomberman.view.engine.components.TextField;
+import bomberman.view.engine.components.*;
 
 /**
  * shows Players and GameSettings (not the Options)
@@ -17,39 +17,30 @@ public class LobbyView extends BaseMenuView {
 
     private Button startButton;
 
-    private TextField mapIndexTextField;
-    private Panel gameOptionsPanel;
-    private boolean gameOptionsPanelChildChangeable;
+    private VerticalView mapVotingList;
 
     public LobbyView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
-        this.startButton = new Button(LayoutParams.obtain(0.4f, 0.6f, 0.2f, 0.1f), this, "Start Game");
+        this.startButton = new Button(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "Start Game");
         this.startButton.addListener(() -> LobbyView.this.changeView(GameView.class));
         this.getRoot().addChild(startButton);
 
+        this.mapVotingList = new VerticalView(LayoutParams.obtain(0.55f, 0.05f, 0.4f, 0.9f), this);
+        this.getRoot().addChild(mapVotingList);
 
-        //Game Options Panel :
-        this.gameOptionsPanel = new Panel(LayoutParams.obtain(0.7f, 0f, 0.3f, 1f), this);
-        this.getRoot().addChild(gameOptionsPanel);
+        GameplayManager gameplayManager = Main.instance.getGameplayManager();
+        for (int i = 0; i < gameplayManager.getMapCount(); i++) {
+            GameMap map = gameplayManager.getMap(i);
+            final int index = i;
 
-        this.mapIndexTextField = new TextField(LayoutParams.obtain(0f, 0f, 1f, 0f), this, "", "Map Index");
-        this.gameOptionsPanel.addChild(mapIndexTextField);
+            Button voteButton = new Button(LayoutParams.obtain(0f, 0f, 0.6f, 1f), this, "Vote Map " + index);
+            voteButton.addListener(() -> {
+                gameplayManager.setMapIndex(index);
+            });
 
-
-        float gameOptionsPanelChildrenHeight = (1 / (float) gameOptionsPanel.getChildren().size());
-        for (int i = 0; i < gameOptionsPanel.getChildren().size(); i++) {
-            gameOptionsPanel.getChildren().get(i).setParams(LayoutParams.obtain(0f, (i * gameOptionsPanel.getParams().h * gameOptionsPanelChildrenHeight), 1f, gameOptionsPanelChildrenHeight));
-        }
-        //Game Options Panel End
-
-
-    }
-/*
-    public void setGameOptionsPanelChildChangeable(boolean b){
-        for(int i = 0 ; i < gameOptionsPanel.getChildren().size() ; i++ ){
-            gameOptionsPanel.getChildren().get(i).setChangeable(b);
+            this.mapVotingList.addChild(voteButton);
         }
     }
-*/
+
 }
