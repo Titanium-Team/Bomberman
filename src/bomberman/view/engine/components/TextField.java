@@ -95,4 +95,8 @@ public class TextField extends ViewComponentClickable {
         } else if (text.length() == 0 && textFieldState == TextFieldState.Unfocussed)
             ViewManager.font.drawText(batch, backText, (int) getX() + 5, (int) ((getY()) + (getHeight()) / 2 - ViewManager.font.getLineHeight() / 2));
     }
+
+    public String getText() {
+        return text;
+    }
 }

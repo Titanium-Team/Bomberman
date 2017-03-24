@@ -53,9 +53,8 @@ public class Server extends Connection {
 
         try {
             getSocket().receive(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
+
 
         NetworkData sender = new NetworkData(packet.getAddress(), packet.getPort());
 
@@ -95,9 +94,11 @@ public class Server extends Connection {
 
                     System.out.println("ERROR");
             }
-        } else {
+        } else if (sender.getPort() != -1){
             send("error", sender, true);
+
         }
+
     }
 
     @Override

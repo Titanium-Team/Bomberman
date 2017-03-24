@@ -82,7 +82,7 @@ public class Client extends Connection {
 
                     break;
             }
-        } else {
+        } else if (sender.getPort() != -1){
             send("error", sender, true);
         }
     }

@@ -63,7 +63,6 @@ public abstract class Connection {
                     listen();
                     Thread.sleep(0);
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
                     break;
                 }
             }
