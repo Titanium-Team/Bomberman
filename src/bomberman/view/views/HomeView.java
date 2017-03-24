@@ -1,8 +1,11 @@
 package bomberman.view.views;
 
+import bomberman.Main;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.Button;
+import bomberman.view.engine.components.ClickListener;
 import bomberman.view.engine.components.LayoutParams;
+import org.lwjgl.opengl.Display;
 
 /**
  * View for Start
@@ -18,7 +21,10 @@ public class HomeView extends BaseMenuView {
     public HomeView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
-        this.getRoot().removeChild(this.backButton);
+        this.backButton.setText("Exit");
+        this.backButton.addListener(() -> {
+            Main.instance.requestClose();
+        });
 
         this.playButton = new Button(LayoutParams.obtain(0.4f, 0.4f, 0.2f, 0.1f), this, "Play");
         this.playButton.addListener(() -> HomeView.this.changeView(PlayMenuView.class));

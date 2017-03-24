@@ -14,12 +14,7 @@ public class CheckBox extends ViewComponentClickable {
         super(params, v);
         this.text = text;
 
-        this.addListener(new ClickListener() {
-            @Override
-            public void onClick() {
-                CheckBox.this.checked = !CheckBox.this.checked;
-            }
-        });
+        this.addListener(() -> CheckBox.this.checked = !CheckBox.this.checked);
     }
 
     @Override

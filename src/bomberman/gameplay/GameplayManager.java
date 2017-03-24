@@ -130,6 +130,10 @@ public class GameplayManager {
         return this.maps.get(index);
     }
 
+    public int getMapCount() {
+        return maps.size();
+    }
+
     public void addMap(GameMap map) {
         assert !(this.maps.contains(map));
         this.maps.add(map);

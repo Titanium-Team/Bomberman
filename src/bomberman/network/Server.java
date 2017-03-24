@@ -1,17 +1,21 @@
-package bomberman.network.connection;
+package bomberman.network;
 
+import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
-import bomberman.network.ConnectionData;
-import bomberman.network.NetworkController;
-import bomberman.network.NetworkData;
-import bomberman.network.NetworkPlayer;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.*;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.SocketException;
 
 public class Server extends Connection {
 
@@ -48,13 +52,14 @@ public class Server extends Connection {
     }
 
     @Override
-    public void listen() {
+    void listen() {
         DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
 
         try {
             getSocket().receive(packet);
-        } catch (IOException e) {}
-
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         NetworkData sender = new NetworkData(packet.getAddress(), packet.getPort());
 
@@ -94,35 +99,39 @@ public class Server extends Connection {
 
                     System.out.println("ERROR");
             }
-        } else if (sender.getPort() != -1){
+        }else {
             send("error", sender, true);
-
         }
+    }
+
+    @Override
+    void move(Vector2 position) {
+        Map<String, Float> data = new HashMap<>();
+        data.put("xCoord", position.getX());
+        data.put("yCoord", position.getY());
+
+        Gson gson = new Gson();
+
+        String json = gson.toJson(data);
+    }
+
+    @Override
+    void plantBomb() {
 
     }
 
     @Override
-    public void move(Location location, int playerId) {
+    void explodedBomb() {
 
     }
 
     @Override
-    public void plantBomb(Location location) {
-
-    }
-
-    @Override
-    public void explodedBomb(Location location) {
-
-    }
-
-    @Override
-    public void hit(double health, int playerId) {
+    void hit(double health) {
 
     }
 
 
-    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend) {
+    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend){
         System.out.println(networkData.getPort());
         getController().getNetworkPlayerMap().forEach((key, value) -> {
             System.out.println(value.getConnectionData().getNetworkData().getPort());
