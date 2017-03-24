@@ -15,22 +15,23 @@ import org.lwjgl.input.Keyboard;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class Player {
 
     //--- Settings
-    private final static double COLLISION_WIDTH = .6;
-    private final static double COLLISION_HEIGHT = .6;
+    private final static double COLLISION_WIDTH = .8;
+    private final static double COLLISION_HEIGHT = .8;
 
 
-    private final static float ACCELERATION_STEP = .06F;
-    private final static float ACCELERATION_LIMIT = 1F;
+    private final static float ACCELERATION_STEP = .09F;
+    private final static float ACCELERATION_LIMIT = 1.1F;
     private final static float ACCELERATION_TIMER = 0.01F;
 
     private final UUID identifier = UUID.randomUUID();
     private int index;
 
-    private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
+    private final Map<Direction, KeyEntry> acceleratingDirections = new HashMap<>();
     private float accelerationTimer = ACCELERATION_TIMER;
 
     //--- Game
@@ -68,6 +69,9 @@ public class Player {
                 new Location(center.getX() + (COLLISION_WIDTH / 2), center.getY() + (COLLISION_HEIGHT / 2))
         );
 
+        //--- Populate map w/ default values
+        Stream.of(Direction.values()).forEach(e -> this.acceleratingDirections.put(e, new KeyEntry()));
+
     }
 
     public int getIndex(){
@@ -87,6 +91,10 @@ public class Player {
 
     public boolean isAlive() {
         return this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0;
+    }
+
+    public double getHealth() {
+        return this.getPropertyRepository().getValue(PropertyTypes.HEALTH);
     }
 
     public FacingDirection getFacingDirection() {
@@ -174,19 +182,19 @@ public class Player {
         this.accelerationTimer -= delta;
 
         if (this.accelerationTimer <= 0) {
-            if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
+            if (this.acceleratingDirections.get(Direction.UP).isPressed()) {
                 this.move(Direction.UP);
             }
 
-            if (this.acceleratingDirections.getOrDefault(Direction.DOWN, false)) {
+            if (this.acceleratingDirections.get(Direction.DOWN).isPressed()) {
                 this.move(Direction.DOWN);
             }
 
-            if (this.acceleratingDirections.getOrDefault(Direction.LEFT, false)) {
+            if (this.acceleratingDirections.get(Direction.LEFT).isPressed()) {
                 this.move(Direction.LEFT);
             }
 
-            if (this.acceleratingDirections.getOrDefault(Direction.RIGHT, false)) {
+            if (this.acceleratingDirections.get(Direction.RIGHT).isPressed()) {
                 this.move(Direction.RIGHT);
             }
 
@@ -203,23 +211,6 @@ public class Player {
         Location location = this.boundingBox.getCenter();
         this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
 
-
-        /**
-         this.gameMap.checkInteraction(this);
-
-         switch (this.gameMap.checkCollision(this)) {
-
-         case LEFT:
-         case RIGHT:
-         this.vector.setX(0);
-         this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
-         break;
-         case UP:
-         case DOWN:
-         this.vector.setY(0);
-         this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
-         break;
-         **/
         Direction direction = this.gameMap.checkCollision(this);
 
         BoundingBox min = this.gameMap.getMin().get().getBoundingBox();
@@ -289,8 +280,8 @@ public class Player {
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
                 this.move(Direction.STOP_VERTICAL_MOVEMENT);
-                this.acceleratingDirections.put(Direction.UP, false);
-                this.acceleratingDirections.put(Direction.DOWN, false);
+                this.acceleratingDirections.get(Direction.UP).setPressed(false);
+                this.acceleratingDirections.get(Direction.DOWN).setPressed(false);
                 break;
 
             case Keyboard.KEY_RIGHT:
@@ -298,8 +289,8 @@ public class Player {
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
                 this.move(Direction.STOP_HORIZONTAL_MOVEMENT);
-                this.acceleratingDirections.put(Direction.LEFT, false);
-                this.acceleratingDirections.put(Direction.RIGHT, false);
+                this.acceleratingDirections.get(Direction.LEFT).setPressed(false);
+                this.acceleratingDirections.get(Direction.RIGHT).setPressed(false);
                 break;
 
         }
@@ -312,22 +303,22 @@ public class Player {
 
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
-                this.acceleratingDirections.put(Direction.UP, true);
+                this.acceleratingDirections.get(Direction.UP).setPressed(true);
                 break;
 
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                this.acceleratingDirections.put(Direction.LEFT, true);
+                this.acceleratingDirections.get(Direction.LEFT).setPressed(true);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
-                this.acceleratingDirections.put(Direction.RIGHT, true);
+                this.acceleratingDirections.get(Direction.RIGHT).setPressed(true);
                 break;
 
             case Keyboard.KEY_DOWN:
             case Keyboard.KEY_S:
-                this.acceleratingDirections.put(Direction.DOWN, true);
+                this.acceleratingDirections.get(Direction.DOWN).setPressed(true);
                 break;
 
             case Keyboard.KEY_SPACE: {
@@ -335,13 +326,14 @@ public class Player {
                 Tile tile = this.getTile();
 
                 int bombsLeft = (int) this.getPropertyRepository().getValue(PropertyTypes.BOMB_AMOUNT);
+
                 if(tile.getTileObject() instanceof Bomb || bombsLeft <= 0) {
                     assert bombsLeft == 0;
                     return;
                 }
 
                 this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
-                tile.spawn(new Bomb(this, tile, 2));
+                tile.spawn(new Bomb(this, tile, 2, 1));
 
                 this.gameStatistic.update(Statistics.BOMBS_PLANTED, 1);
 
@@ -416,7 +408,7 @@ public class Player {
     }
 
     private static double accelerationCurve(float value) {
-        return Math.exp(2 * value - 1);
+        return Math.exp(2 * value - .9D);
     }
 
     private static float range(float min, float value, float max) {
@@ -485,6 +477,28 @@ public class Player {
 
             return FacingDirection.DEFAULT;
 
+        }
+
+    }
+
+    private static class KeyEntry {
+
+        private long lastUsed = System.currentTimeMillis();
+        private boolean pressed = false;
+
+        public KeyEntry() {}
+
+        public long getLastUsed() {
+            return this.lastUsed;
+        }
+
+        public boolean isPressed() {
+            return this.pressed;
+        }
+
+        public void setPressed(boolean pressed) {
+            this.pressed = pressed;
+            this.lastUsed = System.currentTimeMillis();
         }
 
     }

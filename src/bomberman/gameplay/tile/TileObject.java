@@ -5,7 +5,6 @@ import bomberman.gameplay.Player;
 public abstract class TileObject {
 
     private final Tile parent;
-
     private float lifespan;
 
     public TileObject(Tile parent, float lifespan) {

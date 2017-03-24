@@ -82,9 +82,20 @@ public class GameplayManager {
         );
 
         //@TODO
-        this.setMapIndex(2);
+        this.setMapIndex(1);
         this.addPlayer(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
 
+    }
+
+    private void getGameSummary() {
+        //--- Most Deadly       -> Player with the most kills.
+        //--- Most Professional -> Player with the highest kill to death ratio
+        //--- Longest Innings   -> Player with the least deaths.
+        //--- Most Cowardly     -> Player with the least kills and least deaths.
+        //--- Lemming Award     -> Player with the most suicides.
+        //--- Shortest Innings  -> Player with the most deaths.
+        //--- Mostly Harmless   -> Player with the least kills.
+        //--- Gandhi            -> Player winning without killing.
     }
 
     public synchronized void addPlayer(Player player) {

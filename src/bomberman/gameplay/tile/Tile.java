@@ -12,6 +12,7 @@ public class Tile {
     private final BoundingBox boundingBox;
 
     private TileObject tileObject;
+    private double health;
 
     public Tile(TileType tileType, BoundingBox boundingBox) {
 
@@ -20,6 +21,7 @@ public class Tile {
 
         this.tileType = tileType;
         this.boundingBox = boundingBox;
+        this.health = tileType.getHealth();
 
     }
 
@@ -29,6 +31,10 @@ public class Tile {
 
     public void setTileType(TileType tileType) {
         this.tileType = tileType;
+    }
+
+    public double getHealth() {
+        return this.health;
     }
 
     public BoundingBox getBoundingBox() {
@@ -43,13 +49,17 @@ public class Tile {
         return (this.tileObject instanceof Bomb);
     }
 
+    public void setHealth(double health) {
+        this.health = health;
+    }
+
     public boolean canVisit(Player player) {
         return !(
                 this.boundingBox.intersects(player.getBoundingBox()) &&
-                        (
-                                !(this.tileType.isWalkable()) ||
-                                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
-                        )
+                    (
+                        !(this.tileType.isWalkable()) ||
+                        (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
+                    )
         );
     }
 

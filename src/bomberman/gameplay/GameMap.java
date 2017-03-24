@@ -221,7 +221,6 @@ public class GameMap {
 
     }
 
-
     /**
      * public Player.Direction checkCollision(Player player) {
      * <p>

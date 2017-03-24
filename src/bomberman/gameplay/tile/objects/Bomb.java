@@ -20,18 +20,25 @@ public class Bomb extends TileObject {
     private Player player;
 
     private final int range;
+    private final double damage;
 
-    public Bomb(Player player, Tile parent, float lifespan) {
+    public Bomb(Player player, Tile parent, float lifespan, double damage) {
 
         super(parent, lifespan);
+
         this.player = player;
         this.range = (int) this.player.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS);
+        this.damage = damage;
 
         Main.instance.getGameplayManager().getPlayers().forEach(e -> {
             if (e.getBoundingBox().intersects(this.getParent().getBoundingBox())) {
                 this.walkable.add(e);
             }
         });
+    }
+
+    public int getRange() {
+        return this.range;
     }
 
     public boolean canVisit(Player p) {
@@ -94,7 +101,7 @@ public class Bomb extends TileObject {
 
     private boolean createExplosion(int x, int y, float lifespan) {
 
-        Explosion explosion = new Explosion(this.player, this.player.getGameMap().getTile(x, y).get(), lifespan);
+        Explosion explosion = new Explosion(this.player, this.player.getGameMap().getTile(x, y).get(), lifespan, this.damage);
 
         //--- spawning explosion
         if(this.player.getGameMap().getTile(x,y).get().getTileObject() instanceof Bomb) {

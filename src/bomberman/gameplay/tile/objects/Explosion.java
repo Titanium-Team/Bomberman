@@ -18,10 +18,12 @@ public class Explosion extends TileObject {
 
     private Player owner;
     private Animation animation;
+    private final double damage;
 
-    public Explosion(Player owner, Tile parent, float lifespan) {
+    public Explosion(Player owner, Tile parent, float lifespan, double damage) {
         super(parent, lifespan);
 
+        this.damage = damage;
         this.owner = owner;
         this.animation = new Animation((Texture) ViewManager.getTexture("explosion.png"), 64, 64, Bomb.EXPLOSION_LIFESPAN / 25f);
 
@@ -53,8 +55,17 @@ public class Explosion extends TileObject {
 
     public boolean destroyWall() {
 
-        if (this.getParent().getTileType() == TileTypes.WALL_BREAKABLE) {
-            this.getParent().setTileType(TileTypes.GROUND);
+        if (this.getParent().getTileType().isDestroyable()) {
+
+            this.getParent().setHealth(this.getParent().getHealth() - this.damage);
+
+            if(this.getParent().getHealth() <= 0) {
+                this.owner.getGameStatistic().update(Statistics.DESTROYED_WALLS, 1);
+                this.getParent().setTileType(TileTypes.GROUND);
+            }
+
+            return true;
+        } else if(!(this.getParent().getTileType().isDestroyable())) {
             return true;
         }
 
