@@ -107,4 +107,7 @@ public class Bomb extends TileObject {
 
     }
 
+    public int getRange() {
+        return range;
+    }
 }
