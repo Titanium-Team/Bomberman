@@ -23,6 +23,8 @@ public class Server extends Connection {
         init();
 
         System.out.println("Server initialized");
+
+        System.out.println(Thread.currentThread().getId());
     }
 
     public Server(NetworkController networkController, int customPort) throws SocketException {
@@ -60,6 +62,7 @@ public class Server extends Connection {
 
         String message = new String(packet.getData(), 0, packet.getLength());
 
+        System.out.println(Thread.currentThread().getId());
 
         String[] splittedChecksum = message.split("§", 2);
 

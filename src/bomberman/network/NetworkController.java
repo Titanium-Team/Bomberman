@@ -31,11 +31,7 @@ public class NetworkController implements Runnable {
 
         networkPlayerMap = new HashMap<>();
 
-        try {
-            connection = new Client(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        startClient();
     }
 
     private void init(){
@@ -55,6 +51,26 @@ public class NetworkController implements Runnable {
 
                 if (requestData != null) {
                     switch (requestData.getType()){
+                        case "startServer":
+                            close();
+                            try {
+                                connection = new Server(this, (Integer) requestData.getObjects()[0]);
+                            } catch (SocketException e) {
+                                e.printStackTrace();
+                            }
+                            init();
+                            break;
+
+                        case "startClient":
+                            close();
+                            try {
+                                connection = new Client(this);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            init();
+                            break;
+
                         case "hello":
                             ((Client) connection).refreshServers();
                             break;
@@ -138,23 +154,11 @@ public class NetworkController implements Runnable {
     }
 
     public void startServer(int customPort){
-        close();
-        try {
-            connection = new Server(this, customPort);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        init();
+        requestDataQueue.add(new RequestData("startServer", new Object[]{customPort}));
     }
 
     public void startClient(){
-        close();
-        try {
-            connection = new Client(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        init();
+        requestDataQueue.add(new RequestData("startClient", null));
     }
 
     private class RequestData{
