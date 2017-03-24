@@ -29,7 +29,15 @@ public class PlayMenuView extends BaseMenuView {
         super(width, height, viewManager);
 
         this.hostGameButton = new Button(LayoutParams.obtain(0.4f, 0.4f, 0.2f, 0.1f), this, "Host Game");
-        this.hostGameButton.addListener(() -> PlayMenuView.this.changeView(LobbyView.class));
+        this.hostGameButton.addListener(() -> {
+            PlayMenuView.this.changeView(LobbyView.class);
+
+            if (portTextField.getText() != "") {
+                Main.instance.getNetworkController().startServer(Integer.parseInt(portTextField.getText()));
+            }else {
+                Main.instance.getNetworkController().startServer();
+            }
+        });
         this.getRoot().addChild(hostGameButton);
 
         this.portTextField = new TextField(LayoutParams.obtain(0f, 0.5f, 0.25f, 0.1f), this, "", "Port Number");

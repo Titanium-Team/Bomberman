@@ -1,6 +1,10 @@
-package bomberman.network;
+package bomberman.network.connection;
 
 import bomberman.gameplay.utils.Location;
+import bomberman.network.ConnectionData;
+import bomberman.network.NetworkController;
+import bomberman.network.NetworkData;
+import bomberman.network.NetworkPlayer;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
@@ -8,8 +12,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Server extends Connection {
 
@@ -46,14 +48,13 @@ public class Server extends Connection {
     }
 
     @Override
-    void listen() {
+    public void listen() {
         DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
 
         try {
             getSocket().receive(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
+
 
         NetworkData sender = new NetworkData(packet.getAddress(), packet.getPort());
 
@@ -93,28 +94,30 @@ public class Server extends Connection {
 
                     System.out.println("ERROR");
             }
-        } else {
+        } else if (sender.getPort() != -1){
             send("error", sender, true);
+
         }
-    }
-
-    @Override
-    void move(Vector2 position) {
 
     }
 
     @Override
-    void plantBomb() {
+    public void move(Location location, int playerId) {
 
     }
 
     @Override
-    void explodedBomb() {
+    public void plantBomb(Location location) {
 
     }
 
     @Override
-    void hit(double health) {
+    public void explodedBomb(Location location) {
+
+    }
+
+    @Override
+    public void hit(double health, int playerId) {
 
     }
 

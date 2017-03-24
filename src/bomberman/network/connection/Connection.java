@@ -1,7 +1,11 @@
-package bomberman.network;
+package bomberman.network.connection;
 
 import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
+import bomberman.network.ConnectionData;
+import bomberman.network.NetworkController;
+import bomberman.network.NetworkData;
+import bomberman.network.Request;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -59,7 +63,6 @@ public abstract class Connection {
                     listen();
                     Thread.sleep(0);
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
                     break;
                 }
             }
@@ -98,8 +101,8 @@ public abstract class Connection {
     }
 
     public void close() {
-        getSocket().close();
         getListener().interrupt();
+        getSocket().close();
     }
 
     public void send(String message, NetworkData networkData, boolean resend) {
@@ -121,11 +124,16 @@ public abstract class Connection {
 
     public boolean checksum(String[] message) {
         Adler32 checksum = new Adler32();
-        checksum.update(message[1].getBytes());
-        long check = checksum.getValue();
-        long checkOriginal = Long.parseLong(message[0]);
 
-        return check == checkOriginal;
+        if (message.length >= 2) {
+            checksum.update(message[1].getBytes());
+            long check = checksum.getValue();
+            long checkOriginal = Long.parseLong(message[0]);
+
+            return check == checkOriginal;
+        }
+
+        return false;
     }
 
     public String decrypt(String message) {
@@ -161,12 +169,11 @@ public abstract class Connection {
 
     abstract void update();
 
-    abstract void message(String message);
-
-    abstract void listen();
-    abstract void move(Vector2 position);
-    abstract void plantBomb();
-    abstract void explodedBomb();
-    abstract void hit(double health);
+    public abstract void message(String message);
+    public abstract void listen();
+    public abstract void move(Location location, int playerId);
+    public abstract void plantBomb(Location location);
+    public abstract void explodedBomb(Location location);
+    public abstract void hit(double health, int playerId);
 
 }

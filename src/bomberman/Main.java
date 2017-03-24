@@ -41,7 +41,7 @@ public class Main {
         } else {
             this.config = new Config();
         }
-        this.networkController = new NetworkController(false);
+        this.networkController = new NetworkController();
 
         this.gameplayManager = new GameplayManager();
         this.viewManager = new ViewManager(this.gameplayManager);

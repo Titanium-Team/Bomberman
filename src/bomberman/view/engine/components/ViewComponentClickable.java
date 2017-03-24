@@ -2,6 +2,7 @@ package bomberman.view.engine.components;
 
 
 import bomberman.view.engine.View;
+import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Mouse;
@@ -51,6 +52,8 @@ public abstract class ViewComponentClickable extends ViewComponent {
 
         if (button == 0 && state == State.Pressed) {
             state = State.Default;
+
+            playClickSound();
             for (int i = 0; i < listeners.size(); i++) {
                 listeners.get(i).onClick();
             }
@@ -58,9 +61,14 @@ public abstract class ViewComponentClickable extends ViewComponent {
     }
 
     public void simulateClick() {
+        playClickSound();
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onClick();
         }
+    }
+
+    private void playClickSound() {
+        ViewManager.clickSound.start();
     }
 
     public boolean isClickable() {

@@ -27,6 +27,7 @@ public class ViewManager {
 
     public static BitmapFont font;
     public static final HashMap<String, ITexture> textureMap = new HashMap<>();
+    public static Sound clickSound;
 
     private Batch batch;
 
@@ -35,6 +36,8 @@ public class ViewManager {
     public static void load() {
         try {
             font = new BitmapFont(ViewManager.class.getResource("/bomberman/resources/font/font.fnt"), ViewManager.class.getResource("/bomberman/resources/font/font.png"));
+
+            clickSound = new Sound(ViewManager.class.getResourceAsStream("/bomberman/resources/sounds/click.wav"));
 
             loadTexture("explosion.png");
 
