@@ -70,9 +70,11 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
             NetworkData data = connectionDataList.get(i).getNetworkData();
             if (!serverButtons.contains(text)) {
                 Button button = new Button(LayoutParams.obtain(0f, 0f, 0f, 0f), this, text);
-                button.addListener(() -> Main.instance.getNetworkController().joinServer(data));
+                button.addListener(() -> {
+                    Main.instance.getNetworkController().joinServer(data);
 
-                this.changeView(LobbyView.class);
+                    this.changeView(LobbyView.class);
+                });
 
                 serverButtons.add(button);
             }
