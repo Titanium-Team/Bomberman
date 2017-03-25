@@ -30,8 +30,12 @@ public class TextField extends ViewComponentClickable {
         this.backText = backText;
 
         this.addListener(() -> {
+
+            //System.out.println(pointer + " :" + text.length());
+            pointer = this.getText().length();
+
             textFieldState = TextFieldState.Focussed;
-            pointer = text.length();
+
         });
 
     }
@@ -63,6 +67,7 @@ public class TextField extends ViewComponentClickable {
                         pointer--;
                     }
                 }
+                //System.out.println(text.length());
             } else if (key == Keyboard.KEY_LEFT) {
                 if (pointer > 0) {
                     pointer--;
@@ -99,8 +104,9 @@ public class TextField extends ViewComponentClickable {
             batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .2f, .2f, .2f, 1f);
         }
-
+        //System.out.println( text.length());
         if (textFieldState == TextFieldState.Focussed) {
+
             batch.draw(null, (getX() + 5) + ViewManager.font.getWidth(text.substring(0, pointer)), (getY() + 7), 3, (getHeight() - 15), 1f, 1f, 1f, 1f);
         }
 
