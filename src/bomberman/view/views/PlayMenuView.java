@@ -22,6 +22,7 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
     private Button hostGameButton;
     private Button refreshServerListButton;
     private TextField portTextField;
+    private TextField serverNameField;
 
     private VerticalView serverList;
     private List<Button> serverButtons = new ArrayList<>();
@@ -32,14 +33,18 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
         this.portTextField = new TextField(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "1638", "Port Number");
         this.getRoot().addChild(portTextField);
 
-        this.hostGameButton = new Button(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "Host Game");
+        this.serverNameField = new TextField(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "", "Server Name");
+        this.getRoot().addChild(serverNameField);
+
+        this.hostGameButton = new Button(LayoutParams.obtain(0.1f, 0.55f, 0.2f, 0.1f), this, "Host Game");
         this.hostGameButton.addListener(() -> {
             PlayMenuView.this.changeView(LobbyView.class);
 
+            String serverName = serverNameField.getText();
             if (portTextField.getText() != "") {
-                Main.instance.getNetworkController().startServer(Integer.parseInt(portTextField.getText()));
+                Main.instance.getNetworkController().startServer(serverName, Integer.parseInt(portTextField.getText()));
             }else {
-                Main.instance.getNetworkController().startServer();
+                Main.instance.getNetworkController().startServer(serverName);
             }
         });
         this.getRoot().addChild(hostGameButton);

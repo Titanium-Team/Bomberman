@@ -156,11 +156,11 @@ public class NetworkController implements Runnable {
         thread.interrupt();
     }
 
-    public void startServer(){
-        startServer(1638);
+    public void startServer(String serverName){
+        startServer(serverName, 1638);
     }
 
-    public void startServer(int customPort){
+    public void startServer(String serverName, int customPort){
         requestDataQueue.add(new RequestData("startServer", new Object[]{customPort}));
     }
 
