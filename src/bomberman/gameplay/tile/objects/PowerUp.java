@@ -85,6 +85,10 @@ public class PowerUp extends TileObject {
         this.parent.destroyObject();
     }
 
+    public PowerUpTypes getPowerUpType() {
+        return powerUpType;
+    }
+
     @Override
     public PowerUp clone(Tile parent) {
         return new PowerUp(parent, this.getLifespan(), this.powerUpType);

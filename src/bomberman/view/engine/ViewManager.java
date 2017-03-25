@@ -40,6 +40,8 @@ public class ViewManager {
             clickSound = new Sound(ViewManager.class.getResourceAsStream("/bomberman/resources/sounds/click.wav"));
 
             loadTexture("explosion.png");
+            loadTexture("speedPowerUp.png");
+            loadTexture("explosionPowerUp.png");
 
         } catch (IOException e) {
             e.printStackTrace();

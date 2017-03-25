@@ -8,12 +8,14 @@ import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.Explosion;
 import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
+import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 
@@ -109,9 +111,13 @@ public class GameView extends LightingView {
                                     //TODO: bomb texture
                                     batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
-                                    //TODO:textures
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.478f, 0.567f, 0.32f, 1);
-                                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
+                                    //TODO:additional textures
+                                    ITexture texture = null;
+                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.SPEEDUP )
+                                        texture = ViewManager.getTexture("speedPowerUp.png");
+                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP )
+                                        texture = ViewManager.getTexture("explosionPowerUp.png");
+                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
                                     //TODO:Explosion textures
                                     batch.draw(((Explosion) tiles[i][j].getTileObject()).getAnimation(), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
 
