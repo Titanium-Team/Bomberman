@@ -3,6 +3,7 @@ package bomberman.view.engine.components;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
+import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Keyboard;
 
 public class TextField extends ViewComponentClickable {
@@ -51,7 +52,13 @@ public class TextField extends ViewComponentClickable {
         if (textFieldState == TextFieldState.Focussed) {
             if (key == Keyboard.KEY_BACK) {
                 if (text != null && !text.isEmpty()) {
-                    this.text = text.substring(0, pointer - 1) + text.substring(pointer, text.length());
+                    int tmp = pointer -1;
+                    int tmp2 = pointer;
+                    if (pointer == 0) {
+                        tmp++;
+                        tmp2++;
+                    }
+                    this.text = text.substring(0, tmp) + text.substring(tmp2, text.length());
                     if (pointer > 0) {
                         pointer--;
                     }
@@ -67,6 +74,14 @@ public class TextField extends ViewComponentClickable {
             } else {
                 addChar(c);
             }
+        }
+    }
+
+    @Override
+    public void onMouseDown(int button, int mouseX, int mouseY) {
+        super.onMouseDown(button, mouseX, mouseY);
+        if(!Utility.viewComponentIsCollidingWithMouse(this,mouseX,mouseY) && textFieldState == TextFieldState.Focussed){
+            textFieldState = TextFieldState.Unfocussed;
         }
     }
 
