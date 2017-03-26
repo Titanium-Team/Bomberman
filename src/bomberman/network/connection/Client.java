@@ -4,21 +4,25 @@ import bomberman.gameplay.utils.Location;
 import bomberman.network.ConnectionData;
 import bomberman.network.NetworkController;
 import bomberman.network.NetworkData;
+import bomberman.network.ServerConnectionData;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Client extends Connection {
 
     private ConnectionData server;
-    private List<ConnectionData> serverList;
+    private List<ServerConnectionData> serverList;
 
     private Refreshable refreshable;
 
@@ -35,11 +39,6 @@ public class Client extends Connection {
         refreshServers(null);
 
         System.out.println("Client initialized");
-    }
-
-    @Override
-    public void update() {
-
     }
 
     @Override
@@ -70,7 +69,10 @@ public class Client extends Connection {
 
             switch (splittedMessage[0]) {
                 case "hello":
-                    ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
+                    Type type = new TypeToken<Map<String, String>>() {}.getType();
+                    Map<String, String> jsonMap = gson.fromJson(splittedMessage[1], type);
+
+                    ServerConnectionData connectionData = new ServerConnectionData(sender, jsonMap.get("connectionData"), jsonMap.get("name"));
 
                     serverList.add(connectionData);
 
@@ -113,8 +115,13 @@ public class Client extends Connection {
 
     }
 
+    @Override
+    public void leave() {
 
-    public List<ConnectionData> getServerList() {
+    }
+
+
+    public List<ServerConnectionData> getServerList() {
         return serverList;
     }
 

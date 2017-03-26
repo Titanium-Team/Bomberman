@@ -22,6 +22,10 @@ public class LobbyView extends BaseMenuView {
     public LobbyView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
+        backButton.addListener(() -> {
+            Main.instance.getNetworkController().leave();
+        });
+
         this.startButton = new Button(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "Start Game");
         this.startButton.addListener(() -> LobbyView.this.changeView(GameView.class));
         this.getRoot().addChild(startButton);
