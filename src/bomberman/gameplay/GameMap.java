@@ -9,11 +9,16 @@ import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class GameMap implements Cloneable {
 
     private final static Random random = new Random();
+
+    private final String name;
+    private final Image thumbnail;
 
     private final Tile[][] tiles;
     private final List<Location> startPositions;
@@ -23,16 +28,19 @@ public class GameMap implements Cloneable {
     private final int height;
 
 
-    public GameMap(Tile[][] tiles, List<Location> startPositions) {
+    public GameMap(String name, Image thumbnail, Tile[][] tiles, List<Location> startPositions) {
 
+        assert !(name == null);
         assert !(startPositions == null);
         assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
+        this.name = name;
         this.tiles = tiles;
         this.width = tiles.length;
         this.height = tiles[0].length;
         this.startPositions = startPositions;
+        this.thumbnail = thumbnail;
 
     }
 
@@ -248,7 +256,7 @@ public class GameMap implements Cloneable {
 
     @Override
     public GameMap clone() {
-        return new GameMap(this.tiles.clone(), this.startPositions);
+        return new GameMap(this.name, this.thumbnail, this.tiles.clone(), this.startPositions);
     }
 
     private static int range(int min, int value, int max) {
@@ -261,12 +269,16 @@ public class GameMap implements Cloneable {
 
     public static class Builder {
 
-        private Tile[][] tiles;
+        private final static int THUMBNAIL_WIDTH = 50;
+        private final static int THUMBNAIL_HEIGHT = 50;
 
+        private String name;
+        private Image thumbnail;
+
+        private Tile[][] tiles;
         private List<Location> startPositions = new LinkedList<>();
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public int width() {
             return this.tiles.length;
@@ -274,6 +286,11 @@ public class GameMap implements Cloneable {
 
         public int height() {
             return this.tiles[0].length;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
         }
 
         public Builder startPosition(int x, int y) {
@@ -410,8 +427,13 @@ public class GameMap implements Cloneable {
 
         }
 
+        public Builder thumbnail(Image thumbnail) {
+            this.thumbnail = thumbnail;
+            return this;
+        }
+
         public GameMap build() {
-            return new GameMap(this.tiles, this.startPositions);
+            return new GameMap(this.name, this.thumbnail, this.tiles, this.startPositions);
         }
 
         private static TileType tileTypeByChar(char c) {

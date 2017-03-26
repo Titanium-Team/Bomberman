@@ -20,6 +20,7 @@ public class GameplayManager {
         //map 0
         this.addMap(
             GameMap.builder()
+                .name("Mao 0")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -38,6 +39,7 @@ public class GameplayManager {
         //map 1
         this.addMap(
             GameMap.builder()
+                .name("Map 1")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -62,6 +64,7 @@ public class GameplayManager {
         //map 2
         this.addMap(
             GameMap.builder()
+                .name("Map 2")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -166,6 +169,7 @@ public class GameplayManager {
 
     public void onGamepadEvent(Component component, float value) {
         // TODO: Implementiert das plz
+        System.out.println(value);
     }
 
     public static enum GameState {
