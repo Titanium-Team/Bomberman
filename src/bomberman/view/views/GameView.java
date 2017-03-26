@@ -80,11 +80,10 @@ public class GameView extends LightingView {
                     if (tiles[i][j] != null) {
                         if (!tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileType().equals(TileTypes.WALL)) {
-                                batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
+                                batch.draw(ViewManager.getTexture("wall.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
                             } else {
                                 batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.25f, 0.25f, 0.25f, 1);
                             }
-                        } else {
                         }
                     }
                 }
@@ -117,10 +116,10 @@ public class GameView extends LightingView {
                                         texture = ViewManager.getTexture("speedPowerUp.png");
                                     if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP )
                                         texture = ViewManager.getTexture("explosionPowerUp.png");
-                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
+                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                
+				                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
                                     //TODO:Explosion textures
                                     batch.draw(((Explosion) tiles[i][j].getTileObject()).getAnimation(), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
-
                                 }
                             }
                         }

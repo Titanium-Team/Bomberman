@@ -43,6 +43,8 @@ public class ViewManager {
             loadTexture("speedPowerUp.png");
             loadTexture("explosionPowerUp.png");
 
+            loadTexture("wall.png");
+
         } catch (IOException e) {
             e.printStackTrace();
             font = null;

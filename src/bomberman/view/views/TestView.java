@@ -17,7 +17,7 @@ public class TestView extends BaseMenuView{
 	public TestView(int width, int height, ViewManager viewManager) {
 		super(width, height, viewManager);
 
-		this.verticalView = new VerticalView(LayoutParams.obtain(0.65f,0,0.35f,0.9f),this);
+		this.verticalView = new VerticalView(LayoutParams.obtain(0.65f,0.2f,0.35f,0.7f),this);
 		this.getRoot().addChild(verticalView);
 
 		this.addButton = new Button(LayoutParams.obtain(0.5f,0.2f,0.1f,0.1f),this,"Add");

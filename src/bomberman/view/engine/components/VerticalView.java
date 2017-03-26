@@ -6,13 +6,15 @@ import org.lwjgl.opengl.GL11;
 
 public class VerticalView extends Panel {
 
-	private final Scrollbar scrollbar;
+	private Scrollbar scrollbar;
+	private int maxSize;
 
 	public VerticalView(LayoutParams params, View v) {
 		super(params, v);
 
 		this.scrollbar = new Scrollbar(LayoutParams.obtain(0.9f, 0, 0.1f, 1), v, this);
 		super.addChild(scrollbar);
+		this.maxSize = 8;
 	}
 
 	@Override
@@ -41,9 +43,9 @@ public class VerticalView extends Panel {
 
 	public void updateChildren() {
 		int indexfirst = Math.round(scrollbar.getScrollPos() * (this.getChildren().size() - 1)) + 1;
-		int indexlast = Math.min(this.getChildren().size() - 1, indexfirst + 7);
-		scrollbar.setScrollHeight(Math.min(1, 8f / (float)((this.getChildren().size() - 1) > 0 ? (this.getChildren().size() - 1) : 1)));
-		float size = Math.max(1f/8f, 1f / (float)((this.getChildren().size() - 1) > 0 ? (this.getChildren().size() - 1) : 1));
+		int indexlast = Math.min(this.getChildren().size() - 1, indexfirst + this.maxSize -1);
+		scrollbar.setScrollHeight(Math.min(1, this.maxSize / (float)((this.getChildren().size() - 1) > 0 ? (this.getChildren().size() - 1) : 1)));
+		float size = 1f/this.maxSize;
 		int count = 0;
 		for (int i = 0; i < this.getChildren().size(); i++) {
 			ViewComponent childComponent = this.getChildren().get(i);
@@ -56,7 +58,6 @@ public class VerticalView extends Panel {
 				}
 			}
 		}
-
 		getView().requestLayout();
 	}
 }
