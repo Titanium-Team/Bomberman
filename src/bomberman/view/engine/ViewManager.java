@@ -7,21 +7,27 @@ import bomberman.view.engine.rendering.BitmapFont;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.rendering.Texture;
 import bomberman.view.views.GameView;
-import net.java.games.input.*;
+import net.java.games.input.Controller;
+import net.java.games.input.ControllerEnvironment;
+import net.java.games.input.Event;
+import net.java.games.input.EventQueue;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
+
+import net.java.games.input.EventQueue;
 
 public class ViewManager {
 
     public static BitmapFont font;
     public static final HashMap<String, ITexture> textureMap = new HashMap<>();
+    public static Sound clickSound;
 
     private Batch batch;
 
@@ -31,7 +37,13 @@ public class ViewManager {
         try {
             font = new BitmapFont(ViewManager.class.getResource("/bomberman/resources/font/font.fnt"), ViewManager.class.getResource("/bomberman/resources/font/font.png"));
 
-            // loadTexture here
+            clickSound = new Sound(ViewManager.class.getResourceAsStream("/bomberman/resources/sounds/click.wav"));
+
+            loadTexture("explosion.png");
+            loadTexture("speedPowerUp.png");
+            loadTexture("explosionPowerUp.png");
+
+            loadTexture("wall.png");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,6 +58,9 @@ public class ViewManager {
     }
 
     public static ITexture getTexture(String textureID) {
+        if (textureID == null || textureID.isEmpty())
+            return null;
+
         if (!textureMap.containsKey(textureID)) {
             loadTexture(textureID);
         }
@@ -58,13 +73,14 @@ public class ViewManager {
     private boolean fullscreen = false;
 
     private Controller selectedGamepad = null;
-    private GamepadConfig gamepadConfig = null;
 
     public ViewManager(GameplayManager gameplayManager) {
         this.gameplayManager = gameplayManager;
 
         try {
+            System.out.print("Loading natives...");
             LwjglNativesLoader.load();
+            System.out.println("finished!");
 
             setDisplayMode(800, 600, false);
 
@@ -87,7 +103,6 @@ public class ViewManager {
                 System.out.println("Found suitable Gamepad: " + controller.getName());
 
                 this.selectedGamepad = controller;
-                this.gamepadConfig = new GamepadConfig(selectedGamepad);
 
                 break;
             }
@@ -148,7 +163,7 @@ public class ViewManager {
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
             Display.setTitle("Bomberman");
-            Display.setVSyncEnabled(true);
+            Display.setVSyncEnabled(Main.instance.getConfig().isvSync());
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
@@ -161,8 +176,6 @@ public class ViewManager {
 
         GL11.glClearColor(0f, 0f, 0f, 1f);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-
-        processInput();
 
         batch.begin();
 
@@ -181,7 +194,7 @@ public class ViewManager {
             Display.sync(60);
     }
 
-    private void processInput() {
+    public void processInput() {
         while (Mouse.next()) {
             if (Mouse.getEventButtonState()) {
                 int button = Mouse.getEventButton();
@@ -239,7 +252,9 @@ public class ViewManager {
             EventQueue gamepadEventQueue = selectedGamepad.getEventQueue();
             Event event = new Event();
             while (gamepadEventQueue.getNextEvent(event)) {
-                System.out.println(event.getComponent().getIdentifier());
+                float value = event.getValue();
+
+                currentView.onGamepadEvent(event.getComponent(), value);
             }
         }
     }
@@ -287,5 +302,9 @@ public class ViewManager {
             GameView gameView = (GameView) currentView;
             gameView.setGameplayManager(this.gameplayManager);
         }
+    }
+
+    public Controller getSelectedGamepad() {
+        return selectedGamepad;
     }
 }

@@ -1,6 +1,9 @@
-package bomberman.network;
+package bomberman.network.connection;
 
 import bomberman.gameplay.utils.Location;
+import bomberman.network.ConnectionData;
+import bomberman.network.NetworkController;
+import bomberman.network.NetworkData;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
@@ -9,10 +12,15 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client extends Connection {
 
     private ConnectionData server;
+    private List<ConnectionData> serverList;
+
+    private Refreshable refreshable;
 
     public Client(NetworkController controller) throws IOException {
         super(controller);
@@ -22,7 +30,9 @@ public class Client extends Connection {
 
         init();
 
-        refreshServers();
+        serverList = new ArrayList<>();
+
+        refreshServers(null);
 
         System.out.println("Client initialized");
     }
@@ -40,14 +50,12 @@ public class Client extends Connection {
     }
 
     @Override
-    void listen() {
+    public void listen() {
         DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
 
         try {
             getSocket().receive(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
 
         NetworkData sender = new NetworkData(packet.getAddress(), packet.getPort());
 
@@ -64,7 +72,11 @@ public class Client extends Connection {
                 case "hello":
                     ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
-                    getController().getNetworkPlayerMap().putIfAbsent(sender, new NetworkPlayer("", new Location(0, 0), null, connectionData));
+                    serverList.add(connectionData);
+
+                    if (refreshable != null){
+                        refreshable.refreshListView(serverList);
+                    }
 
                     System.out.println("ConnectionData from Server");
 
@@ -76,33 +88,43 @@ public class Client extends Connection {
 
                     break;
             }
-        }else {
+        } else if (sender.getPort() != -1){
             send("error", sender, true);
         }
     }
 
     @Override
-    void move(Vector2 position) {
+    public void move(Location location, int playerId) {
 
     }
 
     @Override
-    void plantBomb() {
+    public void plantBomb(Location location) {
 
     }
 
     @Override
-    void explodedBomb() {
+    public void explodedBomb(Location location) {
 
     }
 
     @Override
-    void hit(double health) {
+    public void hit(double health, int playerId) {
 
     }
 
-    private void refreshServers(){
+
+    public List<ConnectionData> getServerList() {
+        return serverList;
+    }
+
+    public void refreshServers(Refreshable refreshable){
+        this.refreshable = refreshable;
+
+        serverList.clear();
+
         try {
+
             send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638), true);
         } catch (UnknownHostException e) {
             e.printStackTrace();

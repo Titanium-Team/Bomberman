@@ -3,16 +3,20 @@ package bomberman.view.engine.components;
 
 import bomberman.view.engine.View;
 import bomberman.view.engine.rendering.Batch;
+import net.java.games.input.Component;
 
 public abstract class ViewComponent {
 
     private View view;
     private LayoutParams params;
     private float x, y, width, height;
+    private boolean visible;
+
 
     public ViewComponent(LayoutParams params, View v) {
         this.params = params;
         this.view = v;
+        this.visible = true;
     }
 
     public abstract void draw(Batch batch);
@@ -30,6 +34,7 @@ public abstract class ViewComponent {
             this.height = parent.getHeight() * params.h;
         }
     }
+
 
     public View getView() {
         return view;
@@ -71,5 +76,16 @@ public abstract class ViewComponent {
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
+    }
+
+    public void onGamepadEvent(Component component, float value) {
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

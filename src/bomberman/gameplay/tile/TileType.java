@@ -6,4 +6,8 @@ public interface TileType {
 
     double getHealth();
 
+    default boolean isDestroyable() {
+        return !(this.getHealth() == Double.NEGATIVE_INFINITY);
+    }
+
 }

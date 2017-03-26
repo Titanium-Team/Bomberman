@@ -1,9 +1,17 @@
-package bomberman.network;
+package bomberman.network.connection;
 
 import bomberman.gameplay.Player;
+import bomberman.gameplay.utils.Location;
+import bomberman.network.ConnectionData;
+import bomberman.network.NetworkController;
+import bomberman.network.NetworkData;
+import bomberman.network.Request;
 import bomberman.view.engine.utility.Vector2;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -55,7 +63,6 @@ public abstract class Connection {
                     listen();
                     Thread.sleep(0);
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
                     break;
                 }
             }
@@ -94,11 +101,11 @@ public abstract class Connection {
     }
 
     public void close() {
-        getSocket().close();
         getListener().interrupt();
+        getSocket().close();
     }
 
-    public void send(String message, NetworkData networkData, boolean resend){
+    public void send(String message, NetworkData networkData, boolean resend) {
         try {
             Adler32 checksum = new Adler32();
             checksum.update(message.getBytes());
@@ -115,16 +122,21 @@ public abstract class Connection {
         }
     }
 
-    public boolean checksum(String[] message){
+    public boolean checksum(String[] message) {
         Adler32 checksum = new Adler32();
-        checksum.update(message[1].getBytes());
-        long check = checksum.getValue();
-        long checkOriginal = Long.parseLong(message[0]);
 
-        return check == checkOriginal;
+        if (message.length >= 2) {
+            checksum.update(message[1].getBytes());
+            long check = checksum.getValue();
+            long checkOriginal = Long.parseLong(message[0]);
+
+            return check == checkOriginal;
+        }
+
+        return false;
     }
 
-    public String decrypt(String message){
+    public String decrypt(String message) {
         return myData.decrpyt(message, keyPair.getPrivate());
     }
 
@@ -132,30 +144,36 @@ public abstract class Connection {
         requestMap.get(message).setRecieved(reciever);
     }
 
-    public void error(NetworkData fromWho){
+    public void error(NetworkData fromWho) {
         String[] messages = new String[5];
         final int[] index = {0};
 
         requestMap.forEach((key, value) -> {
-            if (value.isRecieved(fromWho) && value.isResend()){
+            if (value.isRecieved(fromWho) && value.isResend()) {
                 messages[index[0]] = value.getRequest();
                 index[0]++;
             }
         });
 
-        for (String s: messages){
+        for (String s : messages) {
             send(s, fromWho, true);
         }
     }
 
+    public void movePlayer(NetworkData networkData, String locationJson){
+
+        Location location = new Location(locationJson);
+
+        controller.getNetworkPlayerMap().get(networkData).getBoundingBox().setCenter(location);
+    }
+
     abstract void update();
 
-    abstract void message(String message);
-
-    abstract void listen();
-    abstract void move(Vector2 position);
-    abstract void plantBomb();
-    abstract void explodedBomb();
-    abstract void hit(double health);
+    public abstract void message(String message);
+    public abstract void listen();
+    public abstract void move(Location location, int playerId);
+    public abstract void plantBomb(Location location);
+    public abstract void explodedBomb(Location location);
+    public abstract void hit(double health, int playerId);
 
 }

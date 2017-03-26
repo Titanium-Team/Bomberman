@@ -15,8 +15,6 @@ public class NativeLibraryLoader {
 
     public String nativesJar;
 
-    private String uuid = UUID.randomUUID().toString();
-
     public NativeLibraryLoader() {
     }
 
@@ -52,12 +50,14 @@ public class NativeLibraryLoader {
 
     private File extractFile(String sourcePath, File extractedFile) throws IOException {
         try {
-            InputStream input = readFile(sourcePath);
-            extractedFile.getParentFile().mkdirs();
-            FileOutputStream output = new FileOutputStream(extractedFile);
-            StreamUtils.copyStream(input, output);
-            input.close();
-            output.close();
+            if (!extractedFile.exists()) {
+                InputStream input = readFile(sourcePath);
+                extractedFile.getParentFile().mkdirs();
+                FileOutputStream output = new FileOutputStream(extractedFile);
+                StreamUtils.copyStream(input, output);
+                input.close();
+                output.close();
+            }
         } catch (IOException ex) {
             throw new IllegalStateException("Error extracting file: " + sourcePath + "To: " + extractedFile.getAbsolutePath());
         }
@@ -66,7 +66,7 @@ public class NativeLibraryLoader {
     }
 
     private File getExtractedFile(String dirName, String fileName) {
-        File idealFile = new File(System.getProperty("java.io.tmpdir") + "/bomberman_engine/" + uuid + "/" + dirName, fileName);
+        File idealFile = new File(System.getProperty("java.io.tmpdir") + "/bomberman_engine/" + dirName, fileName);
         if (canWrite(idealFile))
             return idealFile;
 
@@ -80,11 +80,11 @@ public class NativeLibraryLoader {
         } catch (IOException ignored) {
         }
 
-        File file = new File(System.getProperty("user.home") + "/.bomberman_engine/" + uuid + "/" + dirName, fileName);
+        File file = new File(System.getProperty("user.home") + "/.bomberman_engine/" + dirName, fileName);
         if (canWrite(file))
             return file;
 
-        file = new File(".temp/" + uuid + "/" + dirName, fileName);
+        file = new File(".temp/" + dirName, fileName);
         if (canWrite(file))
             return file;
 

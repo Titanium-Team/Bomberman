@@ -1,26 +1,26 @@
 package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileTypes;
-import bomberman.gameplay.utils.Location;
+import net.java.games.input.Component;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Stream;
 
 public class GameplayManager {
 
-    private final static float POWERUP_TIME = 25;
-    private float powerupTimer = POWERUP_TIME;
-
+    private GameState gameState = GameState.IN_MENU;
     private final List<GameMap> maps = new LinkedList<>();
-    private final List<Player> players = new LinkedList<>();
+
+    private int mapIndex = 0;
+
+    private GameSession currentSession;
 
     public GameplayManager() {
         //map 0
-        this.add(
+        this.addMap(
             GameMap.builder()
+                .name("Map 0")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -29,12 +29,17 @@ public class GameplayManager {
                 .horizontalPattern("WGBGBGBGBGBGBGW", 6)
                 .horizontalPattern("WGBGBGBGBGBGBGW", 8)
                 .horizontalPattern("WGBGBGBGBGBGBGW", 10)
-            .build()
+                .startPosition(1, 1)
+                .startPosition(13, 1)
+                .startPosition(1, 11)
+                .startPosition(12, 11)
+            .build().clone()
         );
 
         //map 1
-        this.add(
+        this.addMap(
             GameMap.builder()
+                .name("Map 1")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -49,12 +54,17 @@ public class GameplayManager {
                 .horizontalPattern("WBBBBBBBBBBBBBW", 9)
                 .horizontalPattern("WGWBWBWBWBWBWGW", 10)
                 .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                .startPosition(1, 1)
+                .startPosition(13, 1)
+                .startPosition(1, 11)
+                .startPosition(12, 11)
             .build()
         );
 
         //map 2
-        this.add(
+        this.addMap(
             GameMap.builder()
+                .name("Map 2")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -65,87 +75,108 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBGGGGGBBGGW", 7)
                 .horizontalPattern("WGPBBBBBBBBBGGW", 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", 9)
+                .startPosition(1, 1)
+                .startPosition(12, 11)
             .build()
+
         );
 
+        this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
+
         //@TODO
-        this.players.add(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", new Location(1.5, 1.5)));
-
+        this.setMapIndex(0);
+        this.createGameSession();
     }
 
-    public void add(Player player) {
-        this.players.add(player);
-    }
-
-    public List<Player> getPlayers() {
-        return this.players;
-    }
-
-    public Player getLocalPlayer() {
-        return this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).findAny().orElseGet(null);
-    }
-
-    public Player getPlayer(int index) {
-        return this.players.get(index);
-    }
-
-    //index ändern um andere map zu spielen, index 0 = erste map
-    public GameMap getCurrentMap() {
-        return this.getMap(2); //@TODO
-
+    public GameSession getCurrentSession() {
+        return this.currentSession;
     }
 
     public GameMap getMap(int index) {
-
         assert index >= 0 && index < this.maps.size();
-        return this.maps.get(index);
-
+        return this.maps.get(index).clone();
     }
 
-    public void add(GameMap map) {
+    public int getMapCount() {
+        return maps.size();
+    }
 
+    public void addMap(GameMap map) {
         assert !(this.maps.contains(map));
         this.maps.add(map);
+    }
 
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void setMapIndex(int mapIndex) {
+
+        if(!(this.gameState == GameState.IN_MENU)) {
+            throw new IllegalStateException();
+        }
+
+        this.mapIndex = mapIndex;
+        this.createGameSession();
+    }
+
+    private void createGameSession() {
+        this.currentSession = new GameSession(this.getMap(this.mapIndex));
+        this.currentSession.addPlayer(new Player(this.currentSession, Player.PlayerType.LOCAL, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
     }
 
     public void update(float delta) {
-        this.players.forEach(e -> e.update(delta));
-        Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
 
-        //--- Powerup Spawn Timer
-        this.powerupTimer -= delta;
-        if(this.powerupTimer <= 0) {
-            this.checkPowerups();
-            this.powerupTimer = POWERUP_TIME;
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
         }
 
-    }
+        this.currentSession.update(delta);
 
-    //powerup start
-    private void checkPowerups() {
-        int x = (int) (Math.random() * this.getCurrentMap().getWidth());
-        int y = (int) (Math.random() * this.getCurrentMap().getHeight());
-        if (this.getCurrentMap().getTile(x, y).getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).getTileObject() == null) {
-            this.getCurrentMap().getTile(x, y).spawnPowerup();
-        } else {
-            this.checkPowerups();
-        }
     }
-    //powerup end
 
     public void onKeyDown(int key, char c) {
-        this.players.forEach(e -> e.keyDown(key, c));
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
+        this.currentSession.onKeyDown(key, c);
     }
 
     public void onKeyUp(int key, char c) {
-        this.players.forEach(e -> e.keyUp(key, c));
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
+        this.currentSession.onKeyUp(key, c);
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
+        this.currentSession.onMouseDown(button, mouseX, mouseY);
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
+        this.currentSession.onMouseUp(button, mouseX, mouseY);
+    }
+
+    public void onGamepadEvent(Component component, float value) {
+        // TODO: Implementiert das plz
+        System.out.println(value);
+    }
+
+    public static enum GameState {
+
+        IN_MENU,
+        IN_GAME
+
     }
 
 }

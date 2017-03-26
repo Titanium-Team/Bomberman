@@ -1,21 +1,17 @@
-package bomberman.network;
+package bomberman.network.connection;
 
-import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
+import bomberman.network.ConnectionData;
+import bomberman.network.NetworkController;
+import bomberman.network.NetworkData;
+import bomberman.network.NetworkPlayer;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.*;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPublicKeySpec;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 
 public class Server extends Connection {
 
@@ -30,13 +26,7 @@ public class Server extends Connection {
     }
 
     public Server(NetworkController networkController, int customPort) throws SocketException {
-        super(networkController);
-
-        setSocket(new DatagramSocket(customPort));
-
-        init();
-
-        System.out.println("Custom Server initialized");
+        this(networkController);
     }
 
     @Override
@@ -52,19 +42,17 @@ public class Server extends Connection {
     }
 
     @Override
-    void listen() {
+    public void listen() {
         DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
 
         try {
             getSocket().receive(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
+
 
         NetworkData sender = new NetworkData(packet.getAddress(), packet.getPort());
 
         String message = new String(packet.getData(), 0, packet.getLength());
-
 
         String[] splittedChecksum = message.split("§", 2);
 
@@ -78,7 +66,7 @@ public class Server extends Connection {
                     ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
                     if (!getController().getNetworkPlayerMap().containsKey(sender)) {
-                        getController().getNetworkPlayerMap().put(sender, new NetworkPlayer("", new Location(0, 0), null, connectionData));
+                        getController().getNetworkPlayerMap().put(sender, new NetworkPlayer(null, "", new Location(0, 0), connectionData));
 
                         send("hello§" + getMyData().toJson(), sender, true);
 
@@ -99,39 +87,35 @@ public class Server extends Connection {
 
                     System.out.println("ERROR");
             }
-        }else {
+        } else if (sender.getPort() != -1){
             send("error", sender, true);
+
         }
-    }
-
-    @Override
-    void move(Vector2 position) {
-        Map<String, Float> data = new HashMap<>();
-        data.put("xCoord", position.getX());
-        data.put("yCoord", position.getY());
-
-        Gson gson = new Gson();
-
-        String json = gson.toJson(data);
-    }
-
-    @Override
-    void plantBomb() {
 
     }
 
     @Override
-    void explodedBomb() {
+    public void move(Location location, int playerId) {
 
     }
 
     @Override
-    void hit(double health) {
+    public void plantBomb(Location location) {
+
+    }
+
+    @Override
+    public void explodedBomb(Location location) {
+
+    }
+
+    @Override
+    public void hit(double health, int playerId) {
 
     }
 
 
-    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend){
+    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend) {
         System.out.println(networkData.getPort());
         getController().getNetworkPlayerMap().forEach((key, value) -> {
             System.out.println(value.getConnectionData().getNetworkData().getPort());

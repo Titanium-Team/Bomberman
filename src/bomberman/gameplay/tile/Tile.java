@@ -11,9 +11,9 @@ public class Tile {
 
     private TileType tileType;
     private final BoundingBox boundingBox;
-    private double health;
 
     private TileObject tileObject;
+    private double health;
 
     public Tile(TileType tileType, BoundingBox boundingBox) {
 
@@ -23,6 +23,7 @@ public class Tile {
         this.tileType = tileType;
         this.health = tileType.getHealth();
         this.boundingBox = boundingBox;
+        this.health = tileType.getHealth();
 
     }
 
@@ -30,8 +31,12 @@ public class Tile {
         return this.tileType;
     }
 
-    public void setTileType(TileType tileType){
+    public void setTileType(TileType tileType) {
         this.tileType = tileType;
+    }
+
+    public double getHealth() {
+        return this.health;
     }
 
     public BoundingBox getBoundingBox() {
@@ -42,22 +47,22 @@ public class Tile {
         return this.tileObject;
     }
 
-    public double getHealth() {
-        return health;
-    }
-
     public void setHealth(double health) {
         this.health = health;
     }
 
+    public boolean isExploding() {
+        return (this.tileObject instanceof Explosion);
+    }
+
     public boolean canVisit(Player player) {
         return !(
-                    this.boundingBox.intersects(player.getBoundingBox()) &&
+                this.boundingBox.intersects(player.getBoundingBox()) &&
                     (
                         !(this.tileType.isWalkable()) ||
                         (this.tileObject instanceof Bomb && !((Bomb) this.tileObject).canVisit(player))
                     )
-                );
+        );
     }
 
     public void spawn(TileObject tileObject) {
@@ -106,6 +111,21 @@ public class Tile {
         }
         this.tileObject.update(delta);
 
+    }
+
+    @Override
+    public Tile clone() {
+        Tile tile = new Tile(this.tileType, new BoundingBox(
+                this.boundingBox.getMin().getX(), this.boundingBox.getMin().getY(),
+                this.boundingBox.getMax().getX(), this.boundingBox.getMax().getY()
+        ));
+        tile.setHealth(this.health);
+
+        if(!(this.tileObject == null)) {
+            tile.spawn(this.tileObject);
+        }
+
+        return tile;
     }
 
 }

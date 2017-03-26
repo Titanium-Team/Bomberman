@@ -8,12 +8,14 @@ import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.Explosion;
 import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Batch;
+import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 
@@ -42,18 +44,19 @@ public class GameView extends LightingView {
     public void setGameplayManager(GameplayManager gameplayManager) {
         this.gameplayManager = gameplayManager;
         playerLightMap.clear();
-        for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
-            Location playerLocation = gameplayManager.getPlayer(i).getBoundingBox().getCenter();
+        for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
+            Location playerLocation = gameplayManager.getCurrentSession().getPlayer(i).getBoundingBox().getCenter();
             Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize);
-            playerLightMap.put(gameplayManager.getPlayer(i), playerLight);
+            playerLightMap.put(gameplayManager.getCurrentSession().getPlayer(i), playerLight);
             this.addLight(playerLight);
         }
+        gameplayManager.setGameState(GameplayManager.GameState.IN_GAME);
     }
 
     public void update(float deltaTime) {
         time += deltaTime;
 
-        Player localPlayer = gameplayManager.getLocalPlayer();
+        Player localPlayer = gameplayManager.getCurrentSession().getLocalPlayer();
         Location center = localPlayer.getBoundingBox().getCenter();
         this.getSceneCamera().setTranslation(new Vector2((float) center.getX() * tileSize, (float) center.getY() * tileSize));
 
@@ -67,7 +70,7 @@ public class GameView extends LightingView {
 
     @Override
     public void renderOccluders(Batch batch, Camera camera) {
-        GameMap map = gameplayManager.getCurrentMap();
+        GameMap map = gameplayManager.getCurrentSession().getGameMap();
         Tile[][] tiles = map.getTiles();
         for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
                 i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
@@ -77,11 +80,10 @@ public class GameView extends LightingView {
                     if (tiles[i][j] != null) {
                         if (!tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileType().equals(TileTypes.WALL)) {
-                                batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
+                                batch.draw(ViewManager.getTexture("wall.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
                             } else {
                                 batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.25f, 0.25f, 0.25f, 1);
                             }
-                        } else {
                         }
                     }
                 }
@@ -91,7 +93,7 @@ public class GameView extends LightingView {
 
     @Override
     public void renderNonOccluders(Batch batch, Camera camera) {
-        GameMap map = gameplayManager.getCurrentMap();
+        GameMap map = gameplayManager.getCurrentSession().getGameMap();
         Tile[][] tiles = map.getTiles();
         for (int i = Math.max(0, (int) (camera.getTranslation().getX() - camera.getWidth() / 2) / this.tileSize); i < tiles.length &&
                 i * this.tileSize < camera.getTranslation().getX() + camera.getWidth() / 2; i++) {
@@ -108,12 +110,16 @@ public class GameView extends LightingView {
                                     //TODO: bomb texture
                                     batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
-                                    //TODO:textures
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.478f, 0.567f, 0.32f, 1);
-                                }else if (tiles[i][j].getTileObject() instanceof Explosion){
+                                    //TODO:additional textures
+                                    ITexture texture = null;
+                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.SPEEDUP )
+                                        texture = ViewManager.getTexture("speedPowerUp.png");
+                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP )
+                                        texture = ViewManager.getTexture("explosionPowerUp.png");
+                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                
+				                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
                                     //TODO:Explosion textures
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1f, 0, 0, 1);
-
+                                    batch.draw(((Explosion) tiles[i][j].getTileObject()).getAnimation(), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 }
                             }
                         }
@@ -122,8 +128,8 @@ public class GameView extends LightingView {
             }
         }
 
-        for (int i = 0; i < gameplayManager.getPlayers().size(); i++) {
-            Player player = gameplayManager.getPlayer(i);
+        for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
+            Player player = gameplayManager.getCurrentSession().getPlayer(i);
             BoundingBox b = player.getBoundingBox();
 
             batch.draw(null, (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize);

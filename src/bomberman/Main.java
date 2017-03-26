@@ -1,6 +1,7 @@
 package bomberman;
 
 import bomberman.gameplay.GameplayManager;
+import bomberman.network.NetworkController;
 import bomberman.view.engine.Config;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.views.GameView;
@@ -18,8 +19,11 @@ public class Main {
         instance.mainLoop();
     }
 
+    private NetworkController networkController;
     private ViewManager viewManager;
     private GameplayManager gameplayManager;
+    private float lastDeltaTime;
+    private boolean closeRequested = false;
 
     private File saveDir;
     private Config config;
@@ -39,7 +43,10 @@ public class Main {
             this.config = new Config();
         }
 
+        this.networkController = new NetworkController();
+
         this.gameplayManager = new GameplayManager();
+
         this.viewManager = new ViewManager(this.gameplayManager);
 
         viewManager.setCurrentView(HomeView.class);
@@ -49,7 +56,7 @@ public class Main {
         long totalTime = startTime;
         int frames = 0;
         int fpsCounter = 0;
-        while (!viewManager.isCloseRequested()) {
+        while (!viewManager.isCloseRequested() && !closeRequested) {
             long currentTime = System.nanoTime();
             deltaTime = (float) ((currentTime - startTime) / 1000000000D);
             startTime = currentTime;
@@ -61,12 +68,19 @@ public class Main {
                 totalTime = currentTime;
             }
 
+            // #hacky
+            this.lastDeltaTime = deltaTime;
+
+            viewManager.processInput();
+
             if (viewManager.getCurrentView() instanceof GameView) {
                 gameplayManager.update(deltaTime);
             }
 
             viewManager.render(deltaTime, fpsCounter);
         }
+
+        networkController.close();
 
         viewManager.dispose();
 
@@ -79,6 +93,8 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public NetworkController getNetworkController() {return networkController;}
 
     public ViewManager getViewManager() {
         return viewManager;
@@ -94,5 +110,13 @@ public class Main {
 
     public File getSaveDir() {
         return saveDir;
+    }
+
+    public float getLastDeltaTime() {
+        return lastDeltaTime;
+    }
+
+    public void requestClose() {
+        closeRequested = true;
     }
 }
