@@ -56,6 +56,9 @@ public class ViewManager {
     }
 
     public static ITexture getTexture(String textureID) {
+        if (textureID == null || textureID.isEmpty())
+            return null;
+
         if (!textureMap.containsKey(textureID)) {
             loadTexture(textureID);
         }

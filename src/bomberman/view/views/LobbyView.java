@@ -34,12 +34,21 @@ public class LobbyView extends BaseMenuView {
             GameMap map = gameplayManager.getMap(i);
             final int index = i;
 
-            Button voteButton = new Button(LayoutParams.obtain(0f, 0f, 0.6f, 1f), this, "Vote Map " + index);
+            Panel container = new Panel(LayoutParams.obtain(0, 0, 1, 1), this);
+
+            Label nameLabel = new Label(LayoutParams.obtain(0f, 0f, 0.8f, 0.3f), this, map.getName());
+            container.addChild(nameLabel);
+
+            Image thumbnailImage = new Image(LayoutParams.obtain(0f, 0.3f, 0.8f, 0.7f), this, map.getThumbnailKey());
+            container.addChild(thumbnailImage);
+
+            Button voteButton = new Button(LayoutParams.obtain(0.8f, 0f, 0.2f, 1f), this, "Vote");
             voteButton.addListener(() -> {
                 gameplayManager.setMapIndex(index);
             });
+            container.addChild(voteButton);
 
-            this.mapVotingList.addChild(voteButton);
+            this.mapVotingList.addChild(container);
         }
     }
 

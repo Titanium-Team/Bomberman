@@ -20,7 +20,7 @@ public class GameplayManager {
         //map 0
         this.addMap(
             GameMap.builder()
-                .name("Mao 0")
+                .name("Map 0")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)

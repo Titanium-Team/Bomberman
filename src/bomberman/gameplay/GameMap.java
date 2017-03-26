@@ -18,7 +18,7 @@ public class GameMap implements Cloneable {
     private final static Random random = new Random();
 
     private final String name;
-    private final Image thumbnail;
+    private final String thumbnailKey;
 
     private final Tile[][] tiles;
     private final List<Location> startPositions;
@@ -28,7 +28,7 @@ public class GameMap implements Cloneable {
     private final int height;
 
 
-    public GameMap(String name, Image thumbnail, Tile[][] tiles, List<Location> startPositions) {
+    public GameMap(String name, String thumbnailKey, Tile[][] tiles, List<Location> startPositions) {
 
         assert !(name == null);
         assert !(startPositions == null);
@@ -40,7 +40,7 @@ public class GameMap implements Cloneable {
         this.width = tiles.length;
         this.height = tiles[0].length;
         this.startPositions = startPositions;
-        this.thumbnail = thumbnail;
+        this.thumbnailKey = thumbnailKey;
 
     }
 
@@ -54,6 +54,14 @@ public class GameMap implements Cloneable {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getThumbnailKey() {
+        return thumbnailKey;
     }
 
     public Location getRandomStartPosition() {
@@ -256,7 +264,7 @@ public class GameMap implements Cloneable {
 
     @Override
     public GameMap clone() {
-        return new GameMap(this.name, this.thumbnail, this.tiles.clone(), this.startPositions);
+        return new GameMap(this.name, this.thumbnailKey, this.tiles.clone(), this.startPositions);
     }
 
     private static int range(int min, int value, int max) {
@@ -273,7 +281,7 @@ public class GameMap implements Cloneable {
         private final static int THUMBNAIL_HEIGHT = 50;
 
         private String name;
-        private Image thumbnail;
+        private String thumbnailKey;
 
         private Tile[][] tiles;
         private List<Location> startPositions = new LinkedList<>();
@@ -427,13 +435,13 @@ public class GameMap implements Cloneable {
 
         }
 
-        public Builder thumbnail(Image thumbnail) {
-            this.thumbnail = thumbnail;
+        public Builder thumbnail(String thumbnailKey) {
+            this.thumbnailKey = thumbnailKey;
             return this;
         }
 
         public GameMap build() {
-            return new GameMap(this.name, this.thumbnail, this.tiles, this.startPositions);
+            return new GameMap(this.name, this.thumbnailKey, this.tiles, this.startPositions);
         }
 
         private static TileType tileTypeByChar(char c) {

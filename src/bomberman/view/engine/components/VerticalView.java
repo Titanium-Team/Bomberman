@@ -11,7 +11,6 @@ public class VerticalView extends Panel {
 	public VerticalView(LayoutParams params, View v) {
 		super(params, v);
 
-		this.setBackgroundColor(0.2f, 0.3f, 0.5f, 0.5f);
 		this.scrollbar = new Scrollbar(LayoutParams.obtain(0.9f, 0, 0.1f, 1), v, this);
 		super.addChild(scrollbar);
 	}
