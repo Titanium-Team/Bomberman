@@ -117,7 +117,7 @@ public class GameView extends LightingView {
                                     if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP )
                                         texture = ViewManager.getTexture("explosionPowerUp.png");
                                     batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                
-				} else if (tiles[i][j].getTileObject() instanceof Explosion) {
+				                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
                                     //TODO:Explosion textures
                                     batch.draw(((Explosion) tiles[i][j].getTileObject()).getAnimation(), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 }

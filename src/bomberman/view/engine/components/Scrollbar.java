@@ -1,6 +1,10 @@
 package bomberman.view.engine.components;
 
 import bomberman.view.engine.View;
+import bomberman.view.engine.components.LayoutParams;
+import bomberman.view.engine.components.VerticalView;
+import bomberman.view.engine.components.ViewComponent;
+import bomberman.view.engine.components.ViewGroup;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Mouse;
@@ -40,7 +44,8 @@ public class Scrollbar extends ViewGroup {
 		public void draw(Batch batch) {
 
 			if (this.mouseOffset != -1) {
-				this.setPos(Math.max(0, Math.min((float)(this.getView().getHeight() - Mouse.getY() - mouseOffset) / ((float) Scrollbar.this.getHeight()), 1 - (scrollHeight))));
+				this.setPos(Math.max(0, Math.min((float)(this.getView().getHeight() - Mouse.getY() - Scrollbar.this.getY() - mouseOffset) / ((float) Scrollbar.this.getHeight()), 1 - (scrollHeight))));
+				System.out.println(pos);
 				if (previousPos != pos) {
 					parent.updateChildren();
 					this.getView().requestLayout();
@@ -56,7 +61,7 @@ public class Scrollbar extends ViewGroup {
 
 		public void setScrollHeight(float scrollHeight) {
 			this.scrollHeight = scrollHeight;
-			if(this.getY() + Scrollbar.this.getHeight()*scrollHeight > Scrollbar.this.getHeight()){
+			if(this.getY() + Scrollbar.this.getHeight()*scrollHeight > Scrollbar.this.getY() + Scrollbar.this.getHeight()){
 				this.setPos(0f);
 			}else {
 				this.setParams(LayoutParams.obtain(0, pos, 1, scrollHeight));
@@ -97,7 +102,6 @@ public class Scrollbar extends ViewGroup {
 
 	public void setScrollHeight(float scrollHeight) {
 		this.tab.setScrollHeight(scrollHeight);
-		;
 	}
 
 	public float getScrollPos() {
