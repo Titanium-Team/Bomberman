@@ -9,7 +9,7 @@ public class Test {
         NetworkController networkController = new NetworkController();
 
         if (args[0].equals("true")){
-            networkController.startServer();
+            networkController.startServer("GHkjfndjkfsbjd");
         }
 
         while (true) {

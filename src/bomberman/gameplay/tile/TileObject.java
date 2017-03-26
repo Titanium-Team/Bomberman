@@ -5,7 +5,6 @@ import bomberman.gameplay.Player;
 public abstract class TileObject {
 
     private final Tile parent;
-
     private float lifespan;
 
     public TileObject(Tile parent, float lifespan) {
@@ -43,6 +42,10 @@ public abstract class TileObject {
 
             this.execute();
         }
+    }
+
+    public TileObject clone(Tile parent) {
+        throw new IllegalStateException();
     }
 
 }

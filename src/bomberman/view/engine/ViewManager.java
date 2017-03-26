@@ -40,6 +40,8 @@ public class ViewManager {
             clickSound = new Sound(ViewManager.class.getResourceAsStream("/bomberman/resources/sounds/click.wav"));
 
             loadTexture("explosion.png");
+            loadTexture("speedPowerUp.png");
+            loadTexture("explosionPowerUp.png");
 
             loadTexture("wall.png");
 
@@ -56,6 +58,9 @@ public class ViewManager {
     }
 
     public static ITexture getTexture(String textureID) {
+        if (textureID == null || textureID.isEmpty())
+            return null;
+
         if (!textureMap.containsKey(textureID)) {
             loadTexture(textureID);
         }

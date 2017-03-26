@@ -20,6 +20,8 @@ public class Client extends Connection {
     private ConnectionData server;
     private List<ConnectionData> serverList;
 
+    private Refreshable refreshable;
+
     public Client(NetworkController controller) throws IOException {
         super(controller);
 
@@ -30,7 +32,7 @@ public class Client extends Connection {
 
         serverList = new ArrayList<>();
 
-        refreshServers();
+        refreshServers(null);
 
         System.out.println("Client initialized");
     }
@@ -72,6 +74,10 @@ public class Client extends Connection {
 
                     serverList.add(connectionData);
 
+                    if (refreshable != null){
+                        refreshable.refreshListView(serverList);
+                    }
+
                     System.out.println("ConnectionData from Server");
 
                     break;
@@ -112,10 +118,13 @@ public class Client extends Connection {
         return serverList;
     }
 
-    public void refreshServers(){
+    public void refreshServers(Refreshable refreshable){
+        this.refreshable = refreshable;
+
         serverList.clear();
 
         try {
+
             send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638), true);
         } catch (UnknownHostException e) {
             e.printStackTrace();

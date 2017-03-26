@@ -3,6 +3,7 @@ package bomberman.view.views;
 import bomberman.Main;
 import bomberman.network.ConnectionData;
 import bomberman.network.NetworkData;
+import bomberman.network.connection.Refreshable;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.*;
 
@@ -16,62 +17,76 @@ import java.util.List;
 /**
  * leads to LobbyView
  **/
-public class PlayMenuView extends BaseMenuView {
+public class PlayMenuView extends BaseMenuView implements Refreshable {
 
-    private Button hostGameButton, joinGameButton;
+    private Button hostGameButton;
+    private Button refreshServerListButton;
     private TextField portTextField;
+    private TextField serverNameField;
 
-    private VerticalView scurrMitDemVert;
+    private VerticalView serverList;
     private List<Button> serverButtons = new ArrayList<>();
-
 
     public PlayMenuView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 
-        this.hostGameButton = new Button(LayoutParams.obtain(0.4f, 0.4f, 0.2f, 0.1f), this, "Host Game");
+        this.portTextField = new TextField(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "1638", "Port Number");
+        this.getRoot().addChild(portTextField);
+
+        this.serverNameField = new TextField(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "", "Server Name");
+        this.getRoot().addChild(serverNameField);
+
+        this.hostGameButton = new Button(LayoutParams.obtain(0.1f, 0.55f, 0.2f, 0.1f), this, "Host Game");
         this.hostGameButton.addListener(() -> {
             PlayMenuView.this.changeView(LobbyView.class);
 
+            String serverName = serverNameField.getText();
             if (portTextField.getText() != "") {
-                Main.instance.getNetworkController().startServer(Integer.parseInt(portTextField.getText()));
+                Main.instance.getNetworkController().startServer(serverName, Integer.parseInt(portTextField.getText()));
             }else {
-                Main.instance.getNetworkController().startServer();
+                Main.instance.getNetworkController().startServer(serverName);
             }
         });
         this.getRoot().addChild(hostGameButton);
 
-        this.portTextField = new TextField(LayoutParams.obtain(0f, 0.5f, 0.25f, 0.1f), this, "", "Port Number");
+        this.serverList = new VerticalView(LayoutParams.obtain(0.55f, 0.05f, 0.4f, 0.8f), this);
+        this.getRoot().addChild(serverList);
 
-        this.getRoot().addChild(portTextField);
+        this.refreshServerListButton = new Button(LayoutParams.obtain(0.55f, 0.85f, 0.4f, 0.1f), this, "Refresh Server List");
+        this.refreshServerListButton.addListener(() -> {
+            refreshListView(Main.instance.getNetworkController().getServerList());
+            Main.instance.getNetworkController().refreshServers(this);
+        });
+        this.getRoot().addChild(refreshServerListButton);
 
-        this.scurrMitDemVert = new VerticalView(LayoutParams.obtain(0.7f, 0f, 0.3f, 1f), this);
-        this.getRoot().addChild(scurrMitDemVert);
-
-
-        updateVerticalView(Main.instance.getNetworkController().getServerList());
-
-
+        refreshListView(Main.instance.getNetworkController().getServerList());
     }
 
-    public void updateVerticalView(List<ConnectionData> list) {
-        for (int i = 0; i < list.size(); i++) {
-            String text = list.get(i).getNetworkData().getIp().getHostAddress();
-            NetworkData data = list.get(i).getNetworkData();
+    @Override
+    public void refreshListView(List<ConnectionData> connectionDataList) {
+        for (int i = 0; i < serverButtons.size(); i++) {
+            if (serverList.getChildren().contains(serverButtons.get(i)))
+                serverList.removeChild(serverButtons.get(i));
+        }
+        serverButtons.clear();
+
+        for (int i = 0; i < connectionDataList.size(); i++) {
+            String text = connectionDataList.get(i).getNetworkData().getIp().getHostAddress();
+            NetworkData data = connectionDataList.get(i).getNetworkData();
             if (!serverButtons.contains(text)) {
                 Button button = new Button(LayoutParams.obtain(0f, 0f, 0f, 0f), this, text);
-                button.addListener(new ClickListener() {
-                    @Override
-                    public void onClick() {
-                        Main.instance.getNetworkController().joinServer(data);
-                    }
+                button.addListener(() -> {
+                    Main.instance.getNetworkController().joinServer(data);
+
+                    this.changeView(LobbyView.class);
                 });
+
                 serverButtons.add(button);
             }
         }
         for (int i = 0; i < serverButtons.size(); i++) {
-            if (!scurrMitDemVert.getChildren().contains(serverButtons.get(i)))
-                scurrMitDemVert.addChild(serverButtons.get(i));
+            if (!serverList.getChildren().contains(serverButtons.get(i)))
+                serverList.addChild(serverButtons.get(i));
         }
     }
-
 }

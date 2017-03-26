@@ -57,6 +57,11 @@ public class Vector2 {
         y *= r;
     }
 
+    public void multiply(float m){
+        x *= m;
+        y *= m;
+    }
+
     public String toJson() {
         Gson gson = new Gson();
 
@@ -65,5 +70,10 @@ public class Vector2 {
         data.put("yCoord", getY());
 
         return gson.toJson(data);
+    }
+
+    @Override
+    public Vector2 clone() throws CloneNotSupportedException {
+        return new Vector2(x,y);
     }
 }

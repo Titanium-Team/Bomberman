@@ -26,13 +26,7 @@ public class Server extends Connection {
     }
 
     public Server(NetworkController networkController, int customPort) throws SocketException {
-        super(networkController);
-
-        setSocket(new DatagramSocket(customPort));
-
-        init();
-
-        System.out.println("Custom Server initialized");
+        this(networkController);
     }
 
     @Override
@@ -60,7 +54,6 @@ public class Server extends Connection {
 
         String message = new String(packet.getData(), 0, packet.getLength());
 
-
         String[] splittedChecksum = message.split("§", 2);
 
         if (checksum(splittedChecksum)) {
@@ -73,7 +66,7 @@ public class Server extends Connection {
                     ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
                     if (!getController().getNetworkPlayerMap().containsKey(sender)) {
-                        getController().getNetworkPlayerMap().put(sender, new NetworkPlayer("", new Location(0, 0), null, connectionData));
+                        getController().getNetworkPlayerMap().put(sender, new NetworkPlayer(null, "", new Location(0, 0), connectionData));
 
                         send("hello§" + getMyData().toJson(), sender, true);
 

@@ -10,19 +10,17 @@ import java.util.stream.Stream;
 public class GameplayManager {
 
     private GameState gameState = GameState.IN_MENU;
-
-    private final static float POWERUP_TIME = 25;
-    private float powerupTimer = POWERUP_TIME;
-
     private final List<GameMap> maps = new LinkedList<>();
-    private final List<Player> players = new LinkedList<>();
 
     private int mapIndex = 0;
+
+    private GameSession currentSession;
 
     public GameplayManager() {
         //map 0
         this.addMap(
             GameMap.builder()
+                .name("Map 0")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -35,12 +33,13 @@ public class GameplayManager {
                 .startPosition(13, 1)
                 .startPosition(1, 11)
                 .startPosition(12, 11)
-            .build()
+            .build().clone()
         );
 
         //map 1
         this.addMap(
             GameMap.builder()
+                .name("Map 1")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -65,6 +64,7 @@ public class GameplayManager {
         //map 2
         this.addMap(
             GameMap.builder()
+                .name("Map 2")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND)
@@ -81,42 +81,24 @@ public class GameplayManager {
 
         );
 
+        this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
+
         //@TODO
-        this.setMapIndex(2);
-        this.addPlayer(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
-
+        this.setMapIndex(0);
+        this.createGameSession();
     }
 
-    public synchronized void addPlayer(Player player) {
-
-        if(this.players.contains(player)) {
-            throw new IllegalStateException("Do not add the same instance more than once.");
-        }
-
-        this.players.add(player);
-        player.setIndex(this.players.indexOf(player));
-
-    }
-
-    public List<Player> getPlayers() {
-        return this.players;
-    }
-
-    public Player getLocalPlayer() {
-        return this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).findAny().orElseGet(null);
-    }
-
-    public Player getPlayer(int index) {
-        return this.players.get(index);
-    }
-
-    public GameMap getCurrentMap() {
-        return this.getMap(this.mapIndex);
+    public GameSession getCurrentSession() {
+        return this.currentSession;
     }
 
     public GameMap getMap(int index) {
         assert index >= 0 && index < this.maps.size();
-        return this.maps.get(index);
+        return this.maps.get(index).clone();
+    }
+
+    public int getMapCount() {
+        return maps.size();
     }
 
     public void addMap(GameMap map) {
@@ -135,6 +117,12 @@ public class GameplayManager {
         }
 
         this.mapIndex = mapIndex;
+        this.createGameSession();
+    }
+
+    private void createGameSession() {
+        this.currentSession = new GameSession(this.getMap(this.mapIndex));
+        this.currentSession.addPlayer(new Player(this.currentSession, Player.PlayerType.LOCAL, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
     }
 
     public void update(float delta) {
@@ -143,50 +131,45 @@ public class GameplayManager {
             return;
         }
 
-        this.players.forEach(e -> e.update(delta));
-        Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
-
-        //--- Powerup Spawn Timer
-        this.powerupTimer -= delta;
-        if (this.powerupTimer <= 0) {
-            this.checkPowerups();
-            this.powerupTimer = POWERUP_TIME;
-        }
+        this.currentSession.update(delta);
 
     }
-
-    //powerup start
-    private void checkPowerups() {
-        int x = (int) (Math.random() * this.getCurrentMap().getWidth());
-        int y = (int) (Math.random() * this.getCurrentMap().getHeight());
-        if (this.getCurrentMap().getTile(x, y).get().getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).get().getTileObject() == null) {
-            this.getCurrentMap().getTile(x, y).get().spawnPowerup();
-        } else {
-            this.checkPowerups();
-        }
-    }
-    //powerup end
 
     public void onKeyDown(int key, char c) {
         if(!(this.gameState == GameState.IN_GAME)) {
             return;
         }
-        this.players.forEach(e -> e.keyDown(key, c));
+
+        this.currentSession.onKeyDown(key, c);
     }
 
     public void onKeyUp(int key, char c) {
         if(!(this.gameState == GameState.IN_GAME)) {
             return;
         }
-        this.players.forEach(e -> e.keyUp(key, c));
+
+        this.currentSession.onKeyUp(key, c);
     }
 
-    public void onMouseDown(int button, int mouseX, int mouseY) {}
+    public void onMouseDown(int button, int mouseX, int mouseY) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
 
-    public void onMouseUp(int button, int mouseX, int mouseY) {}
+        this.currentSession.onMouseDown(button, mouseX, mouseY);
+    }
+
+    public void onMouseUp(int button, int mouseX, int mouseY) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
+        this.currentSession.onMouseUp(button, mouseX, mouseY);
+    }
 
     public void onGamepadEvent(Component component, float value) {
         // TODO: Implementiert das plz
+        System.out.println(value);
     }
 
     public static enum GameState {

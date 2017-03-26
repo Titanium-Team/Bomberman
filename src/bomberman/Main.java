@@ -23,6 +23,7 @@ public class Main {
     private ViewManager viewManager;
     private GameplayManager gameplayManager;
     private float lastDeltaTime;
+    private boolean closeRequested = false;
 
     private File saveDir;
     private Config config;
@@ -41,9 +42,11 @@ public class Main {
         } else {
             this.config = new Config();
         }
+
         this.networkController = new NetworkController();
 
         this.gameplayManager = new GameplayManager();
+
         this.viewManager = new ViewManager(this.gameplayManager);
 
         viewManager.setCurrentView(HomeView.class);
@@ -53,7 +56,7 @@ public class Main {
         long totalTime = startTime;
         int frames = 0;
         int fpsCounter = 0;
-        while (!viewManager.isCloseRequested()) {
+        while (!viewManager.isCloseRequested() && !closeRequested) {
             long currentTime = System.nanoTime();
             deltaTime = (float) ((currentTime - startTime) / 1000000000D);
             startTime = currentTime;
@@ -111,5 +114,9 @@ public class Main {
 
     public float getLastDeltaTime() {
         return lastDeltaTime;
+    }
+
+    public void requestClose() {
+        closeRequested = true;
     }
 }
