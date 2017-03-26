@@ -78,7 +78,6 @@ public class GameplayManager {
                 .startPosition(1, 1)
                 .startPosition(12, 11)
             .build()
-
         );
 
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
