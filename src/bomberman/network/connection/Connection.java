@@ -45,7 +45,7 @@ public abstract class Connection {
 
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
+            keyPairGenerator.initialize(1024);
 
             tempKeys = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
@@ -167,13 +167,11 @@ public abstract class Connection {
         controller.getNetworkPlayerMap().get(networkData).getBoundingBox().setCenter(location);
     }
 
-    abstract void update();
-
     public abstract void message(String message);
     public abstract void listen();
     public abstract void move(Location location, int playerId);
     public abstract void plantBomb(Location location);
     public abstract void explodedBomb(Location location);
     public abstract void hit(double health, int playerId);
-
+    public abstract void leave();
 }

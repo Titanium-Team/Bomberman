@@ -63,7 +63,7 @@ public class NetworkController implements Runnable {
                         case "startServer":
                             connection.close();
                             try {
-                                connection = new Server(this, (Integer) requestData.getObjects()[0]);
+                                connection = new Server(this, (Integer) requestData.getObjects()[0], (String) requestData.getObjects()[1]);
                             } catch (SocketException e) {
                                 e.printStackTrace();
                             }
@@ -138,7 +138,7 @@ public class NetworkController implements Runnable {
     }
 
 
-    public List<ConnectionData> getServerList(){
+    public List<ServerConnectionData> getServerList(){
         if (connection instanceof Client){
             return ((Client) connection).getServerList();
         }
@@ -161,11 +161,15 @@ public class NetworkController implements Runnable {
     }
 
     public void startServer(String serverName, int customPort){
-        requestDataQueue.add(new RequestData("startServer", new Object[]{customPort}));
+        requestDataQueue.add(new RequestData("startServer", new Object[]{customPort, serverName}));
     }
 
     public void startClient(){
         requestDataQueue.add(new RequestData("startClient", null));
+    }
+
+    public void leave() {
+        connection.leave();
     }
 
     private class RequestData{

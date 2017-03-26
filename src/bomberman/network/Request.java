@@ -25,7 +25,9 @@ public class Request {
     }
 
     public boolean isRecieved(NetworkData key) {
-        return recieved.get(key);
+        Boolean b = recieved.get(key);
+
+        return b != null ? b : true;
     }
 
     public String getRequest() {

@@ -3,6 +3,7 @@ package bomberman.view.views;
 import bomberman.Main;
 import bomberman.network.ConnectionData;
 import bomberman.network.NetworkData;
+import bomberman.network.ServerConnectionData;
 import bomberman.network.connection.Refreshable;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.*;
@@ -54,7 +55,6 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
 
         this.refreshServerListButton = new Button(LayoutParams.obtain(0.55f, 0.85f, 0.4f, 0.1f), this, "Refresh Server List");
         this.refreshServerListButton.addListener(() -> {
-            refreshListView(Main.instance.getNetworkController().getServerList());
             Main.instance.getNetworkController().refreshServers(this);
         });
         this.getRoot().addChild(refreshServerListButton);
@@ -63,7 +63,7 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
     }
 
     @Override
-    public void refreshListView(List<ConnectionData> connectionDataList) {
+    public void refreshListView(List<ServerConnectionData> connectionDataList) {
         for (int i = 0; i < serverButtons.size(); i++) {
             if (serverList.getChildren().contains(serverButtons.get(i)))
                 serverList.removeChild(serverButtons.get(i));
@@ -71,7 +71,7 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
         serverButtons.clear();
 
         for (int i = 0; i < connectionDataList.size(); i++) {
-            String text = connectionDataList.get(i).getNetworkData().getIp().getHostAddress();
+            String text = connectionDataList.get(i).getName();
             NetworkData data = connectionDataList.get(i).getNetworkData();
             if (!serverButtons.contains(text)) {
                 Button button = new Button(LayoutParams.obtain(0f, 0f, 0f, 0f), this, text);
