@@ -1,15 +1,12 @@
 package bomberman.gameplay;
 
-import bomberman.gameplay.tile.Tile;
-import bomberman.gameplay.tile.TileObject;
-import bomberman.gameplay.tile.TileType;
-import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.tile.*;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
+import bomberman.view.engine.utility.Vector2;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -260,6 +257,8 @@ public class GameMap implements Cloneable {
             }
         }
 
+        player.getTile().interact(player);
+
     }
 
     @Override
@@ -327,63 +326,64 @@ public class GameMap implements Cloneable {
 
             assert !(tileType == null);
 
-            this.verticalRow(TileTypes.WALL, 0);
-            this.verticalRow(TileTypes.WALL, this.width() - 1);
-            this.horizontalRow(TileTypes.WALL, 0);
-            this.horizontalRow(TileTypes.WALL, this.height() - 1);
+            this.verticalRow(TileTypes.WALL, TileAbility.NORMAL, 0);
+            this.verticalRow(TileTypes.WALL, TileAbility.NORMAL, this.width() - 1);
+            this.horizontalRow(TileTypes.WALL, TileAbility.NORMAL, 0);
+            this.horizontalRow(TileTypes.WALL, TileAbility.NORMAL, this.height() - 1);
 
             return this;
 
         }
 
-        public Builder verticalRow(TileType tileType, int x) {
+        public Builder verticalRow(TileType tileType, TileAbility tileAbility, int x) {
 
             assert !(tileType == null);
+            assert !(tileAbility == null);
             assert x >= 0 && x < this.width();
 
             for (int y = 0; y < this.height(); y++) {
-                this.at(tileType, x, y);
+                this.at(tileType, tileAbility, x, y);
             }
 
             return this;
 
         }
 
-        public Builder verticalPattern(String pattern, int x) {
+        public Builder verticalPattern(String pattern, TileAbility tileAbility, int x) {
 
             assert !(pattern == null);
             assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
             assert x >= 0 && x < this.width();
 
             for (int y = 0; y < this.height(); y++) {
-                this.at(Builder.tileTypeByChar(pattern.charAt(y)), x, y);
+                this.at(Builder.tileTypeByChar(pattern.charAt(y)), tileAbility, x, y);
             }
 
             return this;
 
         }
 
-        public Builder horizontalRow(TileType tileType, int y) {
+        public Builder horizontalRow(TileType tileType, TileAbility tileAbility, int y) {
 
             assert !(tileType == null);
             assert y >= 0 && y < this.height();
 
             for (int x = 0; x < this.width(); x++) {
-                this.at(tileType, x, y);
+                this.at(tileType, tileAbility, x, y);
             }
 
             return this;
 
         }
 
-        public Builder horizontalPattern(String pattern, int y) {
+        public Builder horizontalPattern(String pattern, TileAbility tileAbility, int y) {
 
             assert !(pattern == null);
             assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
             assert y >= 0 && y < this.height();
 
             for (int x = 0; x < this.width(); x++) {
-                this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
+                this.at(Builder.tileTypeByChar(pattern.charAt(x)), tileAbility, x, y);
 
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
                 if (pattern.charAt(x) == 'P') {
@@ -395,14 +395,14 @@ public class GameMap implements Cloneable {
 
         }
 
-        public Builder fill(TileType tileType, BoundingBox area) {
+        public Builder fill(TileType tileType, TileAbility tileAbility, BoundingBox area) {
 
             assert !(tileType == null);
             assert !(area == null);
 
             for (int x = (int) area.getMin().getX(); x <= area.getMax().getX(); x++) {
                 for (int y = (int) area.getMin().getY(); y <= area.getMax().getY(); y++) {
-                    this.at(tileType, x, y);
+                    this.at(tileType, tileAbility, x, y);
                 }
             }
 
@@ -410,14 +410,14 @@ public class GameMap implements Cloneable {
 
         }
 
-        public Builder fillEmpty(TileType tileType) {
+        public Builder fillEmpty(TileType tileType, TileAbility tileAbility) {
 
             assert !(tileType == null);
 
             for (int x = 0; x < this.width(); x++) {
                 for (int y = 0; y < this.height(); y++) {
                     if (this.tiles[x][y] == null) {
-                        this.at(tileType, x, y);
+                        this.at(tileType, tileAbility, x, y);
                     }
                 }
             }
@@ -426,11 +426,42 @@ public class GameMap implements Cloneable {
 
         }
 
-        public Builder at(TileType tileType, int x, int y) {
+        public Builder at(TileType tileType, TileAbility tileAbility, int x, int y) {
 
             assert !(tileType == null);
+            assert !(tileAbility == null);
 
-            this.tiles[x][y] = new Tile(tileType, new BoundingBox(x, y, x + .9999D, y + .9999D));
+            this.tiles[x][y] = new Tile(tileType, tileAbility, new BoundingBox(x, y, x + .9999D, y + .9999D));
+            return this;
+
+        }
+
+        public Builder teleporter(Location from, Location to) {
+
+            assert !(from == null);
+            assert !(to == null);
+
+            Tile fromTile = this.tiles[(int) from.getX()][(int) from.getY()];
+            Tile toTile = this.tiles[(int) to.getX()][(int) to.getY()];
+
+            assert !(toTile.getTileAbility() == TileAbility.TELEPORT || toTile.getTileAbility() == TileAbility.RANDOM_TELEPORT);
+
+            fromTile.setTileAbility(TileAbility.TELEPORT);
+            fromTile.setConnectedTile(toTile);
+
+            return this;
+        }
+
+        public Builder treadmill(Location location, Player.FacingDirection facingDirection) {
+
+            assert !(location == null);
+            assert !(facingDirection == null);
+
+            Tile tile = this.tiles[(int) location.getX()][(int) location.getY()];
+
+            tile.setTileAbility(TileAbility.TREADMILL);
+            tile.setTreadMillDirection(facingDirection);
+
             return this;
 
         }
