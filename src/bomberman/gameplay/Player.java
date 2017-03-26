@@ -186,6 +186,8 @@ public class Player {
         double maxX = (max.getMin().getX() - (COLLISION_WIDTH / 2));
         double maxY = (max.getMin().getY() - (COLLISION_HEIGHT / 2));
 
+        System.out.println(direction);
+
         switch (direction) {
 
             case UP:
@@ -211,30 +213,10 @@ public class Player {
 
             case STOP_VERTICAL_MOVEMENT: //<--- All diagonal collisions
 
-
                 this.boundingBox.setCenter(
                     range(minX, location.getX(), maxX),
                     range(minY, location.getY(), maxY)
                 );
-
-
-                //TODO Kollision verbessern
-
-                switch (this.facingDirection) {
-
-                    case NORTH_WEST:
-                    case NORTH_EAST: {
-                        this.vector.setX(0);
-                    }
-                    break;
-
-                    case SOUTH_WEST:
-                    case SOUTH_EAST: {
-                        this.vector.setY(0);
-                    }
-                    break;
-
-                }
                 break;
 
             case STOP_HORIZONTAL_MOVEMENT:

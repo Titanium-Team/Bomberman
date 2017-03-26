@@ -8,10 +8,18 @@ import bomberman.gameplay.tile.TileTypes;
 
 public class Explosion extends TileObject{
 
-    public Explosion(Tile parent, float lifespan) {
+    private final double damage;
+
+    public Explosion(Tile parent, float lifespan, double damage) {
         super(parent, lifespan);
 
+        this.damage = damage;
     }
+
+    public double getDamage() {
+        return this.damage;
+    }
+
     @Override
     public void execute() {
         //@TODO Implement
@@ -26,7 +34,7 @@ public class Explosion extends TileObject{
     public boolean destroyWall(){
 
         if(this.getParent().getTileType() == TileTypes.WALL_BREAKABLE){
-            this.getParent().setTileType(TileTypes.GROUND);
+            this.getParent().setHealth(this.getParent().getHealth() - this.damage);
             return true;
         }
 

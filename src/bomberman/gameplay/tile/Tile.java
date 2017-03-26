@@ -11,6 +11,7 @@ public class Tile {
 
     private TileType tileType;
     private final BoundingBox boundingBox;
+    private double health;
 
     private TileObject tileObject;
 
@@ -20,6 +21,7 @@ public class Tile {
         assert !(boundingBox == null);
 
         this.tileType = tileType;
+        this.health = tileType.getHealth();
         this.boundingBox = boundingBox;
 
     }
@@ -40,8 +42,12 @@ public class Tile {
         return this.tileObject;
     }
 
-    public boolean isExploding() {
-        return (this.tileObject instanceof Bomb);
+    public double getHealth() {
+        return health;
+    }
+
+    public void setHealth(double health) {
+        this.health = health;
     }
 
     public boolean canVisit(Player player) {
@@ -91,10 +97,13 @@ public class Tile {
 
     public void update(float delta) {
 
+        if (this.health <= 0 && !this.tileType.isWalkable()) {
+            this.setTileType(TileTypes.GROUND);
+        }
+
         if (this.tileObject == null) {
             return;
         }
-
         this.tileObject.update(delta);
 
     }

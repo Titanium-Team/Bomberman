@@ -8,6 +8,10 @@ import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 
+import static bomberman.gameplay.Player.FacingDirection.NORTH_EAST;
+import static bomberman.gameplay.Player.FacingDirection.NORTH_WEST;
+import static bomberman.gameplay.Player.FacingDirection.SOUTH_WEST;
+
 public class GameMap {
 
     private final Tile[][] tiles;
@@ -98,6 +102,39 @@ public class GameMap {
                             return Player.Direction.LEFT;
                         }
                     } else {
+
+                        switch (player.getFacingDirection()) {
+
+                            case NORTH_EAST:
+                                if (pY > tY) {
+                                    return Player.Direction.UP;
+                                } else if (pX < tX) {
+                                    return Player.Direction.RIGHT;
+                                }
+                                break;
+                            //ICH MACH ALLES BROOOOOOOOOOKEN
+                            case SOUTH_EAST:
+                                if (pY < tY) {
+                                    return Player.Direction.DOWN;
+                                } else if (pX < tX) {
+                                    return Player.Direction.RIGHT;
+                                }
+                                break;
+                            case SOUTH_WEST:
+                                if (pY < tY) {
+                                    return Player.Direction.DOWN;
+                                } else if (pX > tX) {
+                                    return Player.Direction.LEFT;
+                                }
+                                break;
+                            case NORTH_WEST:
+                                if (pY > tY) {
+                                    return Player.Direction.UP;
+                                } else if (pX > tX) {
+                                    return Player.Direction.LEFT;
+                                }
+                                break;
+                        }
                         return Player.Direction.STOP_VERTICAL_MOVEMENT;
                     }
                 }

@@ -93,7 +93,7 @@ public class Bomb extends TileObject {
 
     private boolean createExplosion(int x, int y, float lifespan){
 
-        Explosion explosion = new Explosion(this.player.getGameMap().getTile(x, y), lifespan);
+        Explosion explosion = new Explosion(this.player.getGameMap().getTile(x, y), lifespan, 1);
 
         //--- spawning explosion
         if(this.player.getGameMap().getTile(x,y).getTileObject() instanceof Bomb) {
