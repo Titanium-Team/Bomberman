@@ -41,6 +41,8 @@ public class ViewManager {
 
             loadTexture("explosion.png");
 
+            loadTexture("wall.png");
+
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
