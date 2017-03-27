@@ -213,6 +213,11 @@ public class ViewManager {
                     gameplayManager.onMouseUp(button, mouseX, mouseY);
                 }
             }
+
+            int wheel = Mouse.getEventDWheel();
+            if (wheel != 0) {
+                currentView.onMouseWheel(wheel);
+            }
         }
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState()) {

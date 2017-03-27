@@ -2,10 +2,7 @@ package bomberman.view.engine.rendering;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.ARBTextureMultisample;
-import org.lwjgl.opengl.EXTFramebufferObject;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,28 +15,38 @@ public class Texture implements ITexture {
         return GLContext.getCapabilities().GL_ARB_multisample;
     }
 
+    public enum Filter {
+        Linear(GL11.GL_LINEAR, GL11.GL_LINEAR, false),
+        Bilinear(GL11.GL_LINEAR_MIPMAP_NEAREST, GL11.GL_LINEAR, true),
+        Trilinear(GL11.GL_LINEAR_MIPMAP_LINEAR, GL11.GL_LINEAR, true);
+
+        public final int min;
+        public final int max;
+        public final boolean genMipmaps;
+
+        Filter(int min, int max, boolean genMipmaps) {
+            this.min = min;
+            this.max = max;
+            this.genMipmaps = genMipmaps;
+        }
+    }
+
     protected int handle;
     protected int width;
     protected int height;
     protected int samples = 1;
+    private Filter filter = Filter.Linear;
     protected ByteBuffer data;
 
-    public static final int DEFAULT_FILTER = GL11.GL_LINEAR;
-    public static final int DEFAULT_WRAP = GL11.GL_REPEAT;
-
     public Texture(int width, int height) {
-        this(width, height, DEFAULT_FILTER);
+        this(width, height, Filter.Linear);
     }
 
-    public Texture(int width, int height, int filter) {
-        this(width, height, filter, DEFAULT_WRAP);
+    public Texture(int width, int height, Filter filter) {
+        this(width, height, filter, 1);
     }
 
-    public Texture(int width, int height, int filter, int wrap) {
-        this(width, height, filter, wrap, 1);
-    }
-
-    public Texture(int width, int height, int filter, int wrap, int samples) {
+    public Texture(int width, int height, Filter filter, int samples) {
         handle = GL11.glGenTextures();
         this.width = width;
         this.height = height;
@@ -52,9 +59,7 @@ public class Texture implements ITexture {
         GL11.glEnable(getTarget());
 
         bind();
-
-        setFilter(filter);
-        setWrap(wrap);
+        setup();
 
         ByteBuffer buf = BufferUtils.createByteBuffer(width * height * 4);
 
@@ -63,22 +68,6 @@ public class Texture implements ITexture {
     }
 
     public Texture(URL pngRef) {
-        this(pngRef, DEFAULT_FILTER);
-    }
-
-    public Texture(URL pngRef, int filter) {
-        this(pngRef, filter, DEFAULT_WRAP);
-    }
-
-    public Texture(URL pngRef, int filter, int wrap) {
-        this(pngRef, filter, filter, wrap, false);
-    }
-
-    public Texture(URL pngRef, int filter, boolean genMipmap) {
-        this(pngRef, filter, filter, DEFAULT_WRAP, genMipmap);
-    }
-
-    public Texture(URL pngRef, int minFilter, int magFilter, int wrap, boolean genMipmap) {
         InputStream input = null;
         try {
             input = pngRef.openStream();
@@ -94,14 +83,14 @@ public class Texture implements ITexture {
             handle = GL11.glGenTextures();
 
             bind();
-            setFilter(minFilter, magFilter);
-            setWrap(wrap);
+            this.filter = Filter.Bilinear;
+            setup();
 
             this.data = buf;
             upload(GL11.GL_RGBA);
 
             //use EXT since we are targeting 2.0+
-            if (genMipmap) {
+            if (filter.genMipmaps) {
                 EXTFramebufferObject.glGenerateMipmapEXT(getTarget());
             }
         } catch (IOException e) {
@@ -114,6 +103,14 @@ public class Texture implements ITexture {
                 }
             }
         }
+    }
+
+    private void setup() {
+        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_MIN_FILTER, filter.min);
+        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_MAG_FILTER, filter.max);
+
+        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
+        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
     }
 
     public int getTarget() {
@@ -142,22 +139,6 @@ public class Texture implements ITexture {
         } else {
             GL11.glTexImage2D(getTarget(), 0, GL11.GL_RGBA, width, height, 0, dataFormat, GL11.GL_UNSIGNED_BYTE, data);
         }
-    }
-
-    public void setFilter(int filter) {
-        setFilter(filter, filter);
-    }
-
-    public void setFilter(int minFilter, int magFilter) {
-        bind();
-        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_MIN_FILTER, minFilter);
-        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_MAG_FILTER, magFilter);
-    }
-
-    public void setWrap(int wrap) {
-        bind();
-        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_WRAP_S, wrap);
-        GL11.glTexParameteri(getTarget(), GL11.GL_TEXTURE_WRAP_T, wrap);
     }
 
     public void bind() {

@@ -32,9 +32,9 @@ public class Light {
     public void createFrameBuffersIfNecessary() {
         try {
             if (this.shadowMap == null)
-                this.shadowMap = new FrameBuffer(300, 1, GL11.GL_NEAREST);
+                this.shadowMap = new FrameBuffer(300, 1);
             if (this.occludersMap == null)
-                this.occludersMap = new FrameBuffer(radius * 2, radius * 2, GL11.GL_LINEAR);
+                this.occludersMap = new FrameBuffer(radius * 2, radius * 2);
         } catch (LWJGLException e) {
             e.printStackTrace();
         }

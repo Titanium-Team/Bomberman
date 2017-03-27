@@ -135,6 +135,10 @@ public abstract class View {
         root.onMouseUp(button, mouseX, mouseY);
     }
 
+    public void onMouseWheel(int wheel) {
+        root.onMouseWheel(wheel);
+    }
+
     public void onGamepadEvent(Component component, float value) {
         root.onGamepadEvent(component, value);
     }

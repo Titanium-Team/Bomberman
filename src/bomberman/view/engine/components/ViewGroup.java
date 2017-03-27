@@ -173,6 +173,12 @@ public abstract class ViewGroup extends ViewComponent {
         }
     }
 
+    public void onMouseWheel(int wheel) {
+        for (ViewComponent v : children) {
+            v.onMouseWheel(wheel);
+        }
+    }
+
     public void onGamepadEvent(Component component, float value) {
         if (component.getIdentifier() == Component.Identifier.Button._1 && value == 0) {
             getView().navigateBack();

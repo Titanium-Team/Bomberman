@@ -78,6 +78,9 @@ public abstract class ViewComponent {
     public void onMouseUp(int button, int mouseX, int mouseY) {
     }
 
+    public void onMouseWheel(int wheel) {
+    }
+
     public void onGamepadEvent(Component component, float value) {
     }
 
