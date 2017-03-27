@@ -107,8 +107,7 @@ public class GameView extends LightingView {
                         if (tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileObject() != null) {
                                 if (tiles[i][j].getTileObject() instanceof Bomb) {
-                                    //TODO: bomb texture
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
+                                    batch.draw(ViewManager.getTexture("bomb.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
                                     //TODO:additional textures
                                     ITexture texture = null;
@@ -116,6 +115,8 @@ public class GameView extends LightingView {
                                         texture = ViewManager.getTexture("speedPowerUp.png");
                                     if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP )
                                         texture = ViewManager.getTexture("explosionPowerUp.png");
+                                    if((((PowerUp) tiles[i][j].getTileObject()).getPowerUpType().equals(PowerUpTypes.FIREDOWN)))
+                                        texture = ViewManager.getTexture("firedown.png");
                                     batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                
 				                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
                                     //TODO:Explosion textures

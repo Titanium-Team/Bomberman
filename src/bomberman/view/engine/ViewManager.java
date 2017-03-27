@@ -45,6 +45,10 @@ public class ViewManager {
 
             loadTexture("wall.png");
 
+            loadTexture("bomb.png");
+
+            loadTexture("firedown.png");
+
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
