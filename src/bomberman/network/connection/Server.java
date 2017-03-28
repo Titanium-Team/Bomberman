@@ -12,26 +12,28 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Server extends Connection {
 
-    public Server(NetworkController controller) throws SocketException {
-        super(controller);
+    private String name;
 
-        setSocket(new DatagramSocket(1638));
+
+    public Server(NetworkController networkController, String name) throws SocketException {
+        this(networkController, 1638, name);
+    }
+
+    public Server(NetworkController networkController, int customPort, String name) throws SocketException {
+        super(networkController);
+
+        this.name = name;
+
+        setSocket(new DatagramSocket(customPort));
 
         init();
 
-        System.out.println("Server initialized");
-    }
-
-    public Server(NetworkController networkController, int customPort) throws SocketException {
-        this(networkController);
-    }
-
-    @Override
-    public void update() {
-
+        System.out.println("Custom Server initialized on Port: " + customPort);
     }
 
     @Override
@@ -68,7 +70,11 @@ public class Server extends Connection {
                     if (!getController().getNetworkPlayerMap().containsKey(sender)) {
                         getController().getNetworkPlayerMap().put(sender, new NetworkPlayer(null, "", new Location(0, 0), connectionData));
 
-                        send("hello§" + getMyData().toJson(), sender, true);
+                        Map<String, String> jsonMap = new HashMap<>();
+                        jsonMap.put("connectionData", getMyData().toJson());
+                        jsonMap.put("name", name);
+
+                        send("hello§" + gson.toJson(jsonMap), sender, true);
 
                         System.out.println("ConnectionData from " + packet.getAddress() + " " + packet.getPort());
                     }
@@ -83,7 +89,9 @@ public class Server extends Connection {
 
                     break;
                 case "error":
-                    error(sender);
+                    if (sender != null) {
+                        error(sender);
+                    }
 
                     System.out.println("ERROR");
             }
@@ -112,6 +120,14 @@ public class Server extends Connection {
     @Override
     public void hit(double health, int playerId) {
 
+    }
+
+    @Override
+    public void leave() {
+        sendToAll("close", "", getMyData().getNetworkData(), false);
+
+        close();
+        getController().startClient();
     }
 
 

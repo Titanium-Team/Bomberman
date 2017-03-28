@@ -14,6 +14,9 @@ public class GameSession {
     private final static float POWERUP_TIME = 25;
     private float powerupTimer = POWERUP_TIME;
 
+    private boolean powerupSpawning = true;
+
+
     public GameSession(GameMap gameMap) {
         this.gameMap = gameMap;
     }
@@ -32,6 +35,14 @@ public class GameSession {
 
     public Player getLocalPlayer() {
         return this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).findAny().orElseGet(null);
+    }
+
+    public boolean isPowerupSpawning() {
+        return this.powerupSpawning;
+    }
+
+    public void setPowerupSpawning(boolean enabled) {
+        this.powerupSpawning = enabled;
     }
 
     private void getGameSummary() {
@@ -62,7 +73,7 @@ public class GameSession {
 
         //--- Powerup Spawn Timer
         this.powerupTimer -= delta;
-        if (this.powerupTimer <= 0) {
+        if (this.powerupTimer <= 0 && this.powerupSpawning) {
             this.checkPowerups();
             this.powerupTimer = POWERUP_TIME;
         }
