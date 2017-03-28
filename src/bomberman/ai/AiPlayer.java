@@ -10,6 +10,7 @@ import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.Sys;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ import java.util.ArrayList;
  * Created by Daniel on 05.03.2017.
  */
 public class AiPlayer extends Player {
+
     private static ArrayList<PlayerRelevance> playerRelevances;
     private PlayerRelevance target;
     private Stack<Step> steps;
@@ -46,6 +48,12 @@ public class AiPlayer extends Player {
                 navigationMap[i][j] = new NavigationNode(map.getTiles()[i][j]);
             }
         }
+    }
+
+    @Override
+    public FacingDirection getFacingDirection() {
+        //@TODO Bitte implementieren. Danke.
+        throw new NotImplementedException();
     }
 
     public void update(float delta) {
