@@ -1,5 +1,6 @@
 package bomberman.gameplay;
 
+import bomberman.Main;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
@@ -337,6 +338,8 @@ public class LocalPlayer extends Player {
             PropertyTypes.INVINCIBILITY,
             this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
         );
+
+        Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex());
 
     }
 

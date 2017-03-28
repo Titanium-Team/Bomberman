@@ -68,6 +68,10 @@ public abstract class ViewGroup extends ViewComponent {
         this.children.remove(child);
     }
 
+    public void removeAllChildren(){
+        this.children.clear();
+    }
+
     public void onKeyDown(int key, char c) {
         for (ViewComponent v : children) {
             v.onKeyDown(key, c);

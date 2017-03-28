@@ -6,6 +6,8 @@ import bomberman.gameplay.GameplayManager;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.*;
 
+import java.util.List;
+
 /**
  * shows Players and GameSettings (not the Options)
  **/
@@ -26,9 +28,14 @@ public class LobbyView extends BaseMenuView {
             Main.instance.getNetworkController().leave();
         });
 
-        this.startButton = new Button(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "Start Game");
-        this.startButton.addListener(() -> LobbyView.this.changeView(GameView.class));
-        this.getRoot().addChild(startButton);
+        if (Main.instance.getNetworkController().isHost()) {
+            this.startButton = new Button(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "Start Game");
+            this.startButton.addListener(() -> {
+                LobbyView.this.changeView(GameView.class);
+                Main.instance.getNetworkController().startGame(Main.instance.getGameplayManager().getMapIndex());
+            });
+            this.getRoot().addChild(startButton);
+        }
 
         this.mapVotingList = new VerticalView(LayoutParams.obtain(0.65f, 0.05f, 0.3f, 0.9f), this);
         this.getRoot().addChild(mapVotingList);
@@ -59,4 +66,12 @@ public class LobbyView extends BaseMenuView {
         }
     }
 
+    public void refreshListView(List<String> names) {
+        joinedUsers.removeAllChildren();
+
+        for (String name : names){
+            Label label = new Label(LayoutParams.obtain(0f, 0f, 0f, 0f), this, name);
+            joinedUsers.addChild(label);
+        }
+    }
 }

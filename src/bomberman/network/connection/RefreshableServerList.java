@@ -5,6 +5,6 @@ import bomberman.network.ServerConnectionData;
 
 import java.util.List;
 
-public interface Refreshable {
+public interface RefreshableServerList {
     void refreshListView(List<ServerConnectionData> connectionDataList);
 }

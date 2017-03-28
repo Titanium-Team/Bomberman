@@ -129,6 +129,10 @@ public class GameplayManager {
         this.createGameSession();
     }
 
+    public int getMapIndex() {
+        return mapIndex;
+    }
+
     private void createGameSession() {
         this.currentSession = new GameSession(this.getMap(this.mapIndex));
         this.currentSession.addPlayer(new LocalPlayer(this.currentSession, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
