@@ -139,7 +139,7 @@ public class Server extends Connection {
                     Map<String, String> jsonMapMove = gson.fromJson(jsonMove, typeMove);
                     movePlayer(sender, jsonMapMove.get("location"));
 
-                    sendToAll("movemant§", jsonMove, sender, false);
+                    sendToAll("position§", jsonMove, sender, false);
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
             }

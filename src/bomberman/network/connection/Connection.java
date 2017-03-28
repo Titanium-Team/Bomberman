@@ -138,10 +138,12 @@ public abstract class Connection {
     }
 
     public void recieved(String message, NetworkData reciever) {
-        requestMap.get(message).setRecieved(reciever);
+        if (requestMap.containsKey(message)) {
+            requestMap.get(message).setRecieved(reciever);
 
-        if (requestMap.get(message).allRecieved()){
-            requestMap.remove(message);
+            if (requestMap.get(message).allRecieved()) {
+                requestMap.remove(message);
+            }
         }
     }
 
