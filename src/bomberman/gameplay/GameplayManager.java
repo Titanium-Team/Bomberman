@@ -4,6 +4,7 @@ import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
+import org.lwjgl.input.Keyboard;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -89,6 +90,16 @@ public class GameplayManager {
             .build()
         );
 
+        this.addMap(
+            GameMap.builder()
+                .name("Map 3")
+                .dimension(15, 13)
+                .frame(TileTypes.WALL)
+                .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
+                .startPosition(1, 1)
+            .build()
+        );
+
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
 
         //@TODO
@@ -131,6 +142,7 @@ public class GameplayManager {
     private void createGameSession() {
         this.currentSession = new GameSession(this.getMap(this.mapIndex));
         this.currentSession.addPlayer(new LocalPlayer(this.currentSession, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
+        //this.currentSession.addAi(); Nur zum Testen der AI. Nicht nutzen, AI funktioniert nicht!
     }
 
     public void update(float delta) {
@@ -176,8 +188,32 @@ public class GameplayManager {
     }
 
     public void onGamepadEvent(Component component, float value) {
-        // TODO: Implementiert das plz
-        System.out.println(component.getIdentifier().getName() + " - " + value);
+
+        if (component.getIdentifier() == Component.Identifier.Button._0 && value == 1) {
+            onKeyDown(Keyboard.KEY_SPACE, ' ');
+        }
+        if (component.getIdentifier() == Component.Identifier.Axis.X) {
+            if (value >= 0.5) {
+                onKeyDown(Keyboard.KEY_RIGHT, ' ');
+            } else if (value <= -0.5) {
+                onKeyDown(Keyboard.KEY_LEFT, ' ');
+            } else if(value < 0.5 && value >= -0.5) {
+                onKeyUp(Keyboard.KEY_RIGHT, ' ');
+                onKeyUp(Keyboard.KEY_LEFT, ' ');
+            }
+        }
+
+        if (component.getIdentifier() == Component.Identifier.Axis.Y) {
+            if (value >= 0.5) {
+                onKeyDown(Keyboard.KEY_DOWN, ' ');
+            } else if (value <= -0.5) {
+                onKeyDown(Keyboard.KEY_UP, ' ');
+            }else if(value < 0.5 && value >= -0.5) {
+                onKeyUp(Keyboard.KEY_DOWN, ' ');
+                onKeyUp(Keyboard.KEY_UP, ' ');
+            }
+        }
+
     }
 
     public enum GameState {

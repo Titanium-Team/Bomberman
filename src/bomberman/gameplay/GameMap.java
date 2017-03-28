@@ -5,8 +5,7 @@ import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
-import bomberman.view.engine.utility.Vector2;
-import com.sun.deploy.util.StringUtils;
+
 
 import java.util.*;
 import java.util.List;
@@ -17,6 +16,7 @@ public class GameMap implements Cloneable {
 
     private final String name;
     private final String thumbnailKey;
+
 
     private final Tile[][] tiles;
     private final List<Location> startPositions;
@@ -237,7 +237,6 @@ public class GameMap implements Cloneable {
 
                         default: return Player.Direction.STOP_VERTICAL_MOVEMENT;
                     }
-
                 }
 
             }

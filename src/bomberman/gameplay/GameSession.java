@@ -1,12 +1,16 @@
 package bomberman.gameplay;
 
+import bomberman.ai.AiManager;
 import bomberman.gameplay.tile.TileTypes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class GameSession {
+
+    private AiManager aiManager;
 
     private final GameMap gameMap;
     private final List<Player> players = new LinkedList<>();
@@ -14,8 +18,12 @@ public class GameSession {
     private final static float POWERUP_TIME = 25;
     private float powerupTimer = POWERUP_TIME;
 
+    private boolean powerupSpawning = true;
+
+
     public GameSession(GameMap gameMap) {
         this.gameMap = gameMap;
+        aiManager = new AiManager(this,new ArrayList<>(getPlayers()));
     }
 
     public List<Player> getPlayers() {
@@ -34,6 +42,14 @@ public class GameSession {
         return this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).findAny().orElseGet(null);
     }
 
+    public boolean isPowerupSpawning() {
+        return this.powerupSpawning;
+    }
+
+    public void setPowerupSpawning(boolean enabled) {
+        this.powerupSpawning = enabled;
+    }
+
     private void getGameSummary() {
         //--- Most Deadly       -> Player with the most kills.
         //--- Most Professional -> Player with the highest kill to death ratio
@@ -50,10 +66,13 @@ public class GameSession {
         if(this.players.contains(player)) {
             throw new IllegalStateException("Do not add the same instance more than once.");
         }
-
         this.players.add(player);
         player.setIndex(this.players.indexOf(player));
+        aiManager.addPlayer(player);
+    }
 
+    public void addAi(){
+        this.players.add(aiManager.createAi("TestAi",gameMap.getRandomStartPosition()));
     }
 
     public void update(float delta) {
@@ -62,10 +81,12 @@ public class GameSession {
 
         //--- Powerup Spawn Timer
         this.powerupTimer -= delta;
-        if (this.powerupTimer <= 0) {
+        if (this.powerupTimer <= 0 && this.powerupSpawning) {
             this.checkPowerups();
             this.powerupTimer = POWERUP_TIME;
         }
+
+        aiManager.update(delta);
     }
 
     public void onKeyDown(int key, char c) {

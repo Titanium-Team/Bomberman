@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class LocalPlayer extends Player {
 
     //--- Settings
-    private final static float ACCELERATION_STEP = .09F;
+    private final static float ACCELERATION_STEP = .5F;
     private final static float ACCELERATION_LIMIT = 1.1F;
     private final static float ACCELERATION_TIMER = 0.01F;
 
@@ -111,19 +111,25 @@ public class LocalPlayer extends Player {
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.NORTH) {
-                    if(this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
+                    if (this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
+                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                    } else {
+                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                    }
+                } else if(this.getFacingDirection() == FacingDirection.NORTH) {
+                    if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
                         this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
                     } else {
                         this.getBoundingBox().move((this.vector.getY() * delta), 0);
                     }
                 } else {
                     this.vector.setY(0);
+                }
 
-                    this.getBoundingBox().setCenter(
+                this.getBoundingBox().setCenter(
                         range(minX, this.getBoundingBox().getCenter().getX(), maxX),
                         range(minY, location.getY(), maxY)
-                    );
-                }
+                );
             }
             break;
 
@@ -134,19 +140,25 @@ public class LocalPlayer extends Player {
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.SOUTH) {
-                    if(this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
+                    if (this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
+                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                    } else {
+                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                    }
+                } else if(this.getFacingDirection() == FacingDirection.SOUTH) {
+                    if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
                         this.getBoundingBox().move((this.vector.getY() * delta), 0);
                     } else {
                         this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
                     }
                 } else {
                     this.vector.setY(0);
-
-                    this.getBoundingBox().setCenter(
-                            range(minX, this.getBoundingBox().getCenter().getX(), maxX),
-                            range(minY, location.getY(), maxY)
-                    );
                 }
+
+                this.getBoundingBox().setCenter(
+                    range(minX, this.getBoundingBox().getCenter().getX(), maxX),
+                    range(minY, location.getY(), maxY)
+                );
             }
             break;
 
@@ -157,19 +169,25 @@ public class LocalPlayer extends Player {
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.WEST) {
-                    if(this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
+                    if (this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
+                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                    } else {
+                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                    }
+                } else if(this.getFacingDirection() == FacingDirection.WEST) {
+                    if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
                         this.getBoundingBox().move(0, -(this.vector.getX() * delta));
                     } else {
                         this.getBoundingBox().move(0, (this.vector.getX() * delta));
                     }
                 } else {
                     this.vector.setX(0);
-
-                    this.getBoundingBox().setCenter(
-                        range(minX, location.getX(), maxX),
-                        range(minY, this.getBoundingBox().getCenter().getY(), maxY)
-                    );
                 }
+
+                this.getBoundingBox().setCenter(
+                    range(minX, location.getX(), maxX),
+                    range(minY, this.getBoundingBox().getCenter().getY(), maxY)
+                );
             }
             break;
 
@@ -180,19 +198,26 @@ public class LocalPlayer extends Player {
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.EAST) {
-                    if(this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
+                    if (this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
+                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                    } else {
+                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                    }
+                } else if(this.getFacingDirection() == FacingDirection.EAST) {
+                    if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
                         this.getBoundingBox().move(0, (this.vector.getX() * delta));
                     } else {
                         this.getBoundingBox().move(0, -(this.vector.getX() * delta));
                     }
                 } else {
                     this.vector.setX(0);
-
-                    this.getBoundingBox().setCenter(
-                            range(minX, location.getX(), maxX),
-                            range(minY, this.getBoundingBox().getCenter().getY(), maxY)
-                    );
                 }
+
+                this.getBoundingBox().setCenter(
+                        range(minX, location.getX(), maxX),
+                        range(minY, this.getBoundingBox().getCenter().getY(), maxY)
+                );
+
             }
             break;
 
@@ -254,25 +279,25 @@ public class LocalPlayer extends Player {
 
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
+                //this.keyUp(Keyboard.KEY_LEFT, 'L');
                 this.acceleratingDirections.get(Direction.UP).setPressed(true);
-                this.keyUp(Keyboard.KEY_LEFT, 'L');
                 break;
 
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                this.keyUp(Keyboard.KEY_UP, 'L');
+                //this.keyUp(Keyboard.KEY_UP, 'L');
                 this.acceleratingDirections.get(Direction.LEFT).setPressed(true);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
-                this.keyUp(Keyboard.KEY_UP, 'L');
+                //this.keyUp(Keyboard.KEY_UP, 'L');
                 this.acceleratingDirections.get(Direction.RIGHT).setPressed(true);
                 break;
 
             case Keyboard.KEY_DOWN:
             case Keyboard.KEY_S:
-                this.keyUp(Keyboard.KEY_LEFT, 'L');
+                //this.keyUp(Keyboard.KEY_LEFT, 'L');
                 this.acceleratingDirections.get(Direction.DOWN).setPressed(true);
                 break;
 
