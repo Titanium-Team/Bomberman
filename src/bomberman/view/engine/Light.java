@@ -32,7 +32,7 @@ public class Light {
     public void createFrameBuffersIfNecessary() {
         try {
             if (this.shadowMap == null)
-                this.shadowMap = new FrameBuffer(300, 1);
+                this.shadowMap = new FrameBuffer(360, 1);
             if (this.occludersMap == null)
                 this.occludersMap = new FrameBuffer(radius * 2, radius * 2);
         } catch (LWJGLException e) {
