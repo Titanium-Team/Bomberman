@@ -66,6 +66,10 @@ public class AiManager {
         }
     }
 
+    public void addPlayer(Player player){
+        players.add(new PlayerRelevance(player));
+    }
+
     public void update(float dt) {
         updateTime = -dt;
         if(updateTime < halveUpdateTime){

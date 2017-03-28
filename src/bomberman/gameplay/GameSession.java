@@ -1,12 +1,16 @@
 package bomberman.gameplay;
 
+import bomberman.ai.AiManager;
 import bomberman.gameplay.tile.TileTypes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class GameSession {
+
+    private AiManager aiManager;
 
     private final GameMap gameMap;
     private final List<Player> players = new LinkedList<>();
@@ -19,6 +23,7 @@ public class GameSession {
 
     public GameSession(GameMap gameMap) {
         this.gameMap = gameMap;
+        aiManager = new AiManager(this,new ArrayList<>(getPlayers()));
     }
 
     public List<Player> getPlayers() {
@@ -61,10 +66,13 @@ public class GameSession {
         if(this.players.contains(player)) {
             throw new IllegalStateException("Do not add the same instance more than once.");
         }
-
         this.players.add(player);
         player.setIndex(this.players.indexOf(player));
+        aiManager.addPlayer(player);
+    }
 
+    public void addAi(){
+        this.players.add(aiManager.createAi("TestAi",gameMap.getRandomStartPosition()));
     }
 
     public void update(float delta) {
@@ -77,6 +85,8 @@ public class GameSession {
             this.checkPowerups();
             this.powerupTimer = POWERUP_TIME;
         }
+
+        aiManager.update(delta);
     }
 
     public void onKeyDown(int key, char c) {
