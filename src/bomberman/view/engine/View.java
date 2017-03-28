@@ -1,5 +1,6 @@
 package bomberman.view.engine;
 
+import bomberman.Main;
 import bomberman.view.engine.components.LayoutParams;
 import bomberman.view.engine.components.Panel;
 import bomberman.view.engine.components.ViewComponent;
@@ -10,6 +11,7 @@ import bomberman.view.engine.utility.Vector2;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class View {
@@ -21,6 +23,14 @@ public abstract class View {
 
     private Camera uiCamera;
     private Camera sceneCamera;
+
+    private enum Dir {
+        Left, Right, Up, Down;
+    }
+
+    private List<ViewComponentClickable> clickableList = new ArrayList<>();
+    private ViewComponentClickable selectedClickable = null;
+    private float selectorDelay = 0f;
 
     public View(int width, int height, ViewManager viewManager) {
         this.width = width;
@@ -35,6 +45,64 @@ public abstract class View {
     }
 
     public void update(float deltaTime) {
+        updateSelector();
+    }
+
+    private void updateSelector() {
+        selectorDelay -= Main.instance.getLastDeltaTime();
+
+        Controller gamepad = getViewManager().getSelectedGamepad();
+        if (gamepad != null && selectorDelay <= 0f) {
+            float dx = gamepad.getComponent(Component.Identifier.Axis.X).getPollData();
+            float dy = gamepad.getComponent(Component.Identifier.Axis.Y).getPollData();
+            float offset = 0.2f;
+            float delay = 0.2f;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                if (dx > offset) {
+                    selectClickable(Dir.Right);
+                    selectorDelay = delay;
+                } else if (dx < -offset) {
+                    selectClickable(Dir.Left);
+                    selectorDelay = delay;
+                }
+            } else if (Math.abs(dy) > Math.abs(dx)) {
+                if (dy > offset) {
+                    selectClickable(Dir.Down);
+                    selectorDelay = delay;
+                } else if (dy < -offset) {
+                    selectClickable(Dir.Up);
+                    selectorDelay = delay;
+                }
+            }
+
+        }
+    }
+
+    private void selectClickable(Dir dir) {
+        if (selectedClickable != null) {
+            selectedClickable.setSelected(false);
+        }
+
+        if (clickableList.size() > 0) {
+            if (selectedClickable == null) {
+                selectedClickable = clickableList.get(0);
+            } else {
+                int i = clickableList.indexOf(selectedClickable);
+
+                if (dir == Dir.Up) {
+                    i--;
+                } else if (dir == Dir.Down) {
+                    i++;
+                }
+
+                i = Math.max(0, Math.min(i, clickableList.size() - 1));
+
+                selectedClickable = clickableList.get(i);
+            }
+
+            selectedClickable.setSelected(true);
+        }
     }
 
     public final void render(Batch batch) {
@@ -59,9 +127,23 @@ public abstract class View {
         // this will relayout everything
         requestLayout();
 
+        updateClickables();
+
         this.sceneCamera.resize(width, height);
         this.uiCamera.resize(width, height);
         this.uiCamera.setTranslation(new Vector2(width / 2, height / 2));
+    }
+
+    private void updateClickables() {
+        clickableList.clear();
+
+        List<ViewComponent> list = root.getDescendants();
+
+        for (ViewComponent c : list) {
+            if (c != null && c instanceof ViewComponentClickable) {
+                clickableList.add((ViewComponentClickable) c);
+            }
+        }
     }
 
     public void requestLayout() {
@@ -140,6 +222,16 @@ public abstract class View {
     }
 
     public void onGamepadEvent(Component component, float value) {
+        if (component.getIdentifier() == Component.Identifier.Button._1 && value == 0) {
+            this.navigateBack();
+        }
+
+        if (component.getIdentifier() == Component.Identifier.Button._0 && value == 0) {
+            if (selectedClickable != null) {
+                selectedClickable.simulateClick();
+            }
+        }
+
         root.onGamepadEvent(component, value);
     }
 }
