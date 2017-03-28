@@ -40,5 +40,12 @@ public enum PowerUpTypes implements PowerUpType {
         public double value() {
             return -1;
         }
-    };
+    },
+    POWERBOMB {
+        @Override
+        public double value() {
+            return 1;
+        }
+    }
+
 }

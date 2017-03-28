@@ -75,8 +75,16 @@ public class PowerUp extends TileObject {
 
             case BOMBDOWN: {
                 repo.setValue(
-                    PropertyTypes.BOMB_BLAST_RADIUS,
-                    Math.max(1, repo.getValue(PropertyTypes.BOMB_BLAST_RADIUS) + (float) PowerUpTypes.BOMBDOWN.value())
+                        PropertyTypes.BOMB_BLAST_RADIUS,
+                        Math.max(1, repo.getValue(PropertyTypes.BOMB_BLAST_RADIUS) + (float) PowerUpTypes.BOMBDOWN.value())
+                );
+            }
+            break;
+
+            case POWERBOMB: {
+                repo.setValue(
+                        PropertyTypes.BOMBTYPE,
+                        (float)PowerUpTypes.POWERBOMB.value()
                 );
             }
             break;

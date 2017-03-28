@@ -44,6 +44,8 @@ public class Bomb extends TileObject {
         //--- Add new bomb
         PropertyRepository repo = this.player.getPropertyRepository();
         repo.setValue(PropertyTypes.BOMB_AMOUNT, repo.getValue(PropertyTypes.BOMB_AMOUNT) + 1);
+        repo.setValue(PropertyTypes.BOMBSDOWN, repo.getValue(PropertyTypes.BOMBSDOWN) - 1);
+
 
         //--- coordinates of the bomb
         int x = (int) this.getParent().getBoundingBox().getMin().getX();
