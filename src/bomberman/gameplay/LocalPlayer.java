@@ -117,10 +117,33 @@ public class LocalPlayer extends Player {
                         this.getBoundingBox().move((this.vector.getY() * delta), 0);
                     }
                 } else if(this.getFacingDirection() == FacingDirection.NORTH) {
-                    if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
+                    Tile left = this.getGameSession().getGameMap().getTile(
+                        (int) (this.getTile().getBoundingBox().getCenter().getX() - 1),
+                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    ).get();
+                    Tile right = this.getGameSession().getGameMap().getTile(
+                        (int) (this.getTile().getBoundingBox().getCenter().getX() + 1),
+                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    ).get();
+
+                    if(left.canVisit(this) && right.canVisit(this)) {
+                        if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
+                            this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                        } else {
+                            this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                        }
+                    } else if(left.canVisit(this)) {
+                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                    } else if(right.canVisit(this)) {
                         this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
                     } else {
-                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                        this.vector.setX(0);
+                        this.vector.setY(0);
+                        this.getBoundingBox().setCenter(
+                            range(minX, location.getX(), maxX),
+                            range(minY, location.getY(), maxY)
+                        );
+                        break;
                     }
                 } else {
                     this.vector.setY(0);
@@ -130,6 +153,7 @@ public class LocalPlayer extends Player {
                         range(minX, this.getBoundingBox().getCenter().getX(), maxX),
                         range(minY, location.getY(), maxY)
                 );
+
             }
             break;
 
@@ -146,10 +170,33 @@ public class LocalPlayer extends Player {
                         this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
                     }
                 } else if(this.getFacingDirection() == FacingDirection.SOUTH) {
-                    if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
+                    Tile left = this.getGameSession().getGameMap().getTile(
+                            (int) (this.getTile().getBoundingBox().getCenter().getX() - 1),
+                            (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    ).get();
+                    Tile right = this.getGameSession().getGameMap().getTile(
+                            (int) (this.getTile().getBoundingBox().getCenter().getX() + 1),
+                            (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    ).get();
+
+                    if(left.canVisit(this) && right.canVisit(this)) {
+                        if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
+                            this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                        } else {
+                            this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                        }
+                    } else if(left.canVisit(this)) {
+                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                    } else if(right.canVisit(this)) {
                         this.getBoundingBox().move((this.vector.getY() * delta), 0);
                     } else {
-                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                        this.vector.setX(0);
+                        this.vector.setY(0);
+                        this.getBoundingBox().setCenter(
+                            range(minX, location.getX(), maxX),
+                            range(minY, location.getY(), maxY)
+                        );
+                        break;
                     }
                 } else {
                     this.vector.setY(0);
@@ -175,10 +222,33 @@ public class LocalPlayer extends Player {
                         this.getBoundingBox().move(0, (this.vector.getX() * delta));
                     }
                 } else if(this.getFacingDirection() == FacingDirection.WEST) {
-                    if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
+                    Tile up = this.getGameSession().getGameMap().getTile(
+                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
+                            (int) (this.getTile().getBoundingBox().getCenter().getY() - 1)
+                    ).get();
+                    Tile down = this.getGameSession().getGameMap().getTile(
+                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
+                            (int) (this.getTile().getBoundingBox().getCenter().getY() + 1)
+                    ).get();
+
+                    if(up.canVisit(this) && down.canVisit(this)) {
+                        if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
+                            this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                        } else {
+                            this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                        }
+                    } else if(up.canVisit(this)) {
+                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                    } else if(down.canVisit(this)) {
                         this.getBoundingBox().move(0, -(this.vector.getX() * delta));
                     } else {
-                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                        this.vector.setX(0);
+                        this.vector.setY(0);
+                        this.getBoundingBox().setCenter(
+                                range(minX, location.getX(), maxX),
+                                range(minY, location.getY(), maxY)
+                        );
+                        break;
                     }
                 } else {
                     this.vector.setX(0);
@@ -204,10 +274,33 @@ public class LocalPlayer extends Player {
                         this.getBoundingBox().move(0, -(this.vector.getX() * delta));
                     }
                 } else if(this.getFacingDirection() == FacingDirection.EAST) {
-                    if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
+                    Tile up = this.getGameSession().getGameMap().getTile(
+                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
+                            (int) (this.getTile().getBoundingBox().getCenter().getY() - 1)
+                    ).get();
+                    Tile down = this.getGameSession().getGameMap().getTile(
+                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
+                            (int) (this.getTile().getBoundingBox().getCenter().getY() + 1)
+                    ).get();
+
+                    if(up.canVisit(this) && down.canVisit(this)) {
+                        if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
+                            this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                        } else {
+                            this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                        }
+                    } else if(up.canVisit(this)) {
+                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                    } else if(down.canVisit(this)) {
                         this.getBoundingBox().move(0, (this.vector.getX() * delta));
                     } else {
-                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                        this.vector.setX(0);
+                        this.vector.setY(0);
+                        this.getBoundingBox().setCenter(
+                                range(minX, location.getX(), maxX),
+                                range(minY, location.getY(), maxY)
+                        );
+                        break;
                     }
                 } else {
                     this.vector.setX(0);

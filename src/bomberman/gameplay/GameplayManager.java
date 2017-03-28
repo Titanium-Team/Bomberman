@@ -90,16 +90,6 @@ public class GameplayManager {
             .build()
         );
 
-        this.addMap(
-            GameMap.builder()
-                .name("Map 3")
-                .dimension(15, 13)
-                .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
-                .startPosition(1, 1)
-            .build()
-        );
-
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
 
         //@TODO
