@@ -1,9 +1,9 @@
 package bomberman.network;
 
-import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameSession;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 public class NetworkPlayer extends Player {
@@ -14,6 +14,12 @@ public class NetworkPlayer extends Player {
         super(gameSession, PlayerType.NETWORK, name, center);
 
         this.connectionData = connectionData;
+    }
+
+    @Override
+    public FacingDirection getFacingDirection() {
+        //@TODO Bitte implementieren. Danke.
+        throw new NotImplementedException();
     }
 
     //@Override

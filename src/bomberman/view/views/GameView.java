@@ -55,6 +55,10 @@ public class GameView extends LightingView {
         gameplayManager.setGameState(GameplayManager.GameState.IN_GAME);
     }
 
+    /**
+     * Aktualisiert die GameView.
+     * @param deltaTime die Zeit, die seit dem letzten Frame vergangen ist.
+	 */
     public void update(float deltaTime) {
         time += deltaTime;
 
@@ -70,6 +74,11 @@ public class GameView extends LightingView {
         }
     }
 
+    /**
+     * Zeichnet die Objekte, die Schatten werfen.
+     * @param batch Der zum zeichnen verwendete Batch.
+     * @param camera Der aktuell sichtbare Bildschirmausschnit.
+	 */
     @Override
     public void renderOccluders(Batch batch, Camera camera) {
         GameMap map = gameplayManager.getCurrentSession().getGameMap();
@@ -93,6 +102,11 @@ public class GameView extends LightingView {
         }
     }
 
+    /**
+     * Zeichnet die objekte, die keine Schatten werfen.
+     * @param batch Der zum zeichnen verwendete Batch.
+     * @param camera Der aktuell sichtbare Bildschirmausschnit.
+	 */
     @Override
     public void renderNonOccluders(Batch batch, Camera camera) {
         GameMap map = gameplayManager.getCurrentSession().getGameMap();
@@ -146,7 +160,7 @@ public class GameView extends LightingView {
 			                            rotation = 0;
 			                            break;
 	                            }
-	                            batch.draw(ViewManager.getTexture("arrow.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, i * this.tileSize + 0.5f * this.tileSize, j * this.tileSize + 0.5f * this.tileSize, (float) rotation, 1, 1, 1, 1);
+	                            batch.draw(ViewManager.getTexture("arrow.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize,0.5f * this.tileSize,0.5f * this.tileSize, (float) rotation, 1, 1, 1, 1);
                             }
                         }
                     }
@@ -163,6 +177,12 @@ public class GameView extends LightingView {
         }
     }
 
+    /**
+     * Generiert ein zufällig gefärbtes Licht.
+     * @param x Die x-Koordinate des Mittelpunktes.
+     * @param y Die y-Koordinate des Mittelpunktes.
+     * @return Ein zufällig gefärbtes Licht.
+	 */
     private Light randomLight(float x, float y) {
         float r = random.nextFloat() / 2 + 0.5f;
         float g = random.nextFloat() / 2 + 0.5f;

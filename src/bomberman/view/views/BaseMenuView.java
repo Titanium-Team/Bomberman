@@ -1,6 +1,5 @@
 package bomberman.view.views;
 
-import bomberman.Main;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
@@ -9,15 +8,19 @@ import bomberman.view.engine.components.LayoutParams;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
 import org.lwjgl.input.Mouse;
 
+import java.util.Random;
+
 public abstract class BaseMenuView extends LightingView {
+
+    private static final long seed = System.nanoTime() * 1337;//random at its finests
 
     protected final Button backButton;
 
     private final Light demoLight;
+    private boolean[][] demoGrid;
+    private int gridSize = 50;
 
     public BaseMenuView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
@@ -26,7 +29,7 @@ public abstract class BaseMenuView extends LightingView {
         this.backButton.addListener(() -> BaseMenuView.this.navigateBack());
         this.getRoot().addChild(backButton);
 
-        this.demoLight = new Light(0, 0, 300, 1f, 1f, 1f);
+        this.demoLight = new Light(0, 0, 350, 1f, 1f, 1f);
         this.addLight(demoLight);
     }
 
@@ -42,10 +45,30 @@ public abstract class BaseMenuView extends LightingView {
     public void layout(int width, int height) {
         super.layout(width, height);
 
+        genDemoGrid();
+
         this.getSceneCamera().setTranslation(new Vector2(getWidth() / 2, getHeight() / 2));
     }
 
+    private void genDemoGrid() {
+        Random r = new Random(seed);
+
+        demoGrid = new boolean[(getWidth() / gridSize) + 1][(getHeight() / gridSize) + 1];
+        for (int x = 0; x < demoGrid.length; x++) {
+            for (int y = 0; y < demoGrid[x].length; y++) {
+                demoGrid[x][y] = r.nextFloat() > 0.7f;
+            }
+        }
+    }
+
     public void renderOccluders(Batch batch, Camera camera) {
+        for (int x = 0; x < demoGrid.length; x++) {
+            for (int y = 0; y < demoGrid[x].length; y++) {
+                if (demoGrid[x][y] == true) {
+                    batch.draw(null, x * gridSize, y * gridSize, gridSize + 1, gridSize + 1, 0f, 0f, 0f, 1f);
+                }
+            }
+        }
     }
 
     public void renderNonOccluders(Batch batch, Camera camera) {
