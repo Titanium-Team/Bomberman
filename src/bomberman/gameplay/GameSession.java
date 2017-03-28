@@ -69,11 +69,11 @@ public class GameSession {
     }
 
     public void onKeyDown(int key, char c) {
-        this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).forEach(e -> e.keyDown(key, c));
+        this.players.stream().filter(e -> (e instanceof LocalPlayer)).forEach(e -> ((LocalPlayer) e).keyDown(key, c));
     }
 
     public void onKeyUp(int key, char c) {
-        this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).forEach(e -> e.keyUp(key, c));
+        this.players.stream().filter(e -> (e instanceof LocalPlayer)).forEach(e -> ((LocalPlayer) e).keyUp(key, c));
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {}

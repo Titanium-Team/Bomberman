@@ -93,7 +93,7 @@ public class GameMap implements Cloneable {
 
     }
 
-    public Player.Direction checkCollision(Player player) {
+    public Player.Direction checkCollision(LocalPlayer player) {
 
         BoundingBox playerBox = player.getBoundingBox();
 
