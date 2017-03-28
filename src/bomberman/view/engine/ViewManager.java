@@ -19,7 +19,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 import net.java.games.input.EventQueue;
 
@@ -29,6 +29,7 @@ public class ViewManager {
     public static final HashMap<String, ITexture> textureMap = new HashMap<>();
     public static Sound clickSound;
 
+    private Queue<Runnable> runnableQueue = new ArrayDeque<>();
     private Batch batch;
 
     private MSMode msMode = MSMode.OFF;
@@ -195,6 +196,11 @@ public class ViewManager {
             currentView.update(deltaTime);
             currentView.render(batch);
         }
+
+        while(!runnableQueue.isEmpty()) {
+            runnableQueue.poll().run();
+        }
+
         if (Main.instance.getConfig().isShowFPS()) {
             ViewManager.font.drawText(batch, "FPS: " + fpsCount, 5, 5);
         }
@@ -283,6 +289,10 @@ public class ViewManager {
         if (currentView != null)
             currentView.layout(Display.getWidth(), Display.getHeight());
 
+    }
+
+    public void postOnUIThread(Runnable runnable) {
+        runnableQueue.add(runnable);
     }
 
     public int getViewportWidth() {
