@@ -1,12 +1,17 @@
 package bomberman.gameplay;
 
+import bomberman.ai.AiManager;
+import bomberman.ai.AiPlayer;
 import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameplayManager {
@@ -181,7 +186,7 @@ public class GameplayManager {
         System.out.println(value);
     }
 
-    public static enum GameState {
+    public enum GameState {
 
         IN_MENU,
         IN_GAME

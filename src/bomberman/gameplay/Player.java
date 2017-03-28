@@ -41,7 +41,6 @@ public class Player {
     //--- PlayerProperties
     private final String name;
 
-
     private final PlayerType playerType;
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
 
@@ -54,7 +53,7 @@ public class Player {
 
     private final BoundingBox boundingBox;
     private FacingDirection facingDirection = FacingDirection.NORTH;
-    private Direction direction = null;
+    private Direction[] direction = new Direction[2];
 
     public Player(GameSession gameSession, PlayerType playerType, String name, Location center) {
 
@@ -101,7 +100,7 @@ public class Player {
         return this.facingDirection;
     }
 
-    public Direction getDirection() {
+    public Direction[] getDirection() {
         return this.direction;
     }
 
@@ -201,7 +200,6 @@ public class Player {
             this.accelerationTimer = ACCELERATION_TIMER;
 
         }
-
 
         //--- Facing Direction
         FacingDirection facing = FacingDirection.from(this.vector);
@@ -346,7 +344,11 @@ public class Player {
 
     public void move(Direction d) {
 
-        this.direction = d;
+        if(d == Direction.LEFT || d == Direction.RIGHT) {
+            this.direction[0] = d;
+        } else if(d == Direction.UP || d == Direction.DOWN) {
+            this.direction[1] = d;
+        }
         float limit = this.propertyRepository.getValue(PropertyTypes.SPEED_FACTOR) * ACCELERATION_LIMIT;
 
         switch (d) {
