@@ -56,7 +56,7 @@ public abstract class View {
             float dx = gamepad.getComponent(Component.Identifier.Axis.X).getPollData();
             float dy = gamepad.getComponent(Component.Identifier.Axis.Y).getPollData();
             float offset = 0.2f;
-            float delay = 0.3f;
+            float delay = 0.2f;
 
             if (Math.abs(dx) > Math.abs(dy)) {
                 if (dx > offset) {

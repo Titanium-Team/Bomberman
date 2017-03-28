@@ -21,12 +21,20 @@ public class CheckBox extends ViewComponentClickable {
     public void draw(Batch batch) {
         updateState();
 
-        if (!checked) {
+        if (this.state == State.Default) {
+            if (!checked) {
+                batch.draw(null, (getX()), (getY()), (getHeight()), (getHeight()), 1f, 1f, 1f, 1f);
+                batch.draw(null, (getX() + 5), (getY() + 5), (getHeight() - 10), (getHeight() - 10), .4f, .4f, .4f, 1f);
+            } else {
+                batch.draw(null, (getX()), (getY()), (getHeight()), (getHeight()), 1f, 1f, 1f, 1f);
+                batch.draw(null, (getX() + 5), (getY() + 5), (getHeight() - 10), (getHeight() - 10), 0f, .9f, 0f, 1f);
+            }
+        } else if (this.state == State.Pressed) {
             batch.draw(null, (getX()), (getY()), (getHeight()), (getHeight()), 1f, 1f, 1f, 1f);
-            batch.draw(null, (getX() + 5), (getY() + 5), (getHeight() - 10), (getHeight() - 10), .4f, .4f, .4f, 1f);
-        } else {
+            batch.draw(null, (getX() + 5), (getY() + 5), (getHeight() - 10), (getHeight() - 10), .2f, .2f, .2f, 1f);
+        } else if (this.state == State.Hover) {
             batch.draw(null, (getX()), (getY()), (getHeight()), (getHeight()), 1f, 1f, 1f, 1f);
-            batch.draw(null, (getX() + 5), (getY() + 5), (getHeight() - 10), (getHeight() - 10), 0f, .9f, 0f, 1f);
+            batch.draw(null, (getX() + 5), (getY() + 5), (getHeight() - 10), (getHeight() - 10), .6f, .6f, .6f, 1f);
         }
 
         if (text != null)
