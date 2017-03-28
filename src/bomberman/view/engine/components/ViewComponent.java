@@ -12,7 +12,6 @@ public abstract class ViewComponent {
     private float x, y, width, height;
     private boolean visible;
 
-
     public ViewComponent(LayoutParams params, View v) {
         this.params = params;
         this.view = v;
