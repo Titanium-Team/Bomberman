@@ -127,19 +127,25 @@ public class GameView extends LightingView {
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
                                     //TODO:additional textures
                                     ITexture texture = null;
-                                    if (((PowerUp) (tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.SPEEDUP)
-                                        texture = ViewManager.getTexture("speedPowerUp.png");
-                                    if (((PowerUp) (tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP)
-                                        texture = ViewManager.getTexture("explosionPowerUp.png");
-                                    if (((PowerUp) tiles[i][j].getTileObject()).getPowerUpType().equals(PowerUpTypes.FIREDOWN))
-                                        texture = ViewManager.getTexture("firedown.png");
-	                                if(((PowerUp) tiles[i][j].getTileObject()).getPowerUpType().equals(PowerUpTypes.BOMBUP)){
-		                                //texture = ViewManager.getTexture("George-W-Bush.png");
-		                                texture = ViewManager.getTexture("usa.png");
+	                                switch(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType()){
+		                                case SPEEDUP:
+			                                texture = ViewManager.getTexture("speedPowerUp.png");
+			                                break;
+		                                case FIREUP:
+			                                texture = ViewManager.getTexture("explosionPowerUp.png");
+			                                break;
+		                                case FIREDOWN:
+			                                texture = ViewManager.getTexture("firedown.png");
+			                                break;
+		                                case BOMBUP:
+			                                texture = ViewManager.getTexture("usa.png");
+			                                break;
+		                                case BOMBDOWN:
+			                                texture = ViewManager.getTexture("peace.png");
+			                                break;
 	                                }
                                     batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);
                                 } else if (tiles[i][j].getTileObject() instanceof Explosion) {
-                                    //TODO:Explosion textures
                                     batch.draw(((Explosion) tiles[i][j].getTileObject()).getAnimation(), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 }
                             } else if (tiles[i][j].getTileAbility().equals(TileAbility.TELEPORT) || tiles[i][j].getTileAbility().equals(TileAbility.RANDOM_TELEPORT)) {
