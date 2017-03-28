@@ -51,7 +51,7 @@ public class VerticalView extends Panel {
 			ViewComponent childComponent = this.getChildren().get(i);
 			if (!(childComponent instanceof Scrollbar)) {
 				if (i >= indexfirst && i <= indexlast) {
-					childComponent.setParams(LayoutParams.obtain(0, count * size, 0.9f, size));
+					childComponent.setParams(LayoutParams.obtain(0, count*size, 0.9f, size));
 					count++;
 				} else {
 					childComponent.setParams(LayoutParams.obtain(0, 1, 0.9f, size));
@@ -59,5 +59,9 @@ public class VerticalView extends Panel {
 			}
 		}
 		getView().requestLayout();
+	}
+
+	public void setMaxSize(int maxSize) {
+		this.maxSize = maxSize;
 	}
 }

@@ -4,6 +4,8 @@ import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileAbility;
+import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.Explosion;
@@ -107,26 +109,51 @@ public class GameView extends LightingView {
                         if (tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileObject() != null) {
                                 if (tiles[i][j].getTileObject() instanceof Bomb) {
-                                    //TODO: bomb texture
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
+                                    batch.draw(ViewManager.getTexture("bomb.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
                                     //TODO:additional textures
                                     ITexture texture = null;
-                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.SPEEDUP )
+                                    if (((PowerUp) (tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.SPEEDUP)
                                         texture = ViewManager.getTexture("speedPowerUp.png");
-                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP )
+                                    if (((PowerUp) (tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP)
                                         texture = ViewManager.getTexture("explosionPowerUp.png");
-                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                
-				                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
+                                    if (((PowerUp) tiles[i][j].getTileObject()).getPowerUpType().equals(PowerUpTypes.FIREDOWN))
+                                        texture = ViewManager.getTexture("firedown.png");
+	                                if(((PowerUp) tiles[i][j].getTileObject()).getPowerUpType().equals(PowerUpTypes.BOMBUP)){
+		                                //texture = ViewManager.getTexture("George-W-Bush.png");
+		                                texture = ViewManager.getTexture("usa.png");
+	                                }
+                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);
+                                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
                                     //TODO:Explosion textures
                                     batch.draw(((Explosion) tiles[i][j].getTileObject()).getAnimation(), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 }
+                            } else if (tiles[i][j].getTileAbility().equals(TileAbility.TELEPORT) || tiles[i][j].getTileAbility().equals(TileAbility.RANDOM_TELEPORT)) {
+                                batch.draw(ViewManager.getTexture("teleport.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1,1,1,1);
+                            }else if(tiles[i][j].getTileAbility().equals(TileAbility.TREADMILL)){
+	                            double rotation;
+	                            switch(tiles[i][j].getTreadMillDirection()){
+		                             case NORTH:
+			                             rotation = Math.toRadians(90.0);
+			                             break;
+		                            case EAST:
+			                            rotation = Math.toRadians(180.);
+			                            break;
+		                            case SOUTH:
+			                            rotation = Math.toRadians(270.);
+			                            break;
+		                            default:
+			                            rotation = 0;
+			                            break;
+	                            }
+	                            batch.draw(ViewManager.getTexture("arrow.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, i * this.tileSize + 0.5f * this.tileSize, j * this.tileSize + 0.5f * this.tileSize, (float) rotation, 1, 1, 1, 1);
                             }
                         }
                     }
                 }
             }
         }
+
 
         for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
             Player player = gameplayManager.getCurrentSession().getPlayer(i);

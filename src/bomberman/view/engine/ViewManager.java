@@ -45,6 +45,18 @@ public class ViewManager {
 
             loadTexture("wall.png");
 
+            loadTexture("bomb.png");
+
+            loadTexture("firedown.png");
+
+            loadTexture("teleport.png");
+
+            loadTexture("George-W-Bush.png");
+
+            loadTexture("usa.png");
+
+            loadTexture("arrow.png");
+
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
@@ -213,6 +225,11 @@ public class ViewManager {
                     gameplayManager.onMouseUp(button, mouseX, mouseY);
                 }
             }
+
+            int wheel = Mouse.getEventDWheel();
+            if (wheel != 0) {
+                currentView.onMouseWheel(wheel);
+            }
         }
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState()) {
@@ -255,6 +272,7 @@ public class ViewManager {
                 float value = event.getValue();
 
                 currentView.onGamepadEvent(event.getComponent(), value);
+                gameplayManager.onGamepadEvent(event.getComponent(), value);
             }
         }
     }

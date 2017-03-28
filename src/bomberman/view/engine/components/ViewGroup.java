@@ -43,8 +43,8 @@ public abstract class ViewGroup extends ViewComponent {
         if (gamepad != null && selectorDelay <= 0f) {
             float dx = gamepad.getComponent(Component.Identifier.Axis.X).getPollData();
             float dy = gamepad.getComponent(Component.Identifier.Axis.Y).getPollData();
-            float offset = 0.5f;
-            float delay = 0.5f;
+            float offset = 0.2f;
+            float delay = 0.3f;
 
             if (Math.abs(dx) > Math.abs(dy)) {
                 if (dx > offset) {
@@ -170,6 +170,12 @@ public abstract class ViewGroup extends ViewComponent {
     public void onMouseUp(int button, int mouseX, int mouseY) {
         for (ViewComponent v : children) {
             v.onMouseUp(button, mouseX, mouseY);
+        }
+    }
+
+    public void onMouseWheel(int wheel) {
+        for (ViewComponent v : children) {
+            v.onMouseWheel(wheel);
         }
     }
 

@@ -12,7 +12,6 @@ public abstract class ViewComponent {
     private float x, y, width, height;
     private boolean visible;
 
-
     public ViewComponent(LayoutParams params, View v) {
         this.params = params;
         this.view = v;
@@ -76,6 +75,9 @@ public abstract class ViewComponent {
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
+    }
+
+    public void onMouseWheel(int wheel) {
     }
 
     public void onGamepadEvent(Component component, float value) {

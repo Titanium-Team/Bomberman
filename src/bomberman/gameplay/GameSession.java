@@ -103,4 +103,8 @@ public class GameSession {
     }
     //powerup end
 
+    public void setMapIndex(int index){
+        //TODO I don't care HuiBoo
+    }
+
 }
