@@ -30,7 +30,7 @@ public class GameMap implements Cloneable {
 
         assert !(name == null);
         assert !(startPositions == null);
-        assert (startPositions.size() > 1);
+//        assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
         this.name = name;
@@ -104,17 +104,27 @@ public class GameMap implements Cloneable {
 
                 if (!(tile.canVisit(player))) {
 
-                    int pX = (int) playerBox.getCenter().getX();
-                    int pY = (int) playerBox.getCenter().getY();
-
                     Player.FacingDirection facingDirection = player.getFacingDirection();
                     switch (facingDirection) {
 
-                        case NORTH: return Player.Direction.UP;
-                        case SOUTH: return Player.Direction.DOWN;
-                        case EAST: return Player.Direction.LEFT;
-                        case WEST: return Player.Direction.RIGHT;
+                        case NORTH: {
+                            return Player.Direction.UP;
+                        }
 
+                        case SOUTH: {
+                            return Player.Direction.DOWN;
+                        }
+
+                        case EAST: {
+                            return Player.Direction.RIGHT;
+                        }
+
+                        case WEST: {
+                            return Player.Direction.LEFT;
+                        }
+
+                        /*
+                        FOR LEGACY SAKE
                         case SOUTH_EAST:
                         case SOUTH_WEST:
                         case NORTH_WEST:
@@ -132,7 +142,6 @@ public class GameMap implements Cloneable {
 
                             Player.Direction last = this.lastDirection.get(player);
 
-                            System.out.println(last + " - " + "(" + player.getDirection()[0] + "|" + player.getDirection()[1] + ")");
                             switch (facingDirection) {
 
                                 case NORTH_EAST: {
@@ -223,10 +232,11 @@ public class GameMap implements Cloneable {
                                 break;
 
                             }
-                            }
-
-                            return Player.Direction.STOP_VERTICAL_MOVEMENT;
                         }
+                        */
+
+                        default: return Player.Direction.STOP_VERTICAL_MOVEMENT;
+                    }
 
                 }
 

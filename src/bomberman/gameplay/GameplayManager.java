@@ -1,18 +1,12 @@
 package bomberman.gameplay;
 
-import bomberman.ai.AiManager;
-import bomberman.ai.AiPlayer;
 import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GameplayManager {
 
@@ -82,7 +76,7 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBGGGGGBBGGW", TileAbility.NORMAL, 7)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 9)
-                .startPosition(1, 1)
+                //.startPosition(1, 1)
                 .startPosition(12, 11)
                 .treadmill(new Location(1, 1), Player.FacingDirection.WEST)
                 .treadmill(new Location(2, 1), Player.FacingDirection.WEST)
@@ -183,7 +177,7 @@ public class GameplayManager {
 
     public void onGamepadEvent(Component component, float value) {
         // TODO: Implementiert das plz
-        System.out.println(value);
+        System.out.println(component.getIdentifier().getName() + " - " + value);
     }
 
     public enum GameState {

@@ -41,10 +41,6 @@ public class LocalPlayer extends Player {
         Stream.of(Direction.values()).forEach(e -> this.acceleratingDirections.put(e, new KeyEntry()));
     }
 
-    public Vector2 getVector() {
-        return this.vector;
-    }
-
     public Direction[] getDirection() {
         return this.direction;
     }
@@ -108,31 +104,102 @@ public class LocalPlayer extends Player {
 
         switch (direction) {
 
-            case UP:
-            case DOWN: {
-                this.vector.setY(0);
-                this.getBoundingBox().setCenter(
+            case UP: {
+                Tile tile = this.getGameSession().getGameMap().getTile(
+                    (int) this.getTile().getBoundingBox().getCenter().getX(),
+                    (int) (this.getTile().getBoundingBox().getCenter().getY() - 1)
+                ).get();
+
+                if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.NORTH) {
+                    if(this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
+                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                    } else {
+                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                    }
+                } else {
+                    this.vector.setY(0);
+
+                    this.getBoundingBox().setCenter(
                         range(minX, this.getBoundingBox().getCenter().getX(), maxX),
                         range(minY, location.getY(), maxY)
-                );
+                    );
+                }
             }
             break;
 
-            case LEFT:
-            case RIGHT: {
-                this.vector.setX(0);
+            case DOWN: {
+                Tile tile = this.getGameSession().getGameMap().getTile(
+                        (int) this.getTile().getBoundingBox().getCenter().getX(),
+                        (int) (this.getTile().getBoundingBox().getCenter().getY() + 1)
+                ).get();
 
-                this.getBoundingBox().setCenter(
-                    range(minX, location.getX(), maxX),
-                    range(minY, this.getBoundingBox().getCenter().getY(), maxY)
-                );
+                if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.SOUTH) {
+                    if(this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
+                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                    } else {
+                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                    }
+                } else {
+                    this.vector.setY(0);
+
+                    this.getBoundingBox().setCenter(
+                            range(minX, this.getBoundingBox().getCenter().getX(), maxX),
+                            range(minY, location.getY(), maxY)
+                    );
+                }
+            }
+            break;
+
+            case LEFT: {
+                Tile tile = this.getGameSession().getGameMap().getTile(
+                        (int) this.getTile().getBoundingBox().getCenter().getX() - 1,
+                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                ).get();
+
+                if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.WEST) {
+                    if(this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
+                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                    } else {
+                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                    }
+                } else {
+                    this.vector.setX(0);
+
+                    this.getBoundingBox().setCenter(
+                        range(minX, location.getX(), maxX),
+                        range(minY, this.getBoundingBox().getCenter().getY(), maxY)
+                    );
+                }
+            }
+            break;
+
+            case RIGHT: {
+                Tile tile = this.getGameSession().getGameMap().getTile(
+                        (int) this.getTile().getBoundingBox().getCenter().getX() + 1,
+                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                ).get();
+
+                if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.EAST) {
+                    if(this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
+                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                    } else {
+                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                    }
+                } else {
+                    this.vector.setX(0);
+
+                    this.getBoundingBox().setCenter(
+                            range(minX, location.getX(), maxX),
+                            range(minY, this.getBoundingBox().getCenter().getY(), maxY)
+                    );
+                }
             }
             break;
 
             case STOP_VERTICAL_MOVEMENT:
                 this.getBoundingBox().setCenter(
-                        range(minX, location.getX(), maxX),
-                        range(minY, location.getY(), maxY)
+                    range(minX, location.getX(), maxX),
+                    range(minY, location.getY(), maxY)
                 );
                 this.vector.setY(0);
                 this.vector.setX(0);
@@ -149,8 +216,8 @@ public class LocalPlayer extends Player {
 
         //--- Update INVINCIBILITY Timer
         this.getPropertyRepository().setValue(
-                PropertyTypes.INVINCIBILITY,
-                this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
+            PropertyTypes.INVINCIBILITY,
+            this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
         );
 
     }
@@ -188,20 +255,24 @@ public class LocalPlayer extends Player {
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
                 this.acceleratingDirections.get(Direction.UP).setPressed(true);
+                this.keyUp(Keyboard.KEY_LEFT, 'L');
                 break;
 
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
+                this.keyUp(Keyboard.KEY_UP, 'L');
                 this.acceleratingDirections.get(Direction.LEFT).setPressed(true);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
+                this.keyUp(Keyboard.KEY_UP, 'L');
                 this.acceleratingDirections.get(Direction.RIGHT).setPressed(true);
                 break;
 
             case Keyboard.KEY_DOWN:
             case Keyboard.KEY_S:
+                this.keyUp(Keyboard.KEY_LEFT, 'L');
                 this.acceleratingDirections.get(Direction.DOWN).setPressed(true);
                 break;
 
@@ -240,7 +311,6 @@ public class LocalPlayer extends Player {
         switch (d) {
 
             case UP: {
-
                 this.xY = (this.xX > this.xY ? this.xX : range(0, this.xY + ACCELERATION_STEP, limit));
                 this.vector.setY((float) -accelerationCurve(this.xY));
 
@@ -248,7 +318,6 @@ public class LocalPlayer extends Player {
             break;
 
             case LEFT: {
-
                 this.xX = (this.xY > this.xX ? this.xY : range(0, this.xX + ACCELERATION_STEP, limit));
                 this.vector.setX((float) -accelerationCurve(this.xX));
 
@@ -256,7 +325,6 @@ public class LocalPlayer extends Player {
             break;
 
             case RIGHT: {
-
                 this.xX = (this.xY > this.xX ? this.xY : range(0, this.xX + ACCELERATION_STEP, limit));
                 this.vector.setX((float) accelerationCurve(this.xX));
 
@@ -264,10 +332,8 @@ public class LocalPlayer extends Player {
             break;
 
             case DOWN: {
-
                 this.xY = (this.xX > this.xY ? this.xX : range(0, this.xY + ACCELERATION_STEP, limit));
                 this.vector.setY((float) accelerationCurve(this.xY));
-
             }
             break;
 
