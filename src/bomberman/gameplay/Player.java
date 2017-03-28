@@ -222,7 +222,7 @@ public class Player {
         double maxX = (max.getMin().getX() - (COLLISION_WIDTH / 2));
         double maxY = (max.getMin().getY() - (COLLISION_HEIGHT / 2));
 
-        System.out.println(direction);
+        //System.out.println(direction);
 
         switch (direction) {
 

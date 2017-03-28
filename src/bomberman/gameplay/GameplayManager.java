@@ -178,7 +178,13 @@ public class GameplayManager {
 
     public void onGamepadEvent(Component component, float value) {
         // TODO: Implementiert das plz
+
+        if (component.getIdentifier() == Component.Identifier.Button._0) {
+
+        }
+        System.out.println(component.getIdentifier().getName());
         System.out.println(value);
+
     }
 
     public static enum GameState {
