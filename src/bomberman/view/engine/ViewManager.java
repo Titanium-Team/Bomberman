@@ -272,6 +272,7 @@ public class ViewManager {
                 float value = event.getValue();
 
                 currentView.onGamepadEvent(event.getComponent(), value);
+                gameplayManager.onGamepadEvent(event.getComponent(), value);
             }
         }
     }
