@@ -1,19 +1,22 @@
 package bomberman.gameplay;
 
-import bomberman.gameplay.tile.Tile;
-import bomberman.gameplay.tile.TileObject;
-import bomberman.gameplay.tile.TileType;
-import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.tile.*;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 
-import java.util.*;
 
-public class GameMap {
+import java.util.*;
+import java.util.List;
+
+public class GameMap implements Cloneable {
 
     private final static Random random = new Random();
+
+    private final String name;
+    private final String thumbnailKey;
+
 
     private final Tile[][] tiles;
     private final List<Location> startPositions;
@@ -23,16 +26,19 @@ public class GameMap {
     private final int height;
 
 
-    public GameMap(Tile[][] tiles, List<Location> startPositions) {
+    public GameMap(String name, String thumbnailKey, Tile[][] tiles, List<Location> startPositions) {
 
+        assert !(name == null);
         assert !(startPositions == null);
-        assert (startPositions.size() > 1);
+//        assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
+        this.name = name;
         this.tiles = tiles;
         this.width = tiles.length;
         this.height = tiles[0].length;
         this.startPositions = startPositions;
+        this.thumbnailKey = thumbnailKey;
 
     }
 
@@ -46,6 +52,14 @@ public class GameMap {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getThumbnailKey() {
+        return thumbnailKey;
     }
 
     public Location getRandomStartPosition() {
@@ -79,7 +93,7 @@ public class GameMap {
 
     }
 
-    public Player.Direction checkCollision(Player player) {
+    public Player.Direction checkCollision(LocalPlayer player) {
 
         BoundingBox playerBox = player.getBoundingBox();
 
@@ -90,17 +104,27 @@ public class GameMap {
 
                 if (!(tile.canVisit(player))) {
 
-                    int pX = (int) playerBox.getCenter().getX();
-                    int pY = (int) playerBox.getCenter().getY();
-
                     Player.FacingDirection facingDirection = player.getFacingDirection();
                     switch (facingDirection) {
 
-                        case NORTH: return Player.Direction.UP;
-                        case SOUTH: return Player.Direction.DOWN;
-                        case EAST: return Player.Direction.LEFT;
-                        case WEST: return Player.Direction.RIGHT;
+                        case NORTH: {
+                            return Player.Direction.UP;
+                        }
 
+                        case SOUTH: {
+                            return Player.Direction.DOWN;
+                        }
+
+                        case EAST: {
+                            return Player.Direction.RIGHT;
+                        }
+
+                        case WEST: {
+                            return Player.Direction.LEFT;
+                        }
+
+                        /*
+                        FOR LEGACY SAKE
                         case SOUTH_EAST:
                         case SOUTH_WEST:
                         case NORTH_WEST:
@@ -111,39 +135,41 @@ public class GameMap {
                             Optional<Tile> left = this.getTile(pX - 1, pY);
                             Optional<Tile> right = this.getTile(pX + 1, pY);
 
-                            if(!(up.isPresent())) return Player.Direction.UP;
+                            if (!(up.isPresent())) return Player.Direction.UP;
                             else if (!(down.isPresent())) return Player.Direction.DOWN;
-                            else if(!(left.isPresent())) return Player.Direction.LEFT;
-                            else if(!(right.isPresent())) return Player.Direction.RIGHT;
+                            else if (!(left.isPresent())) return Player.Direction.LEFT;
+                            else if (!(right.isPresent())) return Player.Direction.RIGHT;
 
                             Player.Direction last = this.lastDirection.get(player);
 
                             switch (facingDirection) {
 
                                 case NORTH_EAST: {
-                                    if(last == Player.Direction.UP && player.getDirection() == Player.Direction.RIGHT) {
-                                        if (up.get().canVisit(player)) {
+                                    Location loc = player.getTile().getBoundingBox().getCenter();
+                                    Optional<Tile> diagonalTile = this.getTile((int) (loc.getX() + 1), (int) (loc.getY() - 1));
+                                    Optional<Tile> diagonalTile2 = this.getTile((int) (loc.getX() - 1), (int) (loc.getY() - 1));
+                                    if (last == Player.Direction.UP && player.getDirection()[0] == Player.Direction.RIGHT) {
+                                        if (up.get().canVisit(player) || !diagonalTile.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.RIGHT;
-                                        } else if (right.get().canVisit(player)) {
+                                        } else if (right.get().canVisit(player) || !diagonalTile2.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.RIGHT);
                                             return Player.Direction.UP;
                                         }
                                     } else {
-                                        if (right.get().canVisit(player)) {
+                                        if (right.get().canVisit(player) || !diagonalTile.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.RIGHT);
                                             return Player.Direction.UP;
-                                        } else if (up.get().canVisit(player)) {
+                                        } else if (up.get().canVisit(player) || !diagonalTile2.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.RIGHT;
                                         }
                                     }
-
                                 }
                                 break;
 
                                 case SOUTH_EAST: {
-                                    if(last == Player.Direction.DOWN && player.getDirection() == Player.Direction.RIGHT) {
+                                    if (last == Player.Direction.DOWN && player.getDirection()[0] == Player.Direction.RIGHT) {
                                         if (down.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.DOWN);
                                             return Player.Direction.RIGHT;
@@ -164,7 +190,7 @@ public class GameMap {
                                 break;
 
                                 case NORTH_WEST: {
-                                    if(last == Player.Direction.UP && player.getDirection() == Player.Direction.LEFT) {
+                                    if (last == Player.Direction.UP && player.getDirection()[0] == Player.Direction.LEFT) {
                                         if (up.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.LEFT;
@@ -185,7 +211,7 @@ public class GameMap {
                                 break;
 
                                 case SOUTH_WEST: {
-                                    if(last == Player.Direction.DOWN && player.getDirection() == Player.Direction.LEFT) {
+                                    if (last == Player.Direction.DOWN && player.getDirection()[0] == Player.Direction.LEFT) {
                                         if (down.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.DOWN);
                                             return Player.Direction.LEFT;
@@ -206,12 +232,11 @@ public class GameMap {
                                 break;
 
                             }
-
-                            return Player.Direction.STOP_VERTICAL_MOVEMENT;
                         }
+                        */
 
+                        default: return Player.Direction.STOP_VERTICAL_MOVEMENT;
                     }
-
                 }
 
             }
@@ -220,81 +245,6 @@ public class GameMap {
         return Player.Direction.STOP_HORIZONTAL_MOVEMENT;
 
     }
-
-
-    /**
-     * public Player.Direction checkCollision(Player player) {
-     * <p>
-     * BoundingBox boundingBox = player.getBoundingBox();
-     * Player.FacingDirection facing = player.getFacingDirection();
-     * <p>
-     * Tile right = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY());
-     * Tile left = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY());
-     * Tile down = this.getTile(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() + 1);
-     * Tile up = this.getTile(player.getBoundingBox().getCenter().getX(), player.getBoundingBox().getCenter().getY() - 1);
-     * <p>
-     * Tile rightDown = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() + 1);
-     * Tile rightUp = this.getTile(player.getBoundingBox().getCenter().getX() + 1, player.getBoundingBox().getCenter().getY() - 1);
-     * Tile leftDown = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() + 1);
-     * Tile leftUp = this.getTile(player.getBoundingBox().getCenter().getX() - 1, player.getBoundingBox().getCenter().getY() - 1);
-     * <p>
-     * if (
-     * (boundingBox.intersects(right.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.EAST || facing == Player.FacingDirection.NORTH_EAST || facing == Player.FacingDirection.SOUTH_EAST) &&
-     * (!right.getTileType().isWalkable() || (right.getTileObject() instanceof Bomb && ((Bomb) right.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(rightDown.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.EAST || facing == Player.FacingDirection.NORTH_EAST || facing == Player.FacingDirection.SOUTH_EAST) &&
-     * (!rightDown.getTileType().isWalkable() || (rightDown.getTileObject() instanceof Bomb && ((Bomb) rightDown.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(rightUp.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.EAST || facing == Player.FacingDirection.NORTH_EAST || facing == Player.FacingDirection.SOUTH_EAST) &&
-     * (!rightUp.getTileType().isWalkable() || (rightUp.getTileObject() instanceof Bomb && ((Bomb) rightUp.getTileObject()).canVisit(player))))
-     * ){
-     * return Player.Direction.RIGHT;
-     * }
-     * if (
-     * (boundingBox.intersects(left.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.WEST || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.SOUTH_WEST) &&
-     * (!left.getTileType().isWalkable() || (left.getTileObject() instanceof Bomb && ((Bomb) left.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(leftDown.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.WEST || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.SOUTH_WEST) &&
-     * (!leftDown.getTileType().isWalkable() || (leftDown.getTileObject() instanceof Bomb && ((Bomb) leftDown.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(leftUp.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.WEST || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.SOUTH_WEST) &&
-     * (!leftUp.getTileType().isWalkable() || (leftUp.getTileObject() instanceof Bomb && ((Bomb) leftUp.getTileObject()).canVisit(player))))
-     * ){
-     * return Player.Direction.LEFT;
-     * }
-     * if (
-     * (boundingBox.intersects(down.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.SOUTH || facing == Player.FacingDirection.SOUTH_WEST || facing == Player.FacingDirection.SOUTH_EAST) &&
-     * (!down.getTileType().isWalkable() || (down.getTileObject() instanceof Bomb && ((Bomb) down.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(rightDown.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.SOUTH || facing == Player.FacingDirection.SOUTH_WEST || facing == Player.FacingDirection.SOUTH_EAST) &&
-     * (!rightDown.getTileType().isWalkable() || (rightDown.getTileObject() instanceof Bomb && ((Bomb) rightDown.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(leftDown.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.SOUTH || facing == Player.FacingDirection.SOUTH_WEST || facing == Player.FacingDirection.SOUTH_EAST) &&
-     * (!leftDown.getTileType().isWalkable() || (leftDown.getTileObject() instanceof Bomb && ((Bomb) leftDown.getTileObject()).canVisit(player))))
-     * ){
-     * return Player.Direction.DOWN;
-     * }
-     * if (
-     * (boundingBox.intersects(up.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.NORTH || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.NORTH_EAST) &&
-     * (!up.getTileType().isWalkable() || (up.getTileObject() instanceof Bomb && ((Bomb) up.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(rightUp.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.NORTH || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.NORTH_EAST) &&
-     * (!rightUp.getTileType().isWalkable() || (rightUp.getTileObject() instanceof Bomb && ((Bomb) rightUp.getTileObject()).canVisit(player)))) ||
-     * (boundingBox.intersects(leftUp.getBoundingBox()) &&
-     * (facing == Player.FacingDirection.NORTH || facing == Player.FacingDirection.NORTH_WEST || facing == Player.FacingDirection.NORTH_EAST) &&
-     * (!leftUp.getTileType().isWalkable() || (leftUp.getTileObject() instanceof Bomb && ((Bomb) leftUp.getTileObject()).canVisit(player))))
-     * ){
-     * return Player.Direction.UP;
-     * }
-     * <p>
-     * return Player.Direction.STOP_HORIZONTAL_MOVEMENT;
-     * <p>
-     * }
-     **/
 
     public void checkInteraction(Player player) {
 
@@ -319,6 +269,13 @@ public class GameMap {
             }
         }
 
+        player.getTile().interact(player);
+
+    }
+
+    @Override
+    public GameMap clone() {
+        return new GameMap(this.name, this.thumbnailKey, this.tiles.clone(), this.startPositions);
     }
 
     private static int range(int min, int value, int max) {
@@ -331,12 +288,16 @@ public class GameMap {
 
     public static class Builder {
 
-        private Tile[][] tiles;
+        private final static int THUMBNAIL_WIDTH = 50;
+        private final static int THUMBNAIL_HEIGHT = 50;
 
+        private String name;
+        private String thumbnailKey;
+
+        private Tile[][] tiles;
         private List<Location> startPositions = new LinkedList<>();
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public int width() {
             return this.tiles.length;
@@ -344,6 +305,11 @@ public class GameMap {
 
         public int height() {
             return this.tiles[0].length;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
         }
 
         public Builder startPosition(int x, int y) {
@@ -372,63 +338,64 @@ public class GameMap {
 
             assert !(tileType == null);
 
-            this.verticalRow(TileTypes.WALL, 0);
-            this.verticalRow(TileTypes.WALL, this.width() - 1);
-            this.horizontalRow(TileTypes.WALL, 0);
-            this.horizontalRow(TileTypes.WALL, this.height() - 1);
+            this.verticalRow(TileTypes.WALL, TileAbility.NORMAL, 0);
+            this.verticalRow(TileTypes.WALL, TileAbility.NORMAL, this.width() - 1);
+            this.horizontalRow(TileTypes.WALL, TileAbility.NORMAL, 0);
+            this.horizontalRow(TileTypes.WALL, TileAbility.NORMAL, this.height() - 1);
 
             return this;
 
         }
 
-        public Builder verticalRow(TileType tileType, int x) {
+        public Builder verticalRow(TileType tileType, TileAbility tileAbility, int x) {
 
             assert !(tileType == null);
+            assert !(tileAbility == null);
             assert x >= 0 && x < this.width();
 
             for (int y = 0; y < this.height(); y++) {
-                this.at(tileType, x, y);
+                this.at(tileType, tileAbility, x, y);
             }
 
             return this;
 
         }
 
-        public Builder verticalPattern(String pattern, int x) {
+        public Builder verticalPattern(String pattern, TileAbility tileAbility, int x) {
 
             assert !(pattern == null);
             assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
             assert x >= 0 && x < this.width();
 
             for (int y = 0; y < this.height(); y++) {
-                this.at(Builder.tileTypeByChar(pattern.charAt(y)), x, y);
+                this.at(Builder.tileTypeByChar(pattern.charAt(y)), tileAbility, x, y);
             }
 
             return this;
 
         }
 
-        public Builder horizontalRow(TileType tileType, int y) {
+        public Builder horizontalRow(TileType tileType, TileAbility tileAbility, int y) {
 
             assert !(tileType == null);
             assert y >= 0 && y < this.height();
 
             for (int x = 0; x < this.width(); x++) {
-                this.at(tileType, x, y);
+                this.at(tileType, tileAbility, x, y);
             }
 
             return this;
 
         }
 
-        public Builder horizontalPattern(String pattern, int y) {
+        public Builder horizontalPattern(String pattern, TileAbility tileAbility, int y) {
 
             assert !(pattern == null);
             assert ((pattern.length() == this.width()) && !(pattern.isEmpty()));
             assert y >= 0 && y < this.height();
 
             for (int x = 0; x < this.width(); x++) {
-                this.at(Builder.tileTypeByChar(pattern.charAt(x)), x, y);
+                this.at(Builder.tileTypeByChar(pattern.charAt(x)), tileAbility, x, y);
 
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
                 if (pattern.charAt(x) == 'P') {
@@ -440,14 +407,14 @@ public class GameMap {
 
         }
 
-        public Builder fill(TileType tileType, BoundingBox area) {
+        public Builder fill(TileType tileType, TileAbility tileAbility, BoundingBox area) {
 
             assert !(tileType == null);
             assert !(area == null);
 
             for (int x = (int) area.getMin().getX(); x <= area.getMax().getX(); x++) {
                 for (int y = (int) area.getMin().getY(); y <= area.getMax().getY(); y++) {
-                    this.at(tileType, x, y);
+                    this.at(tileType, tileAbility, x, y);
                 }
             }
 
@@ -455,14 +422,14 @@ public class GameMap {
 
         }
 
-        public Builder fillEmpty(TileType tileType) {
+        public Builder fillEmpty(TileType tileType, TileAbility tileAbility) {
 
             assert !(tileType == null);
 
             for (int x = 0; x < this.width(); x++) {
                 for (int y = 0; y < this.height(); y++) {
                     if (this.tiles[x][y] == null) {
-                        this.at(tileType, x, y);
+                        this.at(tileType, tileAbility, x, y);
                     }
                 }
             }
@@ -471,17 +438,53 @@ public class GameMap {
 
         }
 
-        public Builder at(TileType tileType, int x, int y) {
+        public Builder at(TileType tileType, TileAbility tileAbility, int x, int y) {
 
             assert !(tileType == null);
+            assert !(tileAbility == null);
 
-            this.tiles[x][y] = new Tile(tileType, new BoundingBox(x, y, x + .9999D, y + .9999D));
+            this.tiles[x][y] = new Tile(tileType, tileAbility, new BoundingBox(x, y, x + .9999D, y + .9999D));
             return this;
 
         }
 
+        public Builder teleporter(Location from, Location to) {
+
+            assert !(from == null);
+            assert !(to == null);
+
+            Tile fromTile = this.tiles[(int) from.getX()][(int) from.getY()];
+            Tile toTile = this.tiles[(int) to.getX()][(int) to.getY()];
+
+            assert !(toTile.getTileAbility() == TileAbility.TELEPORT || toTile.getTileAbility() == TileAbility.RANDOM_TELEPORT);
+
+            fromTile.setTileAbility(TileAbility.TELEPORT);
+            fromTile.setConnectedTile(toTile);
+
+            return this;
+        }
+
+        public Builder treadmill(Location location, Player.FacingDirection facingDirection) {
+
+            assert !(location == null);
+            assert !(facingDirection == null);
+
+            Tile tile = this.tiles[(int) location.getX()][(int) location.getY()];
+
+            tile.setTileAbility(TileAbility.TREADMILL);
+            tile.setTreadMillDirection(facingDirection);
+
+            return this;
+
+        }
+
+        public Builder thumbnail(String thumbnailKey) {
+            this.thumbnailKey = thumbnailKey;
+            return this;
+        }
+
         public GameMap build() {
-            return new GameMap(this.tiles, this.startPositions);
+            return new GameMap(this.name, this.thumbnailKey, this.tiles, this.startPositions);
         }
 
         private static TileType tileTypeByChar(char c) {

@@ -42,20 +42,12 @@ public class FrameBuffer implements ITexture {
         this(texture, false);
     }
 
-    public FrameBuffer(int width, int height, int filter, int wrap, int samples) throws LWJGLException {
-        this(new Texture(width, height, filter, wrap, samples), true);
-    }
-
-    public FrameBuffer(int width, int height, int filter, int wrap) throws LWJGLException {
-        this(width, height, filter, wrap, 1);
-    }
-
-    public FrameBuffer(int width, int height, int filter) throws LWJGLException {
-        this(width, height, filter, Texture.DEFAULT_WRAP);
+    public FrameBuffer(int width, int height, int samples) throws LWJGLException {
+        this(new Texture(width, height, Texture.Filter.Linear, samples), true);
     }
 
     public FrameBuffer(int width, int height) throws LWJGLException {
-        this(width, height, Texture.DEFAULT_FILTER, Texture.DEFAULT_WRAP);
+        this(width, height, 1);
     }
 
     public int getHandle() {

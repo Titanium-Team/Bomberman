@@ -16,52 +16,34 @@ import org.lwjgl.input.Keyboard;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Stream;
 
-public class Player {
+public abstract class Player {
 
     //--- Settings
-    private final static double COLLISION_WIDTH = .6;
-    private final static double COLLISION_HEIGHT = .6;
-
-
-    private final static float ACCELERATION_STEP = .06F;
-    private final static float ACCELERATION_LIMIT = 1F;
-    private final static float ACCELERATION_TIMER = 0.01F;
+    public final static double COLLISION_WIDTH = 1;
+    public final static double COLLISION_HEIGHT = 1;
 
     private final UUID identifier = UUID.randomUUID();
     private int index;
 
-    private final Map<Direction, Boolean> acceleratingDirections = new HashMap<>();
-    private float accelerationTimer = ACCELERATION_TIMER;
-
     //--- Game
     private final GameStatistic gameStatistic = new GameStatistic();
-    private final GameMap gameMap;
+    private final GameSession gameSession;
 
     //--- PlayerProperties
     private final String name;
 
-
     private final PlayerType playerType;
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
 
-    //--- Position
-    private Location lastLocation;
-
-    private final Vector2 vector = new Vector2(0, 0);
-    private float xX = 0;
-    private float xY = 0;
-
     private final BoundingBox boundingBox;
-    private FacingDirection facingDirection = FacingDirection.NORTH;
-    private Direction direction = null;
 
-    public Player(PlayerType playerType, GameMap gameMap, String name, Location center) {
+    public Player(GameSession gameSession, PlayerType playerType, String name, Location center) {
 
-        this.lastLocation = center;
         this.playerType = playerType;
+        this.gameSession = gameSession;
 
-        this.gameMap = gameMap;
         this.name = name;
 
         this.boundingBox = new BoundingBox(
@@ -90,17 +72,11 @@ public class Player {
         return this.getPropertyRepository().getValue(PropertyTypes.HEALTH) > 0;
     }
 
-    public FacingDirection getFacingDirection() {
-        return this.facingDirection;
+    public double getHealth() {
+        return this.getPropertyRepository().getValue(PropertyTypes.HEALTH);
     }
 
-    public Direction getDirection() {
-        return this.direction;
-    }
-
-    public Vector2 getVector() {
-        return this.vector;
-    }
+    public abstract FacingDirection getFacingDirection();
 
     public BoundingBox getBoundingBox() {
         return this.boundingBox;
@@ -121,7 +97,7 @@ public class Player {
     public Tile getTile() {
 
         Location location = this.boundingBox.getMin();
-        return this.gameMap.getTile(
+        return this.gameSession.getGameMap().getTile(
 
                 (int) Math.round(location.getX()),
                 (int) Math.round(location.getY())
@@ -130,18 +106,28 @@ public class Player {
 
     }
 
-    public GameMap getGameMap() {
-        return gameMap;
+    public GameSession getGameSession() {
+        return this.gameSession;
     }
 
     protected void setIndex(int index) {
         this.index = index;
     }
 
+    public void respawn(){
+        int x = (int) (Math.random() * this.gameSession.getGameMap().getWidth());
+        int y = (int) (Math.random() * this.gameSession.getGameMap().getHeight());
+        if (this.gameSession.getGameMap().getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameSession.getGameMap().getTile(x, y).get().getTileObject() == null) {
+            this.boundingBox.setCenter(this.gameSession.getGameMap().getTile(x,y).get().getBoundingBox().getCenter());
+        } else {
+            this.respawn();
+        }
+    }
+
     public void loseHealth() {
         this.getPropertyRepository().setValue(
-            PropertyTypes.HEALTH,
-            this.getPropertyRepository().getValue(PropertyTypes.HEALTH) - 1
+                PropertyTypes.HEALTH,
+                this.getPropertyRepository().getValue(PropertyTypes.HEALTH) - 1
         );
 
         if(this.isAlive()) {
@@ -156,287 +142,8 @@ public class Player {
         }
     }
 
-    private void respawn(){
-        int x = (int) (Math.random() * this.gameMap.getWidth());
-        int y = (int) (Math.random() * this.gameMap.getHeight());
-        if (this.gameMap.getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameMap.getTile(x, y).get().getTileObject() == null) {
-            this.boundingBox.setCenter(this.gameMap.getTile(x,y).get().getBoundingBox().getCenter());
-        } else {
-            this.respawn();
-        }
-    }
+    public abstract void update(float delta);
 
-    public void update(float delta) {
-        //SIEHE LOSEHEALTH
-        //if(this.getPropertyRepository().getValue(PropertyTypes.HEALTH)>0){
-        //--- Distance Travelled
-        if(this.isAlive()) {
-            this.gameStatistic.update(Statistics.DISTANCE_TRAVELLED, this.lastLocation.distanceTo(this.boundingBox.getCenter()));
-            this.lastLocation = this.boundingBox.getCenter();
-        }
-
-        //--- Accelerating
-        this.accelerationTimer -= delta;
-
-        if (this.accelerationTimer <= 0) {
-            if (this.acceleratingDirections.getOrDefault(Direction.UP, false)) {
-                this.move(Direction.UP);
-            }
-
-            if (this.acceleratingDirections.getOrDefault(Direction.DOWN, false)) {
-                this.move(Direction.DOWN);
-            }
-
-            if (this.acceleratingDirections.getOrDefault(Direction.LEFT, false)) {
-                this.move(Direction.LEFT);
-            }
-
-            if (this.acceleratingDirections.getOrDefault(Direction.RIGHT, false)) {
-                this.move(Direction.RIGHT);
-            }
-
-            this.accelerationTimer = ACCELERATION_TIMER;
-
-        }
-
-
-        //--- Facing Direction
-        FacingDirection facing = FacingDirection.from(this.vector);
-        this.facingDirection = (facing == FacingDirection.DEFAULT ? this.facingDirection : facing);
-
-        //--- Collision
-        Location location = this.boundingBox.getCenter();
-        this.boundingBox.move(this.vector.getX() * delta, this.vector.getY() * delta);
-
-
-        /**
-         this.gameMap.checkInteraction(this);
-         switch (this.gameMap.checkCollision(this)) {
-         case LEFT:
-         case RIGHT:
-         this.vector.setX(0);
-         this.boundingBox.setCenter(location.getX(),this.getBoundingBox().getCenter().getY());
-         break;
-         case UP:
-         case DOWN:
-         this.vector.setY(0);
-         this.boundingBox.setCenter(this.getBoundingBox().getCenter().getX(),location.getY());
-         break;
-         **/
-        Direction direction = this.gameMap.checkCollision(this);
-
-        BoundingBox min = this.gameMap.getMin().get().getBoundingBox();
-        BoundingBox max = this.gameMap.getMax().get().getBoundingBox();
-
-        double minX = (min.getMax().getX() + (COLLISION_WIDTH / 2));
-        double minY = (min.getMax().getY() + (COLLISION_HEIGHT / 2));
-
-        double maxX = (max.getMin().getX() - (COLLISION_WIDTH / 2));
-        double maxY = (max.getMin().getY() - (COLLISION_HEIGHT / 2));
-
-        switch (direction) {
-
-            case UP:
-            case DOWN: {
-                this.vector.setY(0);
-                this.boundingBox.setCenter(
-                        range(minX, this.boundingBox.getCenter().getX(), maxX),
-                        range(minY, location.getY(), maxY)
-                );
-            }
-            break;
-
-            case LEFT:
-            case RIGHT: {
-                this.vector.setX(0);
-
-                this.boundingBox.setCenter(
-                        range(minX, location.getX(), maxX),
-                        range(minY, this.boundingBox.getCenter().getY(), maxY)
-                );
-            }
-            break;
-
-            case STOP_VERTICAL_MOVEMENT:
-                this.boundingBox.setCenter(
-                        range(minX, location.getX(), maxX),
-                        range(minY, location.getY(), maxY)
-                );
-                this.vector.setY(0);
-                this.vector.setX(0);
-                break;
-
-            case STOP_HORIZONTAL_MOVEMENT: break;
-
-            default:
-                throw new IllegalStateException(String.format("Unknown collision direction: %s", direction.name()));
-
-        }
-
-        this.gameMap.checkInteraction(this);
-
-        //--- Update INVINCIBILITY Timer
-        this.getPropertyRepository().setValue(
-                PropertyTypes.INVINCIBILITY,
-                this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
-        );
-        //}
-
-    }
-
-    public void keyUp(int keyCode, char c) {
-
-        switch (keyCode) {
-
-            case Keyboard.KEY_DOWN:
-            case Keyboard.KEY_S:
-            case Keyboard.KEY_UP:
-            case Keyboard.KEY_W:
-                this.move(Direction.STOP_VERTICAL_MOVEMENT);
-                this.acceleratingDirections.put(Direction.UP, false);
-                this.acceleratingDirections.put(Direction.DOWN, false);
-                break;
-
-            case Keyboard.KEY_RIGHT:
-            case Keyboard.KEY_D:
-            case Keyboard.KEY_LEFT:
-            case Keyboard.KEY_A:
-                this.move(Direction.STOP_HORIZONTAL_MOVEMENT);
-                this.acceleratingDirections.put(Direction.LEFT, false);
-                this.acceleratingDirections.put(Direction.RIGHT, false);
-                break;
-
-        }
-
-    }
-
-    public void keyDown(int keyCode, char c) {
-
-        switch (keyCode) {
-
-            case Keyboard.KEY_UP:
-            case Keyboard.KEY_W:
-                this.acceleratingDirections.put(Direction.UP, true);
-                break;
-
-            case Keyboard.KEY_LEFT:
-            case Keyboard.KEY_A:
-                this.acceleratingDirections.put(Direction.LEFT, true);
-                break;
-
-            case Keyboard.KEY_RIGHT:
-            case Keyboard.KEY_D:
-                this.acceleratingDirections.put(Direction.RIGHT, true);
-                break;
-
-            case Keyboard.KEY_DOWN:
-            case Keyboard.KEY_S:
-                this.acceleratingDirections.put(Direction.DOWN, true);
-                break;
-
-            case Keyboard.KEY_SPACE: {
-
-                Tile tile = this.getTile();
-
-                int bombsLeft = (int) this.getPropertyRepository().getValue(PropertyTypes.BOMB_AMOUNT);
-                if(tile.getTileObject() instanceof Bomb || bombsLeft <= 0) {
-                    assert bombsLeft == 0;
-                    return;
-                }
-
-
-                //MANAGE BOMBS
-                System.out.println(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE));
-                if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE) == 0F) {
-                    //normale Bombe
-
-                    tile.spawn(new Bomb(this, tile, 2));
-                    this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
-
-                }else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)== 1F){
-                    //Powerbombe
-                    System.out.println(this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN));
-                    if(this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)==0F){
-                        float tmpBlast =this.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS) ;
-                        this.getPropertyRepository().setValue(PropertyTypes.BOMB_BLAST_RADIUS,
-                                this.getPropertyRepository().getMax(PropertyTypes.BOMB_BLAST_RADIUS));
-
-                        tile.spawn(new Bomb(this, tile, 2));
-                        this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
-
-                        this.getPropertyRepository().setValue(PropertyTypes.BOMB_BLAST_RADIUS,tmpBlast);
-                    }else{
-                        //normale Bombe, wenn eine Powerbomb bereits liegt
-                        tile.spawn(new Bomb(this, tile, 2));
-                        this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
-                    }
-                }
-                /**else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)==2F){
-                 *  tile.spawn(new Bomb(this, tile, 2));
-                 *
-                 */
-                this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
-
-                this.gameStatistic.update(Statistics.BOMBS_PLANTED, 1);
-
-            }
-            break;
-
-        }
-
-    }
-
-    public void move(Direction d) {
-
-        this.direction = d;
-        float limit = this.propertyRepository.getValue(PropertyTypes.SPEED_FACTOR) * ACCELERATION_LIMIT;
-
-        switch (d) {
-
-            case UP: {
-
-                this.xY = (this.xX > this.xY ? this.xX : range(0, this.xY + ACCELERATION_STEP, limit));
-                this.vector.setY((float) -accelerationCurve(this.xY));
-
-            }
-            break;
-
-            case LEFT: {
-
-                this.xX = (this.xY > this.xX ? this.xY : range(0, this.xX + ACCELERATION_STEP, limit));
-                this.vector.setX((float) -accelerationCurve(this.xX));
-
-            }
-            break;
-
-            case RIGHT: {
-
-                this.xX = (this.xY > this.xX ? this.xY : range(0, this.xX + ACCELERATION_STEP, limit));
-                this.vector.setX((float) accelerationCurve(this.xX));
-
-            }
-            break;
-
-            case DOWN: {
-
-                this.xY = (this.xX > this.xY ? this.xX : range(0, this.xY + ACCELERATION_STEP, limit));
-                this.vector.setY((float) accelerationCurve(this.xY));
-
-            }
-            break;
-
-            case STOP_HORIZONTAL_MOVEMENT:
-                this.xX = 0;
-                this.vector.setX(0);
-                break;
-
-            case STOP_VERTICAL_MOVEMENT:
-                this.xY = 0;
-                this.vector.setY(0);
-                break;
-
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -446,38 +153,6 @@ public class Player {
         }
 
         return ((Player) o).identifier.equals(this.identifier);
-
-    }
-
-    private static double accelerationCurve(float value) {
-        return Math.exp(2 * value - 1);
-    }
-
-    private static float range(float min, float value, float max) {
-        return Math.min(Math.max(value, min), max);
-    }
-
-    private static double range(double min, double value, double max) {
-        return Math.min(Math.max(value, min), max);
-    }
-
-    public enum PlayerType {
-
-        LOCAL,
-        AI,
-        NETWORK;
-
-    }
-
-    public enum Direction {
-
-        LEFT,
-        RIGHT,
-        UP,
-        DOWN,
-
-        STOP_VERTICAL_MOVEMENT,
-        STOP_HORIZONTAL_MOVEMENT
 
     }
 
@@ -520,6 +195,26 @@ public class Player {
             return FacingDirection.DEFAULT;
 
         }
+
+    }
+
+    public enum PlayerType {
+
+        LOCAL,
+        AI,
+        NETWORK
+
+    }
+
+    public enum Direction {
+
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN,
+
+        STOP_VERTICAL_MOVEMENT,
+        STOP_HORIZONTAL_MOVEMENT
 
     }
 

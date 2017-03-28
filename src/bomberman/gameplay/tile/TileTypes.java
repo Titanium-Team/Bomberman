@@ -27,6 +27,7 @@ public enum TileTypes implements TileType {
 
     },
     WALL_BREAKABLE {
+
         @Override
         public boolean isWalkable() {
             return false;
@@ -37,6 +38,17 @@ public enum TileTypes implements TileType {
             return 1;
         }
 
-    };
+    },
+    WALL_BREAKABLE_IMPROVBED {
+        @Override
+        public boolean isWalkable() {
+            return false;
+        }
+
+        @Override
+        public double getHealth() {
+            return 2;
+        }
+    }
 
 }

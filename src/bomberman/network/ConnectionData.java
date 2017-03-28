@@ -7,11 +7,13 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +55,11 @@ public class ConnectionData {
         publicKey = tempKey;
     }
 
+    public ConnectionData(NetworkData networkData) {
+        this.networkData = networkData;
+        publicKey = null;
+    }
+
     public NetworkData getNetworkData() {
         return networkData;
     }
@@ -86,16 +93,13 @@ public class ConnectionData {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
-            return Base64.getEncoder().encodeToString(cipher.doFinal(message.getBytes()));
+           // return Base64.getEncoder().encodeToString(cipher.doFinal(message.getBytes()));
+            return message;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         }
 
@@ -107,18 +111,16 @@ public class ConnectionData {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
 
-            byte[] bytes = Base64.getDecoder().decode(message);
+//            byte[] bytes = Base64.getDecoder().decode(message);
 
-            return new String(cipher.doFinal(bytes));
+           // return new String(cipher.doFinal(bytes));
+
+            return message;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         }
 

@@ -19,7 +19,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 
 import net.java.games.input.EventQueue;
 
@@ -29,6 +29,7 @@ public class ViewManager {
     public static final HashMap<String, ITexture> textureMap = new HashMap<>();
     public static Sound clickSound;
 
+    private Queue<Runnable> runnableQueue = new ArrayDeque<>();
     private Batch batch;
 
     private MSMode msMode = MSMode.OFF;
@@ -40,6 +41,24 @@ public class ViewManager {
             clickSound = new Sound(ViewManager.class.getResourceAsStream("/bomberman/resources/sounds/click.wav"));
 
             loadTexture("explosion.png");
+            loadTexture("speedPowerUp.png");
+            loadTexture("explosionPowerUp.png");
+
+            loadTexture("wall.png");
+
+            loadTexture("bomb.png");
+
+            loadTexture("firedown.png");
+
+            loadTexture("teleport.png");
+
+            loadTexture("George-W-Bush.png");
+
+            loadTexture("usa.png");
+
+            loadTexture("arrow.png");
+
+            loadTexture("peace.png");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,6 +73,9 @@ public class ViewManager {
     }
 
     public static ITexture getTexture(String textureID) {
+        if (textureID == null || textureID.isEmpty())
+            return null;
+
         if (!textureMap.containsKey(textureID)) {
             loadTexture(textureID);
         }
@@ -155,7 +177,7 @@ public class ViewManager {
             Display.setDisplayMode(targetDisplayMode);
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
-            Display.setTitle("Bomberman");
+            Display.setTitle("Boom-Bär-Man");
             Display.setVSyncEnabled(Main.instance.getConfig().isvSync());
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
@@ -176,6 +198,11 @@ public class ViewManager {
             currentView.update(deltaTime);
             currentView.render(batch);
         }
+
+        while(!runnableQueue.isEmpty()) {
+            runnableQueue.poll().run();
+        }
+
         if (Main.instance.getConfig().isShowFPS()) {
             ViewManager.font.drawText(batch, "FPS: " + fpsCount, 5, 5);
         }
@@ -205,6 +232,11 @@ public class ViewManager {
                     currentView.onMouseUp(button, mouseX, mouseY);
                     gameplayManager.onMouseUp(button, mouseX, mouseY);
                 }
+            }
+
+            int wheel = Mouse.getEventDWheel();
+            if (wheel != 0) {
+                currentView.onMouseWheel(wheel);
             }
         }
         while (Keyboard.next()) {
@@ -248,6 +280,7 @@ public class ViewManager {
                 float value = event.getValue();
 
                 currentView.onGamepadEvent(event.getComponent(), value);
+                gameplayManager.onGamepadEvent(event.getComponent(), value);
             }
         }
     }
@@ -258,6 +291,10 @@ public class ViewManager {
         if (currentView != null)
             currentView.layout(Display.getWidth(), Display.getHeight());
 
+    }
+
+    public void postOnUIThread(Runnable runnable) {
+        runnableQueue.add(runnable);
     }
 
     public int getViewportWidth() {

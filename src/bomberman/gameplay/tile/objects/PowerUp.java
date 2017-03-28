@@ -13,11 +13,11 @@ public class PowerUp extends TileObject {
     private Tile parent;
     private PowerUpTypes powerUpType;
 
-    public PowerUp( Tile parent, float lifespan, PowerUpTypes pPowerUpType) {
+    public PowerUp( Tile parent, float lifespan, PowerUpTypes powerUpType) {
         super(parent, lifespan);
 
         this.parent = parent;
-        this.powerUpType = pPowerUpType;
+        this.powerUpType = powerUpType;
     }
 
     @Override
@@ -86,11 +86,21 @@ public class PowerUp extends TileObject {
                         PropertyTypes.BOMBTYPE,
                         (float)PowerUpTypes.POWERBOMB.value()
                 );
+                System.out.println("picked up powerbomb");
             }
             break;
         }
 
         this.parent.destroyObject();
+    }
+
+    public PowerUpTypes getPowerUpType() {
+        return powerUpType;
+    }
+
+    @Override
+    public PowerUp clone(Tile parent) {
+        return new PowerUp(parent, this.getLifespan(), this.powerUpType);
     }
 
 }

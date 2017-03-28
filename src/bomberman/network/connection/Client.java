@@ -1,24 +1,26 @@
 package bomberman.network.connection;
 
+import bomberman.Main;
 import bomberman.gameplay.utils.Location;
-import bomberman.network.ConnectionData;
-import bomberman.network.NetworkController;
-import bomberman.network.NetworkData;
-import bomberman.view.engine.utility.Vector2;
+import bomberman.network.*;
+import bomberman.view.views.GameView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Client extends Connection {
 
     private ConnectionData server;
-    private List<ConnectionData> serverList;
+    private List<ServerConnectionData> serverList;
+
+    private RefreshableServerList refreshable;
 
     public Client(NetworkController controller) throws IOException {
         super(controller);
@@ -30,14 +32,9 @@ public class Client extends Connection {
 
         serverList = new ArrayList<>();
 
-        refreshServers();
+        refreshServers(null);
 
         System.out.println("Client initialized");
-    }
-
-    @Override
-    public void update() {
-
     }
 
     @Override
@@ -49,7 +46,7 @@ public class Client extends Connection {
 
     @Override
     public void listen() {
-        DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+        DatagramPacket packet = new DatagramPacket(new byte[2048], 2048);
 
         try {
             getSocket().receive(packet);
@@ -68,9 +65,16 @@ public class Client extends Connection {
 
             switch (splittedMessage[0]) {
                 case "hello":
-                    ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
+                    Type typeHello = new TypeToken<Map<String, String>>() {}.getType();
+                    Map<String, String> jsonMap = gson.fromJson(splittedMessage[1], typeHello);
+
+                    ServerConnectionData connectionData = new ServerConnectionData(sender, jsonMap.get("connectionData"), jsonMap.get("name"));
 
                     serverList.add(connectionData);
+
+                    if (refreshable != null){
+                        refreshable.refreshListView(serverList);
+                    }
 
                     System.out.println("ConnectionData from Server");
 
@@ -79,6 +83,63 @@ public class Client extends Connection {
                     String stringMessage = decrypt(splittedMessage[1]);
 
                     System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
+
+                    sendRecieved(message, server);
+                    break;
+                case "error":
+                    error(sender);
+
+                    sendRecieved(message, server);
+                    break;
+                case "playerList":
+                    String playerString = decrypt(splittedMessage[1]);
+
+                    NetworkPlayer player = NetworkPlayer.fromJson(playerString);
+
+                    synchronized (Main.instance.getGameplayManager().getCurrentSession()) {
+                        if (player.getConnectionData().getNetworkData().equals(getMyData().getNetworkData())) {
+                            Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer().getBoundingBox().setCenter(player.getBoundingBox().getCenter());
+                        } else {
+                            getController().getNetworkPlayerMap().put(sender, player);
+
+                            Main.instance.getGameplayManager().getCurrentSession().addPlayer(player);
+                        }
+                    }
+
+                    sendRecieved(message, server);
+                    break;
+                case "startGame":
+                    Main.instance.getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(decrypt(splittedMessage[1])));
+                    Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(GameView.class));
+
+                    sendRecieved(message, server);
+                    break;
+                case "position":
+                    String movement = decrypt(splittedMessage[1]);
+                    Type typeMovement = new TypeToken<Map<String, String>>(){}.getType();
+                    Map<String, String> jsonMapMovement = gson.fromJson(movement,typeMovement);
+                    movePlayer(sender, jsonMapMovement.get("location"));
+
+                    sendRecieved(message, server);
+                    break;
+                case "playerGone":
+                    String playerGone = decrypt(splittedMessage[1]);
+                    System.out.println("Der Spieler "+ playerGone +" hat das Spiel verlassen.");
+
+                    sendRecieved(message, server);
+                    break;
+                case "plantBomb":
+                    //TODO: DI DIS
+
+                    sendRecieved(message, server);
+                    break;
+                case "bombExplode":
+                    // TODO: DO DIS
+
+                    sendRecieved(message, server);
+                    break;
+                case "ok":
+                    recieved(splittedMessage[1], sender);
 
                     break;
             }
@@ -89,33 +150,61 @@ public class Client extends Connection {
 
     @Override
     public void move(Location location, int playerId) {
+        Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("location", location.toJson());
+        jsonMap.put("id", String.valueOf(playerId));
 
+        Gson gson = new Gson();
+
+        send("position§" + server.encrypt(gson.toJson(jsonMap)), server.getNetworkData(), false);
     }
 
     @Override
     public void plantBomb(Location location) {
-
+        send("movement§" + location.toJson(), server.getNetworkData(), true);
     }
 
     @Override
     public void explodedBomb(Location location) {
-
+        send("bombExplode§" + location.toJson(), server.getNetworkData(), false);
     }
 
     @Override
     public void hit(double health, int playerId) {
+        Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("health", String.valueOf(health));
+        jsonMap.put("id", String.valueOf(playerId));
+
+        Gson gson = new Gson();
+
+        send("gotHit" + gson.toJson(jsonMap), server.getNetworkData(), false);
+    }
+
+    @Override
+    public void leave() {
+        getSocket().close();
 
     }
 
+    public void join(ServerConnectionData data){
+        String username = Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer().getName();
+        send("join§" + data.encrypt(username),data.getNetworkData(),true);
 
-    public List<ConnectionData> getServerList() {
+        serverList.clear();
+        server = data;
+    }
+
+    public List<ServerConnectionData> getServerList() {
         return serverList;
     }
 
-    public void refreshServers(){
+    public void refreshServers(RefreshableServerList refreshable){
+        this.refreshable = refreshable;
+
         serverList.clear();
 
         try {
+
             send("hello§" + getMyData().toJson(), new NetworkData(InetAddress.getByName("255.255.255.255"), 1638), true);
         } catch (UnknownHostException e) {
             e.printStackTrace();

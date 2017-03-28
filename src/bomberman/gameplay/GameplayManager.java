@@ -1,65 +1,64 @@
 package bomberman.gameplay;
 
-import bomberman.ai.AiManager;
-import bomberman.ai.AiPlayer;
+
+import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class GameplayManager {
 
     private GameState gameState = GameState.IN_MENU;
-
-    private final static float POWERUP_TIME = 25;
-    private float powerupTimer = POWERUP_TIME;
-
     private final List<GameMap> maps = new LinkedList<>();
-    //private final ArrayList<Player> players = new ArrayList<>();
-    private final List<Player> players = new LinkedList<>();
-    //private AiManager aimanager = new AiManager(this.getCurrentMap(),players);
+
 
     private int mapIndex = 0;
+
+    private GameSession currentSession;
 
     public GameplayManager() {
         //map 0
         this.addMap(
             GameMap.builder()
+                .name("Map 0")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 2)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 4)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 6)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 8)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 10)
+                .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
+                .horizontalPattern("WGBGBGBGBGBGBGW", TileAbility.NORMAL, 2)
+                .horizontalPattern("WGBGBGBGBGBGBGW", TileAbility.NORMAL, 4)
+                .horizontalPattern("WGBGBGBGBGBGBGW", TileAbility.NORMAL, 6)
+                .horizontalPattern("WGBGBGBGBGBGBGW", TileAbility.NORMAL, 8)
+                .horizontalPattern("WGBGBGBGBGBGBGW", TileAbility.NORMAL, 10)
                 .startPosition(1, 1)
                 .startPosition(13, 1)
                 .startPosition(1, 11)
                 .startPosition(12, 11)
-            .build()
+            .build().clone()
         );
 
         //map 1
         this.addMap(
             GameMap.builder()
+                .name("Map 1")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
-                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 3)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 4)
-                .horizontalPattern("WBBBBBGGGBBBBBW", 5)
-                .horizontalPattern("WBWBWBWGWBWBWBW", 6)
-                .horizontalPattern("WBBBBBGGGBBBBBW", 7)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 8)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 9)
-                .horizontalPattern("WGWBWBWBWBWBWGW", 10)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
+                .horizontalPattern("WGGBBBBBBBBBGGW", TileAbility.NORMAL, 1)
+                .horizontalPattern("WGWBWBWBWBWBWGW", TileAbility.NORMAL, 2)
+                .horizontalPattern("WBBBBBBBBBBBBBW", TileAbility.NORMAL, 3)
+                .horizontalPattern("WBBBBBBBBBBBBBW", TileAbility.NORMAL, 4)
+                .horizontalPattern("WBBBBBGGGBBBBBW", TileAbility.NORMAL, 5)
+                .horizontalPattern("WBWBWBWGWBWBWBW", TileAbility.NORMAL, 6)
+                .horizontalPattern("WBBBBBGGGBBBBBW", TileAbility.NORMAL, 7)
+                .horizontalPattern("WBBBBBBBBBBBBBW", TileAbility.NORMAL, 8)
+                .horizontalPattern("WBBBBBBBBBBBBBW", TileAbility.NORMAL, 9)
+                .horizontalPattern("WGWBWBWBWBWBWGW", TileAbility.NORMAL, 10)
+                .horizontalPattern("WGGBBBBBBBBBGGW", TileAbility.NORMAL, 11)
                 .startPosition(1, 1)
                 .startPosition(13, 1)
                 .startPosition(1, 11)
@@ -70,61 +69,50 @@ public class GameplayManager {
         //map 2
         this.addMap(
             GameMap.builder()
+                .name("Map 2")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND)
-                .horizontalPattern("WGPBBBBBBBBBGGW", 3)
-                .horizontalPattern("WGPBBBBBBBBBGGW", 4)
-                .horizontalPattern("WGPBBGGGGGBBGGW", 5)
-                .horizontalPattern("WGPBBGGGGGBBGGW", 6)
-                .horizontalPattern("WGPBBGGGGGBBGGW", 7)
-                .horizontalPattern("WGPBBBBBBBBBGGW", 8)
-                .horizontalPattern("WGPBBBBBBBBBGGW", 9)
-                .startPosition(1, 1)
+                .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
+                .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 3)
+                .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 4)
+                .horizontalPattern("WGPBBGGGGGBBGGW", TileAbility.NORMAL, 5)
+                .horizontalPattern("WGPBBGGGGGBBGGW", TileAbility.NORMAL, 6)
+                .horizontalPattern("WGPBBGGGGGBBGGW", TileAbility.NORMAL, 7)
+                .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 8)
+                .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 9)
+                //.startPosition(1, 1)
                 .startPosition(12, 11)
+                .treadmill(new Location(1, 1), Player.FacingDirection.WEST)
+                .treadmill(new Location(2, 1), Player.FacingDirection.WEST)
+                .treadmill(new Location(3, 1), Player.FacingDirection.WEST)
+                .treadmill(new Location(4, 1), Player.FacingDirection.WEST)
+                .treadmill(new Location(5, 1), Player.FacingDirection.WEST)
+                .treadmill(new Location(6, 1), Player.FacingDirection.WEST)
+                .treadmill(new Location(7, 1), Player.FacingDirection.WEST)
+                .treadmill(new Location(8, 1), Player.FacingDirection.WEST)
             .build()
-
         );
 
+
+        this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
+
+
         //@TODO
-
-
-        this.setMapIndex(2);
-        this.addPlayer(new Player(Player.PlayerType.LOCAL, this.getCurrentMap(), "FizzBuzz", this.getCurrentMap().getRandomStartPosition()));
-        //aimanager.createAi("name",this.getCurrentMap().getRandomStartPosition());
-
+        this.setMapIndex(0);
+        this.createGameSession();
     }
 
-    public synchronized void addPlayer(Player player) {
-
-        if(this.players.contains(player)) {
-            throw new IllegalStateException("Do not add the same instance more than once.");
-        }
-
-        this.players.add(player);
-        player.setIndex(this.players.indexOf(player));
-
-    }
-
-    public List<Player> getPlayers() {
-        return this.players;
-    }
-
-    public Player getLocalPlayer() {
-        return this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).findAny().orElseGet(null);
-    }
-
-    public Player getPlayer(int index) {
-        return this.players.get(index);
-    }
-
-    public GameMap getCurrentMap() {
-        return this.getMap(this.mapIndex);
+    public GameSession getCurrentSession() {
+        return this.currentSession;
     }
 
     public GameMap getMap(int index) {
         assert index >= 0 && index < this.maps.size();
-        return this.maps.get(index);
+        return this.maps.get(index).clone();
+    }
+
+    public int getMapCount() {
+        return maps.size();
     }
 
     public void addMap(GameMap map) {
@@ -143,6 +131,17 @@ public class GameplayManager {
         }
 
         this.mapIndex = mapIndex;
+        this.createGameSession();
+    }
+
+    public int getMapIndex() {
+        return mapIndex;
+    }
+
+    private void createGameSession() {
+        this.currentSession = new GameSession(this.getMap(this.mapIndex));
+        this.currentSession.addPlayer(new LocalPlayer(this.currentSession, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
+        //this.currentSession.addAi(); Nur zum Testen der AI. Nicht nutzen, AI funktioniert nicht!
     }
 
     public void update(float delta) {
@@ -151,53 +150,72 @@ public class GameplayManager {
             return;
         }
 
-        this.players.forEach(e -> e.update(delta));
-        Stream.of(this.getCurrentMap().getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
-
-        //--- Powerup Spawn Timer
-        this.powerupTimer -= delta;
-        if (this.powerupTimer <= 0) {
-            this.checkPowerups();
-            this.powerupTimer = POWERUP_TIME;
-        }
+        this.currentSession.update(delta);
 
     }
-
-    //powerup start
-    private void checkPowerups() {
-        int x = (int) (Math.random() * this.getCurrentMap().getWidth());
-        int y = (int) (Math.random() * this.getCurrentMap().getHeight());
-        if (this.getCurrentMap().getTile(x, y).get().getTileType() == TileTypes.GROUND && this.getCurrentMap().getTile(x, y).get().getTileObject() == null) {
-            this.getCurrentMap().getTile(x, y).get().spawnPowerup();
-        } else {
-            this.checkPowerups();
-        }
-    }
-    //powerup end
 
     public void onKeyDown(int key, char c) {
         if(!(this.gameState == GameState.IN_GAME)) {
             return;
         }
-        this.players.forEach(e -> e.keyDown(key, c));
+
+        this.currentSession.onKeyDown(key, c);
     }
 
     public void onKeyUp(int key, char c) {
         if(!(this.gameState == GameState.IN_GAME)) {
             return;
         }
-        this.players.forEach(e -> e.keyUp(key, c));
+
+        this.currentSession.onKeyUp(key, c);
     }
 
-    public void onMouseDown(int button, int mouseX, int mouseY) {}
+    public void onMouseDown(int button, int mouseX, int mouseY) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
 
-    public void onMouseUp(int button, int mouseX, int mouseY) {}
+        this.currentSession.onMouseDown(button, mouseX, mouseY);
+    }
+
+    public void onMouseUp(int button, int mouseX, int mouseY) {
+        if(!(this.gameState == GameState.IN_GAME)) {
+            return;
+        }
+
+        this.currentSession.onMouseUp(button, mouseX, mouseY);
+    }
 
     public void onGamepadEvent(Component component, float value) {
-        // TODO: Implementiert das plz
+
+        if (component.getIdentifier() == Component.Identifier.Button._0 && value == 1) {
+            onKeyDown(Keyboard.KEY_SPACE, ' ');
+        }
+        if (component.getIdentifier() == Component.Identifier.Axis.X) {
+            if (value >= 0.5) {
+                onKeyDown(Keyboard.KEY_RIGHT, ' ');
+            } else if (value <= -0.5) {
+                onKeyDown(Keyboard.KEY_LEFT, ' ');
+            } else if(value < 0.5 && value >= -0.5) {
+                onKeyUp(Keyboard.KEY_RIGHT, ' ');
+                onKeyUp(Keyboard.KEY_LEFT, ' ');
+            }
+        }
+
+        if (component.getIdentifier() == Component.Identifier.Axis.Y) {
+            if (value >= 0.5) {
+                onKeyDown(Keyboard.KEY_DOWN, ' ');
+            } else if (value <= -0.5) {
+                onKeyDown(Keyboard.KEY_UP, ' ');
+            }else if(value < 0.5 && value >= -0.5) {
+                onKeyUp(Keyboard.KEY_DOWN, ' ');
+                onKeyUp(Keyboard.KEY_UP, ' ');
+            }
+        }
+
     }
 
-    public static enum GameState {
+    public enum GameState {
 
         IN_MENU,
         IN_GAME

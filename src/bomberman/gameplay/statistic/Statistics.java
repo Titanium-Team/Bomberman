@@ -116,6 +116,28 @@ public enum Statistics implements Statistic {
             return 0;
         }
 
+    },
+    DESTROYED_WALLS {
+
+        @Override
+        public String getName() {
+            return "Destroyed Walls";
+        }
+
+        @Override
+        public boolean isMax() {
+            return false;
+        }
+
+        @Override
+        public boolean isAdd() {
+            return true;
+        }
+
+        @Override
+        public double defaultValue() {
+            return 0;
+        }
     }
 
 }

@@ -2,10 +2,7 @@ package bomberman.network.connection;
 
 import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
-import bomberman.network.ConnectionData;
-import bomberman.network.NetworkController;
-import bomberman.network.NetworkData;
-import bomberman.network.Request;
+import bomberman.network.*;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -141,7 +138,17 @@ public abstract class Connection {
     }
 
     public void recieved(String message, NetworkData reciever) {
-        requestMap.get(message).setRecieved(reciever);
+        if (requestMap.containsKey(message)) {
+            requestMap.get(message).setRecieved(reciever);
+
+            if (requestMap.get(message).allRecieved()) {
+                requestMap.remove(message);
+            }
+        }
+    }
+
+    public void sendRecieved(String message, ConnectionData connectionData){
+        send("ok§" + message, connectionData.getNetworkData(), false);
     }
 
     public void error(NetworkData fromWho) {
@@ -167,13 +174,11 @@ public abstract class Connection {
         controller.getNetworkPlayerMap().get(networkData).getBoundingBox().setCenter(location);
     }
 
-    abstract void update();
-
     public abstract void message(String message);
     public abstract void listen();
     public abstract void move(Location location, int playerId);
     public abstract void plantBomb(Location location);
     public abstract void explodedBomb(Location location);
     public abstract void hit(double health, int playerId);
-
+    public abstract void leave();
 }

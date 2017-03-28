@@ -3,14 +3,12 @@ package bomberman.network;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.connection.Client;
 import bomberman.network.connection.Connection;
+import bomberman.network.connection.RefreshableServerList;
 import bomberman.network.connection.Server;
-import bomberman.view.engine.utility.Vector2;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class NetworkController implements Runnable {
@@ -24,18 +22,14 @@ public class NetworkController implements Runnable {
 
     private Queue<RequestData> requestDataQueue;
 
+    private boolean host = false;
+
     public NetworkController() {
         requestDataQueue = new LinkedBlockingQueue<>();
 
         init();
 
         networkPlayerMap = new HashMap<>();
-
-        try {
-            connection = new Client(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void init(){
@@ -50,13 +44,40 @@ public class NetworkController implements Runnable {
     @Override
     public void run() {
         try {
+
+            try {
+                connection = new Client(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             while (true){
                 RequestData requestData = requestDataQueue.poll();
 
+
+
                 if (requestData != null) {
                     switch (requestData.getType()){
+                        case "startServer":
+                            connection.close();
+                            try {
+                                connection = new Server(this, (Integer) requestData.getObjects()[0], (String) requestData.getObjects()[1]);
+                            } catch (SocketException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+
+                        case "startClient":
+                            connection.close();
+                            try {
+                                connection = new Client(this);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+
                         case "hello":
-                            ((Client) connection).refreshServers();
+                            ((Client) connection).refreshServers((RefreshableServerList) requestData.getObjects()[0]);
                             break;
 
                         case "message":
@@ -79,6 +100,13 @@ public class NetworkController implements Runnable {
                             connection.hit((double) requestData.getObjects()[0], (Integer) requestData.getObjects()[1]);
                             break;
 
+                        case "join":
+                            ((Client) connection).join((ServerConnectionData) requestData.getObjects()[0]);
+                            break;
+
+                        case "startGame":
+                            ((Server) connection).startGame((int) requestData.getObjects()[0]);
+                            break;
                     }
 
                 }
@@ -110,22 +138,24 @@ public class NetworkController implements Runnable {
         requestDataQueue.add(new RequestData("hit", new Object[]{healthLeft, playerId}));
     }
 
-    public void joinServer(NetworkData data) {
-
+    public void joinServer(ServerConnectionData data) {
+        if (!host) {
+            requestDataQueue.add(new RequestData("join", new Object[]{data}));
+        }
     }
 
 
-    public List<ConnectionData> getServerList(){
-        if (connection instanceof Client){
+    public List<ServerConnectionData> getServerList(){
+        if (!host){
             return ((Client) connection).getServerList();
         }
 
         return null;
     }
 
-    public void refreshServers(){
-        if (connection instanceof Client){
-            requestDataQueue.add(new RequestData("hello", new Object[]{connection.getMyData()}));
+    public void refreshServers(RefreshableServerList refreshable){
+        if (!host){
+            requestDataQueue.add(new RequestData("hello", new Object[]{refreshable}));
         }
     }
 
@@ -133,28 +163,36 @@ public class NetworkController implements Runnable {
         thread.interrupt();
     }
 
-    public void startServer(){
-        startServer(1638);
+    public void startServer(String serverName){
+        startServer(serverName, 1638);
     }
 
-    public void startServer(int customPort){
-        close();
-        try {
-            connection = new Server(this, customPort);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        init();
+    public void startServer(String serverName, int customPort){
+        host = true;
+        requestDataQueue.add(new RequestData("startServer", new Object[]{customPort, serverName}));
     }
 
     public void startClient(){
-        close();
-        try {
-            connection = new Client(this);
-        } catch (IOException e) {
-            e.printStackTrace();
+        host = false;
+        requestDataQueue.add(new RequestData("startClient", null));
+    }
+
+    public void leave() {
+        connection.leave();
+    }
+
+    public void setNetworkPlayerMap(Map<NetworkData, NetworkPlayer> networkPlayerMap) {
+        this.networkPlayerMap = networkPlayerMap;
+    }
+
+    public boolean isHost() {
+        return host;
+    }
+
+    public void startGame(int mapIndex) {
+        if (host){
+            requestDataQueue.add(new RequestData("startGame", new Object[]{mapIndex}));
         }
-        init();
     }
 
     private class RequestData{
