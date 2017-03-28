@@ -58,6 +58,8 @@ public class ViewManager {
 
             loadTexture("arrow.png");
 
+            loadTexture("peace.png");
+
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
