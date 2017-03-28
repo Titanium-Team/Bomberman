@@ -160,7 +160,7 @@ public abstract class Connection {
         }
     }
 
-    public void movePlayer(NetworkData networkData, String locationJson){
+    public void movePlayer(NetworkData networkData, String locationJson, int id){
 
         Location location = new Location(locationJson);
 

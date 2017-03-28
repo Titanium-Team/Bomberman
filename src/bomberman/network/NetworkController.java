@@ -172,6 +172,10 @@ public class NetworkController implements Runnable {
         connection.leave();
     }
 
+    public void setNetworkPlayerMap(Map<NetworkData, NetworkPlayer> networkPlayerMap) {
+        this.networkPlayerMap = networkPlayerMap;
+    }
+
     private class RequestData{
         private String type;
         private Object[] objects;

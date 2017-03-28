@@ -45,7 +45,6 @@ public class Scrollbar extends ViewGroup {
 
 			if (this.mouseOffset != -1) {
 				this.setPos(Math.max(0, Math.min((float)(this.getView().getHeight() - Mouse.getY() - Scrollbar.this.getY() - mouseOffset) / ((float) Scrollbar.this.getHeight()), 1 - (scrollHeight))));
-				System.out.println(pos);
 				if (previousPos != pos) {
 					parent.updateChildren();
 					this.getView().requestLayout();
@@ -106,5 +105,9 @@ public class Scrollbar extends ViewGroup {
 
 	public float getScrollPos() {
 		return tab.getPos();
+	}
+
+	public float getScrollDistance(){
+		return tab.pos-tab.previousPos;
 	}
 }

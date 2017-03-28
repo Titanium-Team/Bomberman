@@ -45,6 +45,18 @@ public class ViewManager {
 
             loadTexture("wall.png");
 
+            loadTexture("bomb.png");
+
+            loadTexture("firedown.png");
+
+            loadTexture("teleport.png");
+
+            loadTexture("George-W-Bush.png");
+
+            loadTexture("usa.png");
+
+            loadTexture("arrow.png");
+
         } catch (IOException e) {
             e.printStackTrace();
             font = null;
