@@ -100,7 +100,7 @@ public class AiManager {
                     dangerTiles[i][j] = true;
                 }else{
                     if(tiles[i][j].getTileObject() instanceof Bomb){
-                        /*int range = ((Bomb) tiles[i][j].getTileObject()).();
+                        int range = ((Bomb) tiles[i][j].getTileObject()).getRange();
                         for(int x = i+1; x < i+range && tiles[x-1][j].getTileType().isWalkable(); x++){
                             dangerTiles[x][j] = true;
                         }
@@ -113,7 +113,6 @@ public class AiManager {
                         for(int y = i-1; y > i-range && tiles[i][y+1].getTileType().isWalkable(); y--){
                             dangerTiles[i][y] = true;
                         }
-                        */
                     }
                 }
             }
