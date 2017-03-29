@@ -416,6 +416,10 @@ public class LocalPlayer extends Player {
 
                 this.getGameStatistic().update(Statistics.BOMBS_PLANTED, 1);
 
+                if (tile.getTileObject() instanceof Bomb) {
+                    Main.instance.getNetworkController().plantBomb((Bomb) tile.getTileObject());
+                }
+
             }
             break;
 

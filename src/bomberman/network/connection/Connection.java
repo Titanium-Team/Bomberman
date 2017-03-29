@@ -1,6 +1,7 @@
 package bomberman.network.connection;
 
 import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
 import bomberman.view.engine.utility.Vector2;
@@ -163,7 +164,9 @@ public abstract class Connection {
         });
 
         for (String s : messages) {
-            send(s, fromWho, true);
+            if (s != null) {
+                send(s, fromWho, true);
+            }
         }
     }
 
@@ -177,7 +180,7 @@ public abstract class Connection {
     public abstract void message(String message);
     public abstract void listen();
     public abstract void move(Location location, int playerId);
-    public abstract void plantBomb(Location location);
+    public abstract void plantBomb(Bomb bomb);
     public abstract void explodedBomb(Location location);
     public abstract void hit(double health, int playerId);
     public abstract void leave();

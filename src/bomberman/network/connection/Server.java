@@ -2,6 +2,7 @@ package bomberman.network.connection;
 
 import bomberman.Main;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.ConnectionData;
 import bomberman.network.NetworkController;
@@ -92,7 +93,7 @@ public class Server extends Connection {
                 case "message":
                     String stringMessage = decrypt(splittedMessage[1]);
 
-                    sendToAll("message§", stringMessage, sender, true);
+                    sendToAll("message§", stringMessage, sender, true, true);
 
                     System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
 
@@ -133,13 +134,23 @@ public class Server extends Connection {
 
                     break;
                 case "position":
-                    String jsonMove = decrypt(splittedMessage[1]);
+                    String jsonMove = splittedMessage[1];
+                    sendToAll("position§", jsonMove, sender, false, false);
+
                     Type typeMove = new TypeToken<Map<String, String>>(){}.getType();
 
                     Map<String, String> jsonMapMove = gson.fromJson(jsonMove, typeMove);
                     movePlayer(sender, jsonMapMove.get("location"));
 
-                    sendToAll("position§", jsonMove, sender, false);
+                    sendRecieved(message, dataConnectionMap.get(sender));
+                    break;
+                case "plant":
+                    String bombPlant = splittedMessage[1];
+                    sendToAll("plant§", bombPlant, sender, false, false);
+
+                    Bomb bomb = Bomb.fromJson(bombPlant);
+                    Main.instance.getGameplayManager().getCurrentSession().getGameMap().spawn(bomb);
+
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
             }
@@ -158,12 +169,12 @@ public class Server extends Connection {
 
         Gson gson = new Gson();
 
-        sendToAll("position§", gson.toJson(jsonMap), getMyData().getNetworkData(), false);
+        sendToAll("position§", gson.toJson(jsonMap), getMyData().getNetworkData(), false, false);
     }
 
     @Override
-    public void plantBomb(Location location) {
-
+    public void plantBomb(Bomb bomb) {
+        sendToAll("plant§", bomb.toJson(), getMyData().getNetworkData(), true, false);
     }
 
     @Override
@@ -178,17 +189,22 @@ public class Server extends Connection {
 
     @Override
     public void leave() {
-        sendToAll("close", "", getMyData().getNetworkData(), false);
+        sendToAll("close", "", getMyData().getNetworkData(), false, true);
 
         close();
         getController().startClient();
     }
 
 
-    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend) {
+    private void sendToAll(String prefix, String message, NetworkData networkData, boolean resend, boolean encrypt) {
         getController().getNetworkPlayerMap().forEach((key, value) -> {
             if (!value.getConnectionData().getNetworkData().getIp().getHostAddress().equals(networkData.getIp().getHostAddress()) || value.getConnectionData().getNetworkData().getPort() != networkData.getPort()) {
-                send(prefix + value.getConnectionData().encrypt(message), value.getConnectionData().getNetworkData(), resend);
+                String messageSend = message;
+                if (encrypt){
+                    value.getConnectionData().encrypt(message);
+                }
+
+                send(prefix + message, value.getConnectionData().getNetworkData(), resend);
             }
         });
     }
@@ -203,7 +219,7 @@ public class Server extends Connection {
         }
 
 
-        sendToAll("startGame§", String.valueOf(mapIndex), getMyData().getNetworkData(), true);
+        sendToAll("startGame§", String.valueOf(mapIndex), getMyData().getNetworkData(), true, true);
 
         sendUserList();
     }
@@ -222,7 +238,7 @@ public class Server extends Connection {
         playerList.add(localNetwork.toJson());
 
         for (String s : playerList){
-            sendToAll("playerList§", s, getMyData().getNetworkData(), true);
+            sendToAll("playerList§", s, getMyData().getNetworkData(), true, true);
         }
     }
 }

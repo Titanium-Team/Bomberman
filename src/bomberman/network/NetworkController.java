@@ -1,5 +1,6 @@
 package bomberman.network;
 
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.connection.Client;
 import bomberman.network.connection.Connection;
@@ -89,7 +90,7 @@ public class NetworkController implements Runnable {
                             break;
 
                         case "plant":
-                            connection.plantBomb((Location) requestData.getObjects()[0]);
+                            connection.plantBomb((Bomb) requestData.getObjects()[0]);
                             break;
 
                         case "exploded":
@@ -126,8 +127,8 @@ public class NetworkController implements Runnable {
         requestDataQueue.add(new RequestData("position", new Object[]{location, playerId}));
     }
 
-    public void plantBomb(Location location) {
-        requestDataQueue.add(new RequestData("plant", new Object[]{location}));
+    public void plantBomb(Bomb blomb) {
+        requestDataQueue.add(new RequestData("plant", new Object[]{blomb}));
     }
 
     public void explodedBomb(Location location) {
