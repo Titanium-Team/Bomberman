@@ -79,22 +79,18 @@ public class Bomb extends TileObject {
 
             System.out.println(range + " = range");
             if ((x + i) < this.player.getGameSession().getGameMap().getWidth() && !stopRight) {
-                System.out.println(this.createExplosion((x + i), y, EXPLOSION_LIFESPAN) +" = stopRight");
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
 
             if ((x - i) > 0 && !stopLeft) {
-                System.out.println(this.createExplosion((x - i), y, EXPLOSION_LIFESPAN) +" = stopLeft");
                 stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
 
             if ((y - i) < this.player.getGameSession().getGameMap().getHeight() && !stopUp) {
-                System.out.println(this.createExplosion(x, (y-1), EXPLOSION_LIFESPAN) +" = stopUp");
                 stopUp = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
             }
 
             if ((y + i) > 0 && !stopDown) {
-                System.out.println(this.createExplosion(x, (y+i), EXPLOSION_LIFESPAN) +" = stopDown");
                 stopDown = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
 

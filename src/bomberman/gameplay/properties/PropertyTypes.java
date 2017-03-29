@@ -38,7 +38,7 @@ public enum PropertyTypes implements PropertyType {
     BOMB_AMOUNT {
         @Override
         public float defaultValue() {
-            return 2;
+            return 1F;
         }
 
         @Override
