@@ -49,6 +49,7 @@ public class GameView extends LightingView {
         for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
             Location playerLocation = gameplayManager.getCurrentSession().getPlayer(i).getBoundingBox().getCenter();
             Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize);
+            playerLight.setOwner(gameplayManager.getCurrentSession().getPlayer(i));
             playerLightMap.put(gameplayManager.getCurrentSession().getPlayer(i), playerLight);
             this.addLight(playerLight);
         }
@@ -98,6 +99,40 @@ public class GameView extends LightingView {
                         }
                     }
                 }
+            }
+        }
+
+        for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
+            Player player = gameplayManager.getCurrentSession().getPlayer(i);
+
+            if (playerLightMap.get(player).getLightCamera() != camera) {
+                BoundingBox b = player.getBoundingBox();
+                ITexture tex = ViewManager.getTexture("SwagBear.png");
+                if (player.getIndex() == 2) {
+                    tex = ViewManager.getTexture("YellowBear.png");
+                } else if (player.getIndex() == 3) {
+                    tex = ViewManager.getTexture("SwagBear.png");
+                } else if (player.getIndex() == 4) {
+                    tex = ViewManager.getTexture("DrunkBeer.png");
+                }
+
+                float rotation = 0;
+                if (player.getFacingDirection() == Player.FacingDirection.NORTH_EAST)
+                    rotation = (float) Math.toRadians(45);
+                else if (player.getFacingDirection() == Player.FacingDirection.EAST)
+                    rotation = (float) Math.toRadians(90);
+                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH_EAST)
+                    rotation = (float) Math.toRadians(90 + 45);
+                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH)
+                    rotation = (float) Math.toRadians(180);
+                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH_WEST)
+                    rotation = (float) Math.toRadians(180 + 45);
+                else if (player.getFacingDirection() == Player.FacingDirection.WEST)
+                    rotation = (float) Math.toRadians(270);
+                else if (player.getFacingDirection() == Player.FacingDirection.NORTH_WEST)
+                    rotation = (float) Math.toRadians(270 + 45);
+
+                batch.draw(tex, (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize, rotation);
             }
         }
     }
@@ -172,38 +207,6 @@ public class GameView extends LightingView {
                     }
                 }
             }
-        }
-
-
-        for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
-            Player player = gameplayManager.getCurrentSession().getPlayer(i);
-            BoundingBox b = player.getBoundingBox();
-            ITexture tex = ViewManager.getTexture("SwagBear.png");
-            if(player.getIndex() == 2){
-                tex = ViewManager.getTexture("YellowBear.png");
-            }else if(player.getIndex() == 3){
-                tex = ViewManager.getTexture("SwagBear.png");
-            }else if(player.getIndex() == 4){
-                tex = ViewManager.getTexture("DrunkBeer.png");
-            }
-
-            float rotation = 0;
-            if(player.getFacingDirection()== Player.FacingDirection.NORTH_EAST)
-                rotation = (float)Math.toRadians(45);
-            else if(player.getFacingDirection()== Player.FacingDirection.EAST)
-                rotation = (float)Math.toRadians(90);
-            else if(player.getFacingDirection()== Player.FacingDirection.SOUTH_EAST)
-                rotation = (float)Math.toRadians(90+45);
-            else if(player.getFacingDirection()== Player.FacingDirection.SOUTH)
-                rotation = (float)Math.toRadians(180);
-            else if(player.getFacingDirection()== Player.FacingDirection.SOUTH_WEST)
-                rotation = (float)Math.toRadians(180+45);
-            else if(player.getFacingDirection()== Player.FacingDirection.WEST)
-                rotation = (float)Math.toRadians(270);
-            else if(player.getFacingDirection()== Player.FacingDirection.NORTH_WEST)
-                rotation = (float)Math.toRadians(270+45);
-
-            batch.draw(tex, (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize, rotation);
         }
     }
 
