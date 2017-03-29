@@ -4,10 +4,10 @@ import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
+import org.lwjgl.input.Keyboard;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class GameplayManager {
 
@@ -77,7 +77,7 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBGGGGGBBGGW", TileAbility.NORMAL, 7)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 9)
-                .startPosition(1, 1)
+                //.startPosition(1, 1)
                 .startPosition(12, 11)
                 .treadmill(new Location(1, 1), Player.FacingDirection.WEST)
                 .treadmill(new Location(2, 1), Player.FacingDirection.WEST)
@@ -129,9 +129,14 @@ public class GameplayManager {
         this.createGameSession();
     }
 
+    public int getMapIndex() {
+        return mapIndex;
+    }
+
     private void createGameSession() {
         this.currentSession = new GameSession(this.getMap(this.mapIndex));
-        this.currentSession.addPlayer(new Player(this.currentSession, Player.PlayerType.LOCAL, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
+        this.currentSession.addPlayer(new LocalPlayer(this.currentSession, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
+        //this.currentSession.addAi(); Nur zum Testen der AI. Nicht nutzen, AI funktioniert nicht!
     }
 
     public void update(float delta) {
@@ -177,11 +182,35 @@ public class GameplayManager {
     }
 
     public void onGamepadEvent(Component component, float value) {
-        // TODO: Implementiert das plz
-        System.out.println(value);
+
+        if (component.getIdentifier() == Component.Identifier.Button._0 && value == 1) {
+            onKeyDown(Keyboard.KEY_SPACE, ' ');
+        }
+        if (component.getIdentifier() == Component.Identifier.Axis.X) {
+            if (value >= 0.5) {
+                onKeyDown(Keyboard.KEY_RIGHT, ' ');
+            } else if (value <= -0.5) {
+                onKeyDown(Keyboard.KEY_LEFT, ' ');
+            } else if(value < 0.5 && value >= -0.5) {
+                onKeyUp(Keyboard.KEY_RIGHT, ' ');
+                onKeyUp(Keyboard.KEY_LEFT, ' ');
+            }
+        }
+
+        if (component.getIdentifier() == Component.Identifier.Axis.Y) {
+            if (value >= 0.5) {
+                onKeyDown(Keyboard.KEY_DOWN, ' ');
+            } else if (value <= -0.5) {
+                onKeyDown(Keyboard.KEY_UP, ' ');
+            }else if(value < 0.5 && value >= -0.5) {
+                onKeyUp(Keyboard.KEY_DOWN, ' ');
+                onKeyUp(Keyboard.KEY_UP, ' ');
+            }
+        }
+
     }
 
-    public static enum GameState {
+    public enum GameState {
 
         IN_MENU,
         IN_GAME

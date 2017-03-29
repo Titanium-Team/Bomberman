@@ -22,7 +22,7 @@ public class Location implements Cloneable {
 
         Type type = new TypeToken<Map<String, Double>>() {}.getType();
 
-        Map<String, Float> vectorMap = gson.fromJson(json, type);
+        Map<String, Double> vectorMap = gson.fromJson(json, type);
 
         this.x = vectorMap.get("x");
         this.y = vectorMap.get("y");

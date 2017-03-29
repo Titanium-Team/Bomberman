@@ -12,13 +12,16 @@ public abstract class ViewComponent {
     private float x, y, width, height;
     private boolean visible;
 
-
     public ViewComponent(LayoutParams params, View v) {
         this.params = params;
         this.view = v;
         this.visible = true;
     }
 
+    /**
+     * Zeichnet Texturen und Formen auf dem Bildschirm.
+     * @param batch Der vom Viewmanager übergebene Batch.
+	 */
     public abstract void draw(Batch batch);
 
     public void layout(ViewComponent parent) {
@@ -72,10 +75,24 @@ public abstract class ViewComponent {
     public void onKeyUp(int key, char c) {
     }
 
+    /**
+     * Wird aufgerufen, wenn ein Maus-Button geklickt wird.
+     * @param button Der Index des Maus-Buttons der geklickt wurde.
+     * @param mouseX Die x-Koordinate des Mauszeigers .
+     * @param mouseY Die y-Koordinate des Mauszeigers.
+	 */
     public void onMouseDown(int button, int mouseX, int mouseY) {
     }
-
+    /**
+     * Wird aufgerufen, wenn ein Maus-Button losgelassen wird.
+     * @param button Der Index des Maus-Buttons der geklickt wurde.
+     * @param mouseX Die x-Koordinate des Mauszeigers .
+     * @param mouseY Die y-Koordinate des Mauszeigers.
+     */
     public void onMouseUp(int button, int mouseX, int mouseY) {
+    }
+
+    public void onMouseWheel(int wheel) {
     }
 
     public void onGamepadEvent(Component component, float value) {

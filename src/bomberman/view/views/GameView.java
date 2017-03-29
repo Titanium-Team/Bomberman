@@ -4,6 +4,8 @@ import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileAbility;
+import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.Explosion;
@@ -53,6 +55,10 @@ public class GameView extends LightingView {
         gameplayManager.setGameState(GameplayManager.GameState.IN_GAME);
     }
 
+    /**
+     * Aktualisiert die GameView.
+     * @param deltaTime die Zeit, die seit dem letzten Frame vergangen ist.
+	 */
     public void update(float deltaTime) {
         time += deltaTime;
 
@@ -68,6 +74,11 @@ public class GameView extends LightingView {
         }
     }
 
+    /**
+     * Zeichnet die Objekte, die Schatten werfen.
+     * @param batch Der zum zeichnen verwendete Batch.
+     * @param camera Der aktuell sichtbare Bildschirmausschnit.
+	 */
     @Override
     public void renderOccluders(Batch batch, Camera camera) {
         GameMap map = gameplayManager.getCurrentSession().getGameMap();
@@ -80,9 +91,9 @@ public class GameView extends LightingView {
                     if (tiles[i][j] != null) {
                         if (!tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileType().equals(TileTypes.WALL)) {
-                                batch.draw(ViewManager.getTexture("wall.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f, 0.5f, 0.5f, 1);
+                                batch.draw(ViewManager.getTexture("wall.png"), i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.5f, 0.5f, 0.5f, 1);
                             } else {
-                                batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.25f, 0.25f, 0.25f, 1);
+                                batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.25f, 0.25f, 0.25f, 1);
                             }
                         }
                     }
@@ -91,6 +102,11 @@ public class GameView extends LightingView {
         }
     }
 
+    /**
+     * Zeichnet die objekte, die keine Schatten werfen.
+     * @param batch Der zum zeichnen verwendete Batch.
+     * @param camera Der aktuell sichtbare Bildschirmausschnit.
+	 */
     @Override
     public void renderNonOccluders(Batch batch, Camera camera) {
         GameMap map = gameplayManager.getCurrentSession().getGameMap();
@@ -107,26 +123,57 @@ public class GameView extends LightingView {
                         if (tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileObject() != null) {
                                 if (tiles[i][j].getTileObject() instanceof Bomb) {
-                                    //TODO: bomb texture
-                                    batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
+                                    batch.draw(ViewManager.getTexture("bomb.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
                                     //TODO:additional textures
                                     ITexture texture = null;
-                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.SPEEDUP )
-                                        texture = ViewManager.getTexture("speedPowerUp.png");
-                                    if(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType() == PowerUpTypes.FIREUP )
-                                        texture = ViewManager.getTexture("explosionPowerUp.png");
-                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);                                
-				                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
-                                    //TODO:Explosion textures
+	                                switch(((PowerUp)(tiles[i][j].getTileObject())).getPowerUpType()){
+		                                case SPEEDUP:
+			                                texture = ViewManager.getTexture("speedPowerUp.png");
+			                                break;
+		                                case FIREUP:
+			                                texture = ViewManager.getTexture("explosionPowerUp.png");
+			                                break;
+		                                case FIREDOWN:
+			                                texture = ViewManager.getTexture("firedown.png");
+			                                break;
+		                                case BOMBUP:
+			                                texture = ViewManager.getTexture("usa.png");
+			                                break;
+		                                case BOMBDOWN:
+			                                texture = ViewManager.getTexture("peace.png");
+			                                break;
+	                                }
+                                    batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);
+                                } else if (tiles[i][j].getTileObject() instanceof Explosion) {
                                     batch.draw(((Explosion) tiles[i][j].getTileObject()).getAnimation(), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 }
+                            } else if (tiles[i][j].getTileAbility().equals(TileAbility.TELEPORT) || tiles[i][j].getTileAbility().equals(TileAbility.RANDOM_TELEPORT)) {
+                                batch.draw(ViewManager.getTexture("teleport.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1,1,1,1);
+                            }else if(tiles[i][j].getTileAbility().equals(TileAbility.TREADMILL)){
+	                            double rotation;
+	                            switch(tiles[i][j].getTreadMillDirection()){
+		                             case NORTH:
+			                             rotation = Math.toRadians(90.0);
+			                             break;
+		                            case EAST:
+			                            rotation = Math.toRadians(180.);
+			                            break;
+		                            case SOUTH:
+			                            rotation = Math.toRadians(270.);
+			                            break;
+		                            default:
+			                            rotation = 0;
+			                            break;
+	                            }
+	                            batch.draw(ViewManager.getTexture("arrow.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize,0.5f * this.tileSize,0.5f * this.tileSize, (float) rotation, 1, 1, 1, 1);
                             }
                         }
                     }
                 }
             }
         }
+
 
         for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
             Player player = gameplayManager.getCurrentSession().getPlayer(i);
@@ -160,6 +207,12 @@ public class GameView extends LightingView {
         }
     }
 
+    /**
+     * Generiert ein zufällig gefärbtes Licht.
+     * @param x Die x-Koordinate des Mittelpunktes.
+     * @param y Die y-Koordinate des Mittelpunktes.
+     * @return Ein zufällig gefärbtes Licht.
+	 */
     private Light randomLight(float x, float y) {
         float r = random.nextFloat() / 2 + 0.5f;
         float g = random.nextFloat() / 2 + 0.5f;

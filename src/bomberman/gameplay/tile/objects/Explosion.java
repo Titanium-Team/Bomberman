@@ -20,12 +20,14 @@ public class Explosion extends TileObject {
     private Animation animation;
     private final double damage;
 
+
     public Explosion(Player owner, Tile parent, float lifespan, double damage) {
         super(parent, lifespan);
 
         this.damage = damage;
         this.owner = owner;
         this.animation = new Animation((Texture) ViewManager.getTexture("explosion.png"), 64, 64, Bomb.EXPLOSION_LIFESPAN / 25f);
+
 
     }
 
@@ -55,6 +57,7 @@ public class Explosion extends TileObject {
 
     public boolean destroyWall() {
 
+
         if (this.getParent().getTileType().isDestroyable()) {
 
             this.getParent().setHealth(this.getParent().getHealth() - this.damage);
@@ -66,6 +69,7 @@ public class Explosion extends TileObject {
 
             return true;
         } else if(!(this.getParent().getTileType().isDestroyable())) {
+
             return true;
         }
 

@@ -5,7 +5,7 @@ import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
-import bomberman.view.engine.utility.Vector2;
+
 
 import java.util.*;
 import java.util.List;
@@ -16,6 +16,7 @@ public class GameMap implements Cloneable {
 
     private final String name;
     private final String thumbnailKey;
+
 
     private final Tile[][] tiles;
     private final List<Location> startPositions;
@@ -29,7 +30,7 @@ public class GameMap implements Cloneable {
 
         assert !(name == null);
         assert !(startPositions == null);
-        assert (startPositions.size() > 1);
+//        assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
         this.name = name;
@@ -92,7 +93,7 @@ public class GameMap implements Cloneable {
 
     }
 
-    public Player.Direction checkCollision(Player player) {
+    public Player.Direction checkCollision(LocalPlayer player) {
 
         BoundingBox playerBox = player.getBoundingBox();
 
@@ -103,17 +104,27 @@ public class GameMap implements Cloneable {
 
                 if (!(tile.canVisit(player))) {
 
-                    int pX = (int) playerBox.getCenter().getX();
-                    int pY = (int) playerBox.getCenter().getY();
-
                     Player.FacingDirection facingDirection = player.getFacingDirection();
                     switch (facingDirection) {
 
-                        case NORTH: return Player.Direction.UP;
-                        case SOUTH: return Player.Direction.DOWN;
-                        case EAST: return Player.Direction.LEFT;
-                        case WEST: return Player.Direction.RIGHT;
+                        case NORTH: {
+                            return Player.Direction.UP;
+                        }
 
+                        case SOUTH: {
+                            return Player.Direction.DOWN;
+                        }
+
+                        case EAST: {
+                            return Player.Direction.RIGHT;
+                        }
+
+                        case WEST: {
+                            return Player.Direction.LEFT;
+                        }
+
+                        /*
+                        FOR LEGACY SAKE
                         case SOUTH_EAST:
                         case SOUTH_WEST:
                         case NORTH_WEST:
@@ -124,39 +135,41 @@ public class GameMap implements Cloneable {
                             Optional<Tile> left = this.getTile(pX - 1, pY);
                             Optional<Tile> right = this.getTile(pX + 1, pY);
 
-                            if(!(up.isPresent())) return Player.Direction.UP;
+                            if (!(up.isPresent())) return Player.Direction.UP;
                             else if (!(down.isPresent())) return Player.Direction.DOWN;
-                            else if(!(left.isPresent())) return Player.Direction.LEFT;
-                            else if(!(right.isPresent())) return Player.Direction.RIGHT;
+                            else if (!(left.isPresent())) return Player.Direction.LEFT;
+                            else if (!(right.isPresent())) return Player.Direction.RIGHT;
 
                             Player.Direction last = this.lastDirection.get(player);
 
                             switch (facingDirection) {
 
                                 case NORTH_EAST: {
-                                    if(last == Player.Direction.UP && player.getDirection() == Player.Direction.RIGHT) {
-                                        if (up.get().canVisit(player)) {
+                                    Location loc = player.getTile().getBoundingBox().getCenter();
+                                    Optional<Tile> diagonalTile = this.getTile((int) (loc.getX() + 1), (int) (loc.getY() - 1));
+                                    Optional<Tile> diagonalTile2 = this.getTile((int) (loc.getX() - 1), (int) (loc.getY() - 1));
+                                    if (last == Player.Direction.UP && player.getDirection()[0] == Player.Direction.RIGHT) {
+                                        if (up.get().canVisit(player) || !diagonalTile.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.RIGHT;
-                                        } else if (right.get().canVisit(player)) {
+                                        } else if (right.get().canVisit(player) || !diagonalTile2.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.RIGHT);
                                             return Player.Direction.UP;
                                         }
                                     } else {
-                                        if (right.get().canVisit(player)) {
+                                        if (right.get().canVisit(player) || !diagonalTile.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.RIGHT);
                                             return Player.Direction.UP;
-                                        } else if (up.get().canVisit(player)) {
+                                        } else if (up.get().canVisit(player) || !diagonalTile2.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.RIGHT;
                                         }
                                     }
-
                                 }
                                 break;
 
                                 case SOUTH_EAST: {
-                                    if(last == Player.Direction.DOWN && player.getDirection() == Player.Direction.RIGHT) {
+                                    if (last == Player.Direction.DOWN && player.getDirection()[0] == Player.Direction.RIGHT) {
                                         if (down.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.DOWN);
                                             return Player.Direction.RIGHT;
@@ -177,7 +190,7 @@ public class GameMap implements Cloneable {
                                 break;
 
                                 case NORTH_WEST: {
-                                    if(last == Player.Direction.UP && player.getDirection() == Player.Direction.LEFT) {
+                                    if (last == Player.Direction.UP && player.getDirection()[0] == Player.Direction.LEFT) {
                                         if (up.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.UP);
                                             return Player.Direction.LEFT;
@@ -198,7 +211,7 @@ public class GameMap implements Cloneable {
                                 break;
 
                                 case SOUTH_WEST: {
-                                    if(last == Player.Direction.DOWN && player.getDirection() == Player.Direction.LEFT) {
+                                    if (last == Player.Direction.DOWN && player.getDirection()[0] == Player.Direction.LEFT) {
                                         if (down.get().canVisit(player)) {
                                             this.lastDirection.put(player, Player.Direction.DOWN);
                                             return Player.Direction.LEFT;
@@ -219,12 +232,11 @@ public class GameMap implements Cloneable {
                                 break;
 
                             }
-
-                            return Player.Direction.STOP_VERTICAL_MOVEMENT;
                         }
+                        */
 
+                        default: return Player.Direction.STOP_VERTICAL_MOVEMENT;
                     }
-
                 }
 
             }

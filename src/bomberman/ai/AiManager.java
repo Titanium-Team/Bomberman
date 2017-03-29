@@ -15,7 +15,6 @@ import java.util.Random;
  * Created by Daniel on 13.03.2017.
  */
 public class AiManager {
-
     private GameSession gameSession;
     private ArrayList<AiPlayer> aiPlayers;
     private ArrayList<PlayerRelevance> players;
@@ -67,6 +66,10 @@ public class AiManager {
         }
     }
 
+    public void addPlayer(Player player){
+        players.add(new PlayerRelevance(player));
+    }
+
     public void update(float dt) {
         updateTime = -dt;
         if(updateTime < halveUpdateTime){
@@ -97,7 +100,7 @@ public class AiManager {
                     dangerTiles[i][j] = true;
                 }else{
                     if(tiles[i][j].getTileObject() instanceof Bomb){
-                        /*int range = ((Bomb) tiles[i][j].getTileObject()).getRange();
+                        int range = ((Bomb) tiles[i][j].getTileObject()).getRange();
                         for(int x = i+1; x < i+range && tiles[x-1][j].getTileType().isWalkable(); x++){
                             dangerTiles[x][j] = true;
                         }
@@ -109,7 +112,7 @@ public class AiManager {
                         }
                         for(int y = i-1; y > i-range && tiles[i][y+1].getTileType().isWalkable(); y--){
                             dangerTiles[i][y] = true;
-                        }*/
+                        }
                     }
                 }
             }

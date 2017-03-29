@@ -39,6 +39,7 @@ public class Tile {
 
         this.tileAbility = tileAbility;
         this.tileType = tileType;
+        this.health = tileType.getHealth();
         this.boundingBox = boundingBox;
         this.health = tileType.getHealth();
 
@@ -76,12 +77,12 @@ public class Tile {
         return this.tileObject;
     }
 
-    public boolean isExploding() {
-        return (this.tileObject instanceof Explosion);
-    }
-
     public void setHealth(double health) {
         this.health = health;
+    }
+
+    public boolean isExploding() {
+        return (this.tileObject instanceof Explosion);
     }
 
     public boolean canVisit(Player player) {
@@ -218,6 +219,7 @@ public class Tile {
 
     public void update(float delta) {
 
+
         //--- Abilities
         if(!(this.tileAbility == TileAbility.NORMAL)) {
             Iterator<Map.Entry<Player, Float>> iterator = this.players.entrySet().iterator();
@@ -244,7 +246,6 @@ public class Tile {
         if (this.tileObject == null) {
             return;
         }
-
         this.tileObject.update(delta);
 
     }

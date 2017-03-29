@@ -1,10 +1,8 @@
 package bomberman.view.views;
 
 import bomberman.Main;
-import bomberman.network.ConnectionData;
-import bomberman.network.NetworkData;
 import bomberman.network.ServerConnectionData;
-import bomberman.network.connection.Refreshable;
+import bomberman.network.connection.RefreshableServerList;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.*;
 
@@ -18,7 +16,7 @@ import java.util.List;
 /**
  * leads to LobbyView
  **/
-public class PlayMenuView extends BaseMenuView implements Refreshable {
+public class PlayMenuView extends BaseMenuView implements RefreshableServerList {
 
     private Button hostGameButton;
     private Button refreshServerListButton;
@@ -39,14 +37,14 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
 
         this.hostGameButton = new Button(LayoutParams.obtain(0.1f, 0.55f, 0.2f, 0.1f), this, "Host Game");
         this.hostGameButton.addListener(() -> {
-            PlayMenuView.this.changeView(LobbyView.class);
-
             String serverName = serverNameField.getText();
             if (portTextField.getText() != "") {
                 Main.instance.getNetworkController().startServer(serverName, Integer.parseInt(portTextField.getText()));
             }else {
                 Main.instance.getNetworkController().startServer(serverName);
             }
+
+            PlayMenuView.this.changeView(LobbyView.class);
         });
         this.getRoot().addChild(hostGameButton);
 
@@ -72,7 +70,7 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
 
         for (int i = 0; i < connectionDataList.size(); i++) {
             String text = connectionDataList.get(i).getName();
-            NetworkData data = connectionDataList.get(i).getNetworkData();
+            ServerConnectionData data = connectionDataList.get(i);
             if (!serverButtons.contains(text)) {
                 Button button = new Button(LayoutParams.obtain(0f, 0f, 0f, 0f), this, text);
                 button.addListener(() -> {
