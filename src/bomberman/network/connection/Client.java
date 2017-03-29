@@ -94,7 +94,7 @@ public class Client extends Connection {
                     sendRecieved(message, server);
                     break;
                 case "playerList":
-                    String playerString = decrypt(splittedMessage[1]);
+                    String playerString = splittedMessage[1];
 
                     NetworkPlayer player = NetworkPlayer.fromJson(playerString);
 
@@ -111,7 +111,7 @@ public class Client extends Connection {
                     sendRecieved(message, server);
                     break;
                 case "startGame":
-                    Main.instance.getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(decrypt(splittedMessage[1])));
+                    Main.instance.getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(splittedMessage[1]));
                     Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(GameView.class));
 
                     sendRecieved(message, server);

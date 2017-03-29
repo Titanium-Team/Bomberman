@@ -223,7 +223,7 @@ public class Server extends Connection {
         }
 
 
-        sendToAll("startGame§", String.valueOf(mapIndex), getMyData().getNetworkData(), true, true);
+        sendToAll("startGame§", String.valueOf(mapIndex), getMyData().getNetworkData(), true, false);
 
         sendUserList();
     }
@@ -242,7 +242,7 @@ public class Server extends Connection {
         playerList.add(localNetwork.toJson());
 
         for (String s : playerList){
-            sendToAll("playerList§", s, getMyData().getNetworkData(), true, true);
+            sendToAll("playerList§", s, getMyData().getNetworkData(), true, false);
         }
     }
 }
