@@ -117,20 +117,30 @@ public class GameView extends LightingView {
                 }
 
                 float rotation = 0;
-                if (player.getFacingDirection() == Player.FacingDirection.NORTH_EAST)
-                    rotation = (float) Math.toRadians(45);
-                else if (player.getFacingDirection() == Player.FacingDirection.EAST)
-                    rotation = (float) Math.toRadians(90);
-                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH_EAST)
-                    rotation = (float) Math.toRadians(90 + 45);
-                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH)
-                    rotation = (float) Math.toRadians(180);
-                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH_WEST)
-                    rotation = (float) Math.toRadians(180 + 45);
-                else if (player.getFacingDirection() == Player.FacingDirection.WEST)
-                    rotation = (float) Math.toRadians(270);
-                else if (player.getFacingDirection() == Player.FacingDirection.NORTH_WEST)
-                    rotation = (float) Math.toRadians(270 + 45);
+                /** Für Timmy Tim, den ********* **/
+                switch(player.getFacingDirection()){
+                    case NORTH_EAST:
+                        rotation = (float) Math.toRadians(45);
+                        break;
+                    case EAST:
+                        rotation = (float) Math.toRadians(90);
+                        break;
+                    case SOUTH_EAST:
+                        rotation = (float) Math.toRadians(90 + 45);
+                        break;
+                    case SOUTH:
+                        rotation = (float) Math.toRadians(180);
+                        break;
+                    case SOUTH_WEST:
+                        rotation = (float) Math.toRadians(180 + 45);
+                        break;
+                    case WEST:
+                        rotation = (float) Math.toRadians(270);
+                        break;
+                    case NORTH_WEST:
+                        rotation = (float) Math.toRadians(270 + 45);
+                        break;
+                }
 
                 batch.draw(tex, (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize, rotation);
             }
