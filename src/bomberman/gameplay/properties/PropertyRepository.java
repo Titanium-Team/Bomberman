@@ -19,7 +19,7 @@ public class PropertyRepository {
     }
 
     public float getValue(PropertyType propertyType) {
-        return this.properties.getOrDefault(propertyType, new Entry(-1F, propertyType.defaultValue(), -1F)).value;
+        return this.properties.getOrDefault(propertyType, new Entry(propertyType.minValue(), propertyType.defaultValue(), propertyType.maxValue())).value;
     }
 
     public float getMin(PropertyType propertyType) {
@@ -67,15 +67,19 @@ public class PropertyRepository {
     public void setValue(PropertyType propertyType, float value) {
 
         if(this.properties.containsKey(propertyType)) {
-            this.properties.get(propertyType).value = value;
+            this.properties.get(propertyType).value = range(propertyType.minValue(), value, propertyType.maxValue());
             return;
         }
 
-        this.properties.put(propertyType, new Entry(propertyType.minValue(), value, propertyType.maxValue()));
+        this.properties.put(propertyType, new Entry(propertyType.minValue(), range(propertyType.minValue(), value, propertyType.maxValue()), propertyType.maxValue()));
     }
 
     public void reset(PropertyType propertyType) {
         this.properties.put(propertyType, new Entry(propertyType.minValue(), propertyType.defaultValue(), propertyType.maxValue()));
+    }
+
+    private static float range(float min, float value, float max) {
+        return Math.min(Math.max(value, min), max);
     }
 
     private class Entry {

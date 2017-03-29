@@ -1,12 +1,8 @@
 package bomberman.gameplay.tile.objects;
 
-import bomberman.gameplay.statistic.Statistics;
-import bomberman.view.engine.ViewManager;
-
-import bomberman.gameplay.properties.PropertyTypes;
-import bomberman.gameplay.tile.TileObject;
-import bomberman.Main;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.properties.PropertyTypes;
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileTypes;
@@ -55,7 +51,6 @@ public class Explosion extends TileObject {
     }
 
     public boolean destroyWall() {
-
 
         if (this.getParent().getTileType().isDestroyable()) {
 

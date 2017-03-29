@@ -51,6 +51,7 @@ public class LocalPlayer extends Player {
         return this.facingDirection;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public void update(float delta) {
 
@@ -405,7 +406,6 @@ public class LocalPlayer extends Player {
                 int bombsLeft = (int) this.getPropertyRepository().getValue(PropertyTypes.BOMB_AMOUNT);
 
                 if(tile.getTileObject() instanceof Bomb || bombsLeft <= 0) {
-                    assert bombsLeft == 0;
                     return;
                 }
 
