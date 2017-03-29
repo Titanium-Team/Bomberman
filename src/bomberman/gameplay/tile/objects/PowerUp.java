@@ -89,6 +89,16 @@ public class PowerUp extends TileObject {
                 System.out.println("picked up powerbomb");
             }
             break;
+
+            case SPIKEBOMB: {
+                repo.setValue(
+                        PropertyTypes.BOMBTYPE,
+                        (float)PowerUpTypes.SPIKEBOMB.value()
+                );
+                System.out.println("picked up spikebomb");
+            }
+            break;
+
         }
 
         this.parent.destroyObject();
