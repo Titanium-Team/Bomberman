@@ -30,6 +30,12 @@ public class VerticalView extends Panel {
 	}
 
 	@Override
+	public void removeAllChildren() {
+		super.removeAllChildren();
+		this.updateChildren();
+	}
+
+	@Override
 	public void draw(Batch batch) {
 		batch.flush();
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);

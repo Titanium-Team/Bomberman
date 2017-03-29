@@ -38,7 +38,7 @@ public enum PropertyTypes implements PropertyType {
     BOMB_AMOUNT {
         @Override
         public float defaultValue() {
-            return 1;
+            return 1F;
         }
 
         @Override
@@ -73,6 +73,42 @@ public enum PropertyTypes implements PropertyType {
     },
 
     INVINCIBILITY{
+        @Override
+        public float defaultValue() {
+            return 0F;
+        }
+
+        @Override
+        public float maxValue() {
+            return 3;
+        }
+
+        @Override
+        public float minValue() {
+            return 0;
+        }
+
+    },
+
+    BOMBTYPE{
+        @Override
+        public float defaultValue() {
+            return 0F;
+        }
+
+        @Override
+        public float maxValue() {
+            return 3;
+        }
+
+        @Override
+        public float minValue() {
+            return 0;
+        }
+
+    },
+
+    BOMBSDOWN{
         @Override
         public float defaultValue() {
             return 0F;

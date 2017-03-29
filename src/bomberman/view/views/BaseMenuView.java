@@ -20,7 +20,7 @@ public abstract class BaseMenuView extends LightingView {
 
     private final Light demoLight;
     private boolean[][] demoGrid;
-    private int gridSize = 50;
+    private int gridSize = 20;
 
     public BaseMenuView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
@@ -29,7 +29,7 @@ public abstract class BaseMenuView extends LightingView {
         this.backButton.addListener(() -> BaseMenuView.this.navigateBack());
         this.getRoot().addChild(backButton);
 
-        this.demoLight = new Light(0, 0, 350, 1f, 1f, 1f);
+        this.demoLight = new Light(0, 0, 400, 1f, 1f, 1f);
         this.addLight(demoLight);
     }
 
@@ -56,7 +56,7 @@ public abstract class BaseMenuView extends LightingView {
         demoGrid = new boolean[(getWidth() / gridSize) + 1][(getHeight() / gridSize) + 1];
         for (int x = 0; x < demoGrid.length; x++) {
             for (int y = 0; y < demoGrid[x].length; y++) {
-                demoGrid[x][y] = r.nextFloat() > 0.7f;
+                demoGrid[x][y] = r.nextFloat() > 0.9f;
             }
         }
     }

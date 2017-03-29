@@ -57,6 +57,8 @@ public class Bomb extends TileObject {
         //--- Add new bomb
         PropertyRepository repo = this.player.getPropertyRepository();
         repo.setValue(PropertyTypes.BOMB_AMOUNT, repo.getValue(PropertyTypes.BOMB_AMOUNT) + 1);
+        repo.setValue(PropertyTypes.BOMBSDOWN, repo.getValue(PropertyTypes.BOMBSDOWN) - 1);
+
 
         //--- coordinates of the bomb
         int x = (int) this.getParent().getBoundingBox().getMin().getX();
@@ -75,7 +77,8 @@ public class Bomb extends TileObject {
 
         for (int i = 1; i < this.range + 1; i++) {
 
-            if ((x + i) < this.player.getGameSession().getGameMap().getWidth() && (!stopRight)) {
+            System.out.println(range + " = range");
+            if ((x + i) < this.player.getGameSession().getGameMap().getWidth() && !stopRight) {
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
 
@@ -83,12 +86,12 @@ public class Bomb extends TileObject {
                 stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
 
-            if ((y + i) < this.player.getGameSession().getGameMap().getHeight() && !stopUp) {
-                stopUp = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
+            if ((y - i) < this.player.getGameSession().getGameMap().getHeight() && !stopUp) {
+                stopUp = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
             }
 
-            if ((y - i) > 0 && !stopDown) {
-                stopDown = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
+            if ((y + i) > 0 && !stopDown) {
+                stopDown = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
 
         }
@@ -115,7 +118,6 @@ public class Bomb extends TileObject {
         }
 
         this.player.getGameSession().getGameMap().getTile(x, y).get().spawn(explosion);
-
         return explosion.destroyWall();
 
     }

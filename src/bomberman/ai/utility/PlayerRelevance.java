@@ -2,6 +2,7 @@ package bomberman.ai.utility;
 
 import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyTypes;
+
 import bomberman.gameplay.statistic.GameStatistic;
 import bomberman.gameplay.statistic.Statistic;
 import bomberman.gameplay.statistic.Statistics;
@@ -25,7 +26,9 @@ public class PlayerRelevance {
 
     public void update() {
         //TODO: Inventar,Score etc.
+
         relevance = player.getPropertyRepository().getValue(PropertyTypes.HEALTH) * HEALTH_MODIFIER + player.getGameStatistic().get(Statistics.BOMBS_PLANTED) * BOMB_MODIFIER + player.getGameStatistic().get(Statistics.KILLS) * KILLS_MODIFIER;
+
     }
 
     public double getRelevance() {

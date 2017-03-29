@@ -13,6 +13,8 @@ public class Light {
     private int radius;
     private float r, g, b;
 
+    private Object owner = null;
+
     private FrameBuffer shadowMap;
     private FrameBuffer occludersMap;
 
@@ -96,5 +98,13 @@ public class Light {
 
     public float getB() {
         return b;
+    }
+
+    public Object getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Object owner) {
+        this.owner = owner;
     }
 }

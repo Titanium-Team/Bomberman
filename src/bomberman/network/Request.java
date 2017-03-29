@@ -37,4 +37,14 @@ public class Request {
     public boolean isResend() {
         return resend;
     }
+
+    public boolean allRecieved(){
+        for (boolean b : recieved.values()){
+            if (!b){
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

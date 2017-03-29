@@ -1,5 +1,6 @@
 package bomberman.gameplay;
 
+import bomberman.Main;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
@@ -343,6 +344,8 @@ public class LocalPlayer extends Player {
             this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
         );
 
+        Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex());
+
     }
 
     public void keyUp(int keyCode, char c) {
@@ -407,7 +410,35 @@ public class LocalPlayer extends Player {
                 }
 
                 this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
-                tile.spawn(new Bomb(this, tile, 2, 1));
+                //MANAGE BOMBS
+                System.out.println(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE));
+                if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE) == 0F) {
+                    //normale Bombe
+
+                    tile.spawn(new Bomb(this, tile, 2, 1));
+                    this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
+
+                }else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)== 1F){
+                    //Powerbombe
+                    if(this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)==0F){
+                        float tmpBlast =this.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS) ;
+                        this.getPropertyRepository().setValue(PropertyTypes.BOMB_BLAST_RADIUS,
+                                this.getPropertyRepository().getMax(PropertyTypes.BOMB_BLAST_RADIUS));
+                        tile.spawn(new Bomb(this, tile, 2, 1));
+                        this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
+
+                        this.getPropertyRepository().setValue(PropertyTypes.BOMB_BLAST_RADIUS,tmpBlast);
+                    }else{
+                        //normale Bombe, wenn eine Powerbomb bereits liegt
+                        tile.spawn(new Bomb(this, tile, 2, 1));
+                        this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
+                    }
+                }
+                /**else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)==2F){
+                 *  tile.spawn(new Bomb(this, tile, 2));
+                 *
+                 */
+                this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
 
                 this.getGameStatistic().update(Statistics.BOMBS_PLANTED, 1);
 

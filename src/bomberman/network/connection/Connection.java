@@ -2,10 +2,7 @@ package bomberman.network.connection;
 
 import bomberman.gameplay.Player;
 import bomberman.gameplay.utils.Location;
-import bomberman.network.ConnectionData;
-import bomberman.network.NetworkController;
-import bomberman.network.NetworkData;
-import bomberman.network.Request;
+import bomberman.network.*;
 import bomberman.view.engine.utility.Vector2;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -45,7 +42,7 @@ public abstract class Connection {
 
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(1024);
+            keyPairGenerator.initialize(2048);
 
             tempKeys = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
@@ -141,7 +138,17 @@ public abstract class Connection {
     }
 
     public void recieved(String message, NetworkData reciever) {
-        requestMap.get(message).setRecieved(reciever);
+        if (requestMap.containsKey(message)) {
+            requestMap.get(message).setRecieved(reciever);
+
+            if (requestMap.get(message).allRecieved()) {
+                requestMap.remove(message);
+            }
+        }
+    }
+
+    public void sendRecieved(String message, ConnectionData connectionData){
+        send("ok§" + message, connectionData.getNetworkData(), false);
     }
 
     public void error(NetworkData fromWho) {
@@ -160,7 +167,7 @@ public abstract class Connection {
         }
     }
 
-    public void movePlayer(NetworkData networkData, String locationJson, int id){
+    public void movePlayer(NetworkData networkData, String locationJson){
 
         Location location = new Location(locationJson);
 

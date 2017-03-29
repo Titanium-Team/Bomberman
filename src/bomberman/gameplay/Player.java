@@ -10,6 +10,7 @@ import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
@@ -134,11 +135,15 @@ public abstract class Player {
             this.getPropertyRepository().setValue(PropertyTypes.INVINCIBILITY, 3F);
             this.respawn();
         }else{
-            System.out.println("gameover");
+            System.out.println(name + "is dead!");
+            //spieler in die mitte
+            //this.boundingBox.setCenter(this.gameMap.getTile(this.gameMap.getWidth()/2,this.gameMap.getHeight()/2).get().getBoundingBox().getCenter());
+            //anstatt spieler in die mitte: player bild entfernen, bounding box entfernen -> noclip
         }
     }
 
     public abstract void update(float delta);
+
 
     @Override
     public boolean equals(Object o) {

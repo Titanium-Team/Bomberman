@@ -43,8 +43,13 @@ public class ViewManager {
             loadTexture("explosion.png");
             loadTexture("speedPowerUp.png");
             loadTexture("explosionPowerUp.png");
-
+            loadTexture("DrunkBeer.png");
+            loadTexture("BrownBear.png");
+            loadTexture("SwagBear.png");
+            loadTexture("YellowBear.png");
             loadTexture("wall.png");
+            loadTexture("breakableWall.png");
+            loadTexture("ground.png");
 
             loadTexture("bomb.png");
 

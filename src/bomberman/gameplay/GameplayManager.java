@@ -1,11 +1,13 @@
 package bomberman.gameplay;
 
+
 import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class GameplayManager {
 
     private GameState gameState = GameState.IN_MENU;
     private final List<GameMap> maps = new LinkedList<>();
+
 
     private int mapIndex = 0;
 
@@ -90,7 +93,9 @@ public class GameplayManager {
             .build()
         );
 
+
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
+
 
         //@TODO
         this.setMapIndex(0);
@@ -127,6 +132,10 @@ public class GameplayManager {
 
         this.mapIndex = mapIndex;
         this.createGameSession();
+    }
+
+    public int getMapIndex() {
+        return mapIndex;
     }
 
     private void createGameSession() {
