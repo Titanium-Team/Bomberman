@@ -346,7 +346,7 @@ public class LocalPlayer extends Player {
             this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
         );
 
-        Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex());
+        Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex(), getFacingDirection());
 
     }
 

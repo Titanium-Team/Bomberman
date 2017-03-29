@@ -1,6 +1,7 @@
 package bomberman.network.connection;
 
 import bomberman.Main;
+import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
@@ -119,7 +120,10 @@ public class Client extends Connection {
                     String movement = splittedMessage[1];
                     Type typeMovement = new TypeToken<Map<String, String>>(){}.getType();
                     Map<String, String> jsonMapMovement = gson.fromJson(movement,typeMovement);
-                    movePlayer(sender, jsonMapMovement.get("location"));
+
+                    Type typeFacing = new TypeToken<Player.FacingDirection>(){}.getType();
+                    Player.FacingDirection facingDirection = gson.fromJson(jsonMapMovement.get("facingDirection"), typeFacing);
+                    movePlayer(sender, jsonMapMovement.get("location"), facingDirection);
 
                     sendRecieved(message, server);
                     break;
@@ -157,12 +161,13 @@ public class Client extends Connection {
     }
 
     @Override
-    public void move(Location location, int playerId) {
+    public void move(Location location, Player.FacingDirection facingDirection, int playerId) {
+        Gson gson = new Gson();
+
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("location", location.toJson());
         jsonMap.put("id", String.valueOf(playerId));
-
-        Gson gson = new Gson();
+        jsonMap.put("facingDirection", gson.toJson(facingDirection));
 
         send("position§" + gson.toJson(jsonMap), server.getNetworkData(), false);
     }

@@ -17,6 +17,7 @@ import java.util.Map;
 public class NetworkPlayer extends Player {
 
     private ConnectionData connectionData;
+    private FacingDirection facingDirection = FacingDirection.NORTH;
 
     public NetworkPlayer(String name, Location center, ConnectionData connectionData) {
         super(Main.instance.getGameplayManager().getCurrentSession(), PlayerType.NETWORK, name, center);
@@ -24,13 +25,16 @@ public class NetworkPlayer extends Player {
         this.connectionData = connectionData;
     }
 
-    @Override
-    public FacingDirection getFacingDirection() {
-        //@TODO Bitte implementieren. Danke.
-        throw new NotImplementedException();
+    public void setFacingDirection(FacingDirection facingDirection) {
+        this.facingDirection = facingDirection;
     }
 
-    //@Override
+    @Override
+    public FacingDirection getFacingDirection() {
+        return facingDirection;
+    }
+
+    @Override
     public void update(float delta) {
 
     }

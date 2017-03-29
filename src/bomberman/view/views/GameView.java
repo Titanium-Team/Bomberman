@@ -47,11 +47,7 @@ public class GameView extends LightingView {
         this.gameplayManager = gameplayManager;
         playerLightMap.clear();
         for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
-            Location playerLocation = gameplayManager.getCurrentSession().getPlayer(i).getBoundingBox().getCenter();
-            Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize);
-            playerLight.setOwner(gameplayManager.getCurrentSession().getPlayer(i));
-            playerLightMap.put(gameplayManager.getCurrentSession().getPlayer(i), playerLight);
-            this.addLight(playerLight);
+            addPlayer(gameplayManager.getCurrentSession().getPlayer(i));
         }
         gameplayManager.setGameState(GameplayManager.GameState.IN_GAME);
     }
@@ -73,6 +69,14 @@ public class GameView extends LightingView {
             playerLight.setX(((float) playerLocation.getX()) * tileSize);
             playerLight.setY(((float) playerLocation.getY()) * tileSize);
         }
+    }
+
+    private void addPlayer(Player player){
+        Location playerLocation = player.getBoundingBox().getCenter();
+        Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize);
+        playerLight.setOwner(player);
+        playerLightMap.put(player, playerLight);
+        this.addLight(playerLight);
     }
 
     /**
@@ -104,6 +108,10 @@ public class GameView extends LightingView {
 
         for (int i = 0; i < gameplayManager.getCurrentSession().getPlayers().size(); i++) {
             Player player = gameplayManager.getCurrentSession().getPlayer(i);
+
+            if (!playerLightMap.containsKey(player)){
+                addPlayer(player);
+            }
 
             if (playerLightMap.get(player).getLightCamera() != camera) {
                 BoundingBox b = player.getBoundingBox();

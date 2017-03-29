@@ -140,7 +140,10 @@ public class Server extends Connection {
                     Type typeMove = new TypeToken<Map<String, String>>(){}.getType();
 
                     Map<String, String> jsonMapMove = gson.fromJson(jsonMove, typeMove);
-                    movePlayer(sender, jsonMapMove.get("location"));
+
+                    Type typeFacing = new TypeToken<Player.FacingDirection>(){}.getType();
+                    Player.FacingDirection facingDirection = gson.fromJson(jsonMapMove.get("facingDirection"), typeFacing);
+                    movePlayer(sender, jsonMapMove.get("location"), facingDirection);
 
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
@@ -162,12 +165,13 @@ public class Server extends Connection {
     }
 
     @Override
-    public void move(Location location, int playerId) {
+    public void move(Location location, Player.FacingDirection facingDirection, int playerId) {
+        Gson gson = new Gson();
+
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("location", location.toJson());
         jsonMap.put("id", String.valueOf(playerId));
-
-        Gson gson = new Gson();
+        jsonMap.put("facingDirection", gson.toJson(facingDirection));
 
         sendToAll("position§", gson.toJson(jsonMap), getMyData().getNetworkData(), false, false);
     }
