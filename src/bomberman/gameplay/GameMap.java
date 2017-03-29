@@ -20,7 +20,6 @@ public class GameMap implements Cloneable {
 
     private final Tile[][] tiles;
     private final List<Location> startPositions;
-    private final Map<Player, Player.Direction> lastDirection = new HashMap<>();
 
     private final int width;
     private final int height;
@@ -30,7 +29,7 @@ public class GameMap implements Cloneable {
 
         assert !(name == null);
         assert !(startPositions == null);
-//        assert (startPositions.size() > 1);
+        assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
         this.name = name;
@@ -275,7 +274,7 @@ public class GameMap implements Cloneable {
 
     @Override
     public GameMap clone() {
-        return new GameMap(this.name, this.thumbnailKey, this.tiles.clone(), this.startPositions);
+        return new GameMap(this.name, this.thumbnailKey, this.tiles.clone(), new ArrayList<>(this.startPositions));
     }
 
     private static int range(int min, int value, int max) {

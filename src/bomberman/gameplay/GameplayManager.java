@@ -77,7 +77,7 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBGGGGGBBGGW", TileAbility.NORMAL, 7)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 9)
-                //.startPosition(1, 1)
+                .startPosition(1, 1)
                 .startPosition(12, 11)
                 .treadmill(new Location(1, 1), Player.FacingDirection.WEST)
                 .treadmill(new Location(2, 1), Player.FacingDirection.WEST)
