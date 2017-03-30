@@ -120,8 +120,8 @@ public class GameView extends LightingView {
                         if (!tiles[i][j].getTileType().isWalkable()) {
                             if (tiles[i][j].getTileType().equals(TileTypes.WALL)) {
                                 batch.draw(ViewManager.getTexture("wall.png"), i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.5f, 0.5f, 0.5f, 1);
-                            } else {
-                                batch.draw(null, i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.25f, 0.25f, 0.25f, 1);
+                            } else if (tiles[i][j].getTileType().equals(TileTypes.WALL_BREAKABLE)) {
+                                batch.draw(ViewManager.getTexture("breakableWall.png"), i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.25f, 0.25f, 0.25f, 1);
                             }
                         }
                     }
