@@ -179,7 +179,7 @@ public abstract class Connection {
         Location location = new Location(locationJson);
 
         for (NetworkPlayer player : controller.getNetworkPlayerMap().values()) {
-            if (player.getConnectionData().getNetworkData().equals(networkData) && player.getIndex() == id) {
+            if (player.getConnectionData().getNetworkData().equals(networkData)) {
                 player.getBoundingBox().setCenter(location);
                 player.setFacingDirection(facingDirection);
 

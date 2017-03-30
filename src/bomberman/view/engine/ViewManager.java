@@ -116,8 +116,6 @@ public class ViewManager {
             LwjglNativesLoader.load();
             System.out.println("finished!");
 
-            fullscreen = !fullscreen;
-
             try {
                 if (fullscreen) {
                     int w0 = Toolkit.getDefaultToolkit().getScreenSize().width;
