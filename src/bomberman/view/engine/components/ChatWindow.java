@@ -25,7 +25,9 @@ public class ChatWindow extends PopupWindow {
     }
 
     public void addText(String text, String playerName){
-        verticalList.addChild(new Label(LayoutParams.obtain(0, 0, 1, 1f / 8f), this.getView(), playerName + ": " + text));
+	    Label label = new Label(LayoutParams.obtain(0, 0, 0.9f, 1f / verticalList.getMaxSize()), this.getView(), playerName + ": " + text);
+	    label.setAlignLeft(true);
+	    verticalList.addChild(label);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class AiManager {
     }
 
     public Player createAi(String name, Location center) {
-        AiPlayer aiPlayer = new AiPlayer(gameSession, name, center, players, dangerTiles);
+        AiPlayer aiPlayer = new AiPlayer(gameSession, name, center, players, dangerTiles, this);
         aiPlayers.add(aiPlayer);
         players.add(new PlayerRelevance(aiPlayer));
         return aiPlayer;
@@ -87,7 +87,7 @@ public class AiManager {
         }
     }
 
-    private void calcDangerTiles(){
+    public void calcDangerTiles(){
         for(int i = 0; i < dangerTiles.length; i++){
             for(int j = 0; j < dangerTiles[i].length; j++){
                 dangerTiles[i][j] = false;
