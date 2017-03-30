@@ -18,7 +18,6 @@ public class GameplayManager {
     private GameState gameState = GameState.IN_MENU;
     private final List<GameMap> maps = new LinkedList<>();
 
-
     private int mapIndex = 0;
 
     private GameSession currentSession;
@@ -140,7 +139,6 @@ public class GameplayManager {
     private void createGameSession() {
         this.currentSession = new GameSession(this.getMap(this.mapIndex));
         this.currentSession.addPlayer(new LocalPlayer(this.currentSession, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
-        //this.currentSession.addAi(); Nur zum Testen der AI. Nicht nutzen, AI funktioniert nicht!
     }
 
     public void update(float delta) {
