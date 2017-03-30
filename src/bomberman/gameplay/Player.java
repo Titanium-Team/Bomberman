@@ -34,7 +34,7 @@ public abstract class Player {
     private final GameSession gameSession;
 
     //--- PlayerProperties
-    private final String name;
+    private String name;
 
     private final PlayerType playerType;
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
@@ -70,6 +70,10 @@ public abstract class Player {
 
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String name){
+        this.name = name;
     }
 
     public PowerUpType getLastPowerup() {

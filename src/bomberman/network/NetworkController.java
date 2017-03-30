@@ -89,9 +89,14 @@ public class NetworkController implements Runnable {
         }
     }
 
+    public void joinServer(NetworkData data){
+        if (!host){
+            requestDataQueue.add(() -> ((Client) connection).join(data));
+        }
+    }
 
     public List<ServerConnectionData> getServerList(){
-        if (!host){
+        if (!host && connection != null){
             return ((Client) connection).getServerList();
         }
 
@@ -113,15 +118,17 @@ public class NetworkController implements Runnable {
     }
 
     public void startServer(String serverName, int customPort){
-        host = true;
-        requestDataQueue.add(() -> {
-            connection.close();
-            try {
-                connection = new Server(Main.instance.getNetworkController(), customPort, serverName);
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
-        });
+        if (isHostable(customPort)) {
+            host = true;
+            requestDataQueue.add(() -> {
+                connection.close();
+                try {
+                    connection = new Server(Main.instance.getNetworkController(), customPort, serverName);
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     public void startClient(){

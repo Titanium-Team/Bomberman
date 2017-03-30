@@ -115,7 +115,7 @@ public class Server extends Connection {
                     NetworkPlayer player = new NetworkPlayer(name, new Location(0, 0), dataConnectionMap.get(sender));
                     getController().getNetworkPlayerMap().put(sender, player);
 
-                    if (Main.instance.getViewManager().getCurrentView() instanceof LightingView){
+                    if (Main.instance.getViewManager().getCurrentView() instanceof LobbyView){
                         List<String> stringList = new ArrayList<String>();
                         for (Player p : getController().getNetworkPlayerMap().values()){
                             stringList.add(p.getName());

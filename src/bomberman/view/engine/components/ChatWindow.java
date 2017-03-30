@@ -1,5 +1,6 @@
 package bomberman.view.engine.components;
 
+import bomberman.Main;
 import bomberman.view.engine.View;
 import org.lwjgl.input.Keyboard;
 
@@ -25,7 +26,9 @@ public class ChatWindow extends PopupWindow {
     }
 
     public void addText(String text, String playerName){
-        verticalList.addChild(new Label(LayoutParams.obtain(0, 0, 1, 1f / 8f), this.getView(), playerName + ": " + text));
+	    Label label = new Label(LayoutParams.obtain(0, 0, 0.9f, 1f / verticalList.getMaxSize()), this.getView(), playerName + ": " + text);
+	    label.setAlignLeft(true);
+	    verticalList.addChild(label);
     }
 
     @Override
@@ -36,6 +39,7 @@ public class ChatWindow extends PopupWindow {
     }
 
     private void send(){
+        Main.instance.getNetworkController().chatMessage(textField.getText());
         this.addText(textField.getText(),"Du");
         textField.setText("");
     }

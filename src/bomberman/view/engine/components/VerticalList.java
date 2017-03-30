@@ -4,6 +4,8 @@ import bomberman.view.engine.View;
 import bomberman.view.engine.rendering.Batch;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+
 public class VerticalList extends Panel {
 
     private Scrollbar scrollbar;
@@ -32,7 +34,8 @@ public class VerticalList extends Panel {
 
     @Override
     public void removeAllChildren() {
-        super.removeAllChildren();
+        children.clear();
+        children.add(scrollbar);
         this.updateChildren();
     }
 
@@ -70,5 +73,9 @@ public class VerticalList extends Panel {
 
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
     }
 }
