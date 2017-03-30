@@ -7,6 +7,7 @@ import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUpType;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
@@ -39,6 +40,8 @@ public abstract class Player {
 
     private final BoundingBox boundingBox;
 
+    private PowerUpType lastPowerup;
+
     public Player(GameSession gameSession, PlayerType playerType, String name, Location center) {
 
         this.playerType = playerType;
@@ -66,6 +69,10 @@ public abstract class Player {
 
     public String getName() {
         return this.name;
+    }
+
+    public PowerUpType getLastPowerup() {
+        return this.lastPowerup;
     }
 
     public boolean isAlive() {
@@ -112,6 +119,10 @@ public abstract class Player {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public void setLastPowerup(PowerUpType lastPowerup) {
+        this.lastPowerup = lastPowerup;
     }
 
     public void respawn(){

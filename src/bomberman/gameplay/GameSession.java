@@ -1,5 +1,6 @@
 package bomberman.gameplay;
 
+import bomberman.Main;
 import bomberman.ai.AiManager;
 import bomberman.gameplay.tile.TileTypes;
 
@@ -12,7 +13,7 @@ public class GameSession {
 
     private AiManager aiManager;
 
-    private final GameMap gameMap;
+    private GameMap gameMap;
     private final List<Player> players = new LinkedList<>();
 
     private final static float POWERUP_TIME = 25;
@@ -40,6 +41,10 @@ public class GameSession {
 
     public Player getLocalPlayer() {
         return this.players.stream().filter(e -> e.getPlayerType() == Player.PlayerType.LOCAL).findAny().orElseGet(null);
+    }
+
+    public void setMap(int index) {
+        this.gameMap = Main.instance.getGameplayManager().getMap(index);
     }
 
     public boolean isPowerupSpawning() {
@@ -75,9 +80,16 @@ public class GameSession {
         this.players.add(aiManager.createAi("TestAi",gameMap.getRandomStartPosition()));
     }
 
-    public void update(float delta) {
-        this.players.forEach(e -> e.update(delta));
-        Stream.of(this.gameMap.getTiles()).forEach(e -> Stream.of(e).forEach(t -> t.update(delta)));
+    public synchronized void update(float delta) {
+        for(int i = 0; i < this.players.size(); i++) {
+            this.players.get(i).update(delta);
+        }
+
+        for(int x = 0; x < this.gameMap.getWidth(); x++) {
+            for(int y = 0; y < this.gameMap.getHeight(); y++) {
+                this.gameMap.getTile(x, y).get().update(delta);
+            }
+        }
 
         //--- Powerup Spawn Timer
         this.powerupTimer -= delta;
@@ -90,11 +102,11 @@ public class GameSession {
     }
 
     public void onKeyDown(int key, char c) {
-        this.players.stream().filter(e -> (e instanceof LocalPlayer)).forEach(e -> ((LocalPlayer) e).keyDown(key, c));
+        this.players.stream().filter(e -> (e instanceof LocalPlayer)).iterator().forEachRemaining(e -> ((LocalPlayer) e).keyDown(key, c));
     }
 
     public void onKeyUp(int key, char c) {
-        this.players.stream().filter(e -> (e instanceof LocalPlayer)).forEach(e -> ((LocalPlayer) e).keyUp(key, c));
+        this.players.stream().filter(e -> (e instanceof LocalPlayer)).iterator().forEachRemaining(e -> ((LocalPlayer) e).keyUp(key, c));
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {}

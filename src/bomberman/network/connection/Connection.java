@@ -189,7 +189,5 @@ public abstract class Connection {
     public abstract void listen();
     public abstract void move(Location location, Player.FacingDirection facingDirection, int playerId);
     public abstract void plantBomb(Bomb bomb);
-    public abstract void explodedBomb(Location location);
-    public abstract void hit(double health, int playerId);
     public abstract void leave();
 }

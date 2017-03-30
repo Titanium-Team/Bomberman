@@ -71,4 +71,8 @@ public class VerticalList extends Panel {
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
     }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
 }
