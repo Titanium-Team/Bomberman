@@ -192,22 +192,6 @@ public class Client extends Connection {
     }
 
     @Override
-    public void explodedBomb(Location location) {
-        send("bombExplode§" + location.toJson(), server.getNetworkData(), false);
-    }
-
-    @Override
-    public void hit(double health, int playerId) {
-        Map<String, String> jsonMap = new HashMap<>();
-        jsonMap.put("health", String.valueOf(health));
-        jsonMap.put("id", String.valueOf(playerId));
-
-        Gson gson = new Gson();
-
-        send("gotHit" + gson.toJson(jsonMap), server.getNetworkData(), false);
-    }
-
-    @Override
     public void leave() {
         getSocket().close();
 

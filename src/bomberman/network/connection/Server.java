@@ -26,6 +26,8 @@ public class Server extends Connection {
 
     private String name;
 
+    private boolean gameStarted = false;
+
     private Map<NetworkData, ConnectionData> dataConnectionMap;
 
 
@@ -80,18 +82,20 @@ public class Server extends Connection {
 
             switch (splittedMessage[0]) {
                 case "hello":
-                    ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
+                    if (!gameStarted) {
+                        ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
-                    if (!getController().getNetworkPlayerMap().containsKey(sender)) {
-                        dataConnectionMap.put(sender, connectionData);
+                        if (!getController().getNetworkPlayerMap().containsKey(sender)) {
+                            dataConnectionMap.put(sender, connectionData);
 
-                        Map<String, String> jsonMap = new HashMap<>();
-                        jsonMap.put("connectionData", getMyData().toJson());
-                        jsonMap.put("name", name);
+                            Map<String, String> jsonMap = new HashMap<>();
+                            jsonMap.put("connectionData", getMyData().toJson());
+                            jsonMap.put("name", name);
 
-                        send("hello§" + gson.toJson(jsonMap), sender, true);
+                            send("hello§" + gson.toJson(jsonMap), sender, true);
 
-                        System.out.println("ConnectionData from " + packet.getAddress() + " " + packet.getPort());
+                            System.out.println("ConnectionData from " + packet.getAddress() + " " + packet.getPort());
+                        }
                     }
 
                     break;
@@ -164,7 +168,6 @@ public class Server extends Connection {
             }
         } else if (sender.getPort() != -1){
             send("error", sender, true);
-
         }
 
     }
@@ -184,16 +187,6 @@ public class Server extends Connection {
     @Override
     public void plantBomb(Bomb bomb) {
         sendToAll("plant§", bomb.toJson(), getMyData().getNetworkData(), true, false);
-    }
-
-    @Override
-    public void explodedBomb(Location location) {
-
-    }
-
-    @Override
-    public void hit(double health, int playerId) {
-
     }
 
     @Override
@@ -225,6 +218,8 @@ public class Server extends Connection {
 
                 getGameplayManager().getCurrentSession().addPlayer(player);
             }
+
+            gameStarted = true;
         }
 
 

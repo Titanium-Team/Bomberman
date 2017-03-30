@@ -6,6 +6,9 @@ import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TextField extends ViewComponentClickable {
 
 
@@ -16,6 +19,11 @@ public class TextField extends ViewComponentClickable {
     private String text, backText;
     private int pointer;
     private TextFieldState textFieldState = TextFieldState.Unfocussed;
+
+    private List<TypeListener> typeListeners = new ArrayList<>();
+
+    private boolean filterChars = false;
+    private List<Character> acceptedChars = new ArrayList<>();
 
     public TextField(LayoutParams params, View v) {
         this(params, v, "");
@@ -39,6 +47,53 @@ public class TextField extends ViewComponentClickable {
 
         });
 
+        this.addTypeListeners((key, c) -> {
+            if (textFieldState == TextFieldState.Focussed) {
+                if (key == Keyboard.KEY_BACK) {
+                    if (getText() != null && !getText().isEmpty()) {
+                        int tmp = getPointer() - 1;
+                        int tmp2 = getPointer();
+                        if (getPointer() == 0) {
+                            tmp++;
+                            tmp2++;
+                        }
+                        setText(getText().substring(0, tmp) + getText().substring(tmp2, getText().length()));
+                        if (getPointer() > 0) {
+                            setPointer(tmp2-1);
+                        }
+                    }
+                    //System.out.println(text.length());
+                } else if (key == Keyboard.KEY_LEFT) {
+                    if (getPointer() > 0) {
+                        setPointer(getPointer()-1);
+                    }
+                } else if (key == Keyboard.KEY_RIGHT) {
+                    if (getPointer() < getText().length()) {
+                        setPointer(getPointer()+1);
+                    }
+                } else {
+                    if (isFilterChars()){
+                        for (Character character : getAcceptedChars()){
+                            if (character.charValue() == c){
+                                addChar(c);
+                                break;
+                            }
+                        }
+                    }else {
+                        addChar(c);
+                    }
+                }
+            }
+        });
+
+    }
+
+    private int getPointer() {
+        return pointer;
+    }
+
+    private void setPointer(int pointer) {
+        this.pointer = pointer;
     }
 
     public TextField(LayoutParams params, View v, String text) {
@@ -54,32 +109,9 @@ public class TextField extends ViewComponentClickable {
     @Override
     public void onKeyDown(int key, char c) {
         super.onKeyDown(key, c);
-        if (textFieldState == TextFieldState.Focussed) {
-            if (key == Keyboard.KEY_BACK) {
-                if (text != null && !text.isEmpty()) {
-                    int tmp = pointer - 1;
-                    int tmp2 = pointer;
-                    if (pointer == 0) {
-                        tmp++;
-                        tmp2++;
-                    }
-                    this.text = text.substring(0, tmp) + text.substring(tmp2, text.length());
-                    if (pointer > 0) {
-                        pointer--;
-                    }
-                }
-                //System.out.println(text.length());
-            } else if (key == Keyboard.KEY_LEFT) {
-                if (pointer > 0) {
-                    pointer--;
-                }
-            } else if (key == Keyboard.KEY_RIGHT) {
-                if (pointer < text.length()) {
-                    pointer++;
-                }
-            } else {
-                addChar(c);
-            }
+
+        for (TypeListener typeListener : typeListeners){
+            typeListener.onType(key, c);
         }
     }
 
@@ -127,4 +159,43 @@ public class TextField extends ViewComponentClickable {
         this.pointer=text.length();
     }
 
+
+    public List<TypeListener> getTypeListeners() {
+        return typeListeners;
+    }
+
+    public void addTypeListeners(TypeListener listener){
+        typeListeners.add(listener);
+    }
+
+    public boolean isFilterChars() {
+        return filterChars;
+    }
+
+    public void setFilterChars(boolean filterChars) {
+        this.filterChars = filterChars;
+    }
+
+    public List<Character> getAcceptedChars() {
+        return acceptedChars;
+    }
+
+    public void setAcceptedChars(List<Character> acceptedChars) {
+        this.acceptedChars = acceptedChars;
+    }
+
+    public void setFilterOnlyNumbers(){
+        setFilterChars(true);
+
+        acceptedChars.add('0');
+        acceptedChars.add('1');
+        acceptedChars.add('2');
+        acceptedChars.add('3');
+        acceptedChars.add('4');
+        acceptedChars.add('5');
+        acceptedChars.add('6');
+        acceptedChars.add('7');
+        acceptedChars.add('8');
+        acceptedChars.add('9');
+    }
 }
