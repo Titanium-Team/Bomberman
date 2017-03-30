@@ -174,13 +174,18 @@ public abstract class Connection {
         }
     }
 
-    protected void movePlayer(NetworkData networkData, String locationJson, Player.FacingDirection facingDirection){
+    protected void movePlayer(NetworkData networkData, String locationJson, Player.FacingDirection facingDirection, int id){
 
         Location location = new Location(locationJson);
 
-        NetworkPlayer player = controller.getNetworkPlayerMap().get(networkData);
-        player.getBoundingBox().setCenter(location);
-        player.setFacingDirection(facingDirection);
+        for (NetworkPlayer player : controller.getNetworkPlayerMap().values()) {
+            if (player.getConnectionData().getNetworkData().equals(networkData) && player.getIndex() == id) {
+                player.getBoundingBox().setCenter(location);
+                player.setFacingDirection(facingDirection);
+
+                break;
+            }
+        }
 
     }
 

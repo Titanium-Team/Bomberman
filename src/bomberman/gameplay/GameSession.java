@@ -85,7 +85,7 @@ public class GameSession {
     }
 
     public void addAi(){
-        this.players.add(aiManager.createAi("TestAi",gameMap.getRandomStartPosition()));
+        this.players.add(aiManager.createAi(gameMap.getRandomStartPosition()));
     }
 
     public synchronized void update(float delta) {
@@ -153,4 +153,13 @@ public class GameSession {
         }
     }
     //powerup end
+
+
+    public boolean isSpawnMissingAIs() {
+        return spawnMissingAIs;
+    }
+
+    public void setSpawnMissingAIs(boolean spawnMissingAIs) {
+        this.spawnMissingAIs = spawnMissingAIs;
+    }
 }
