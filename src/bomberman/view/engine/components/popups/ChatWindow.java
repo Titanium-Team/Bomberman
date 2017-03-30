@@ -24,6 +24,13 @@ public class ChatWindow extends PopupWindow {
         this.sendButton = new Button(LayoutParams.obtain(0.8f,0.81f,0.2f,0.19f),v,"Send");
         this.sendButton.addListener(this::send);
         this.addChild(sendButton);
+
+        this.getExitButton().getListeners().remove(0);
+        this.getExitButton().addListener(()->{
+            this.closeSelf();
+            Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer().setMoveable(true);
+        });
+
     }
 
     public void addText(String text, String playerName){
