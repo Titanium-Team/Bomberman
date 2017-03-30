@@ -16,6 +16,9 @@ import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.ViewManager;
+import bomberman.view.engine.components.ChatWindow;
+import bomberman.view.engine.components.LayoutParams;
+import bomberman.view.engine.components.ViewComponent;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.utility.Camera;
@@ -28,7 +31,8 @@ import java.util.*;
  **/
 public class GameView extends LightingView {
 
-    private GameplayManager gameplayManager;
+	private final ChatWindow chatWindow;
+	private GameplayManager gameplayManager;
     private float time = 0f;
     private static final Random random = new Random();
     private int tileSize = 50;
@@ -37,6 +41,8 @@ public class GameView extends LightingView {
 
     public GameView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
+	    this.chatWindow = new ChatWindow(LayoutParams.obtain(0.8f,0,0.2f,1),this);
+	    this.getRoot().addChild(chatWindow);
     }
 
     public GameplayManager getGameplayManager() {
@@ -208,6 +214,7 @@ public class GameView extends LightingView {
                 }
             }
         }
+	    this.chatWindow.draw(batch);
     }
 
     /**

@@ -4,12 +4,12 @@ import bomberman.view.engine.View;
 import bomberman.view.engine.rendering.Batch;
 import org.lwjgl.opengl.GL11;
 
-public class VerticalView extends Panel {
+public class VerticalList extends Panel {
 
 	private Scrollbar scrollbar;
 	private int maxSize;
 
-	public VerticalView(LayoutParams params, View v) {
+	public VerticalList(LayoutParams params, View v) {
 		super(params, v);
 
 		this.scrollbar = new Scrollbar(LayoutParams.obtain(0.9f, 0, 0.1f, 1), v, this);

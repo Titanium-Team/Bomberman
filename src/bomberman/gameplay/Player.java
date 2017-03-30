@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 public abstract class Player {
 
     //--- Settings
-    public final static double COLLISION_WIDTH = 1;
-    public final static double COLLISION_HEIGHT = 1;
+    public final static double COLLISION_WIDTH = .99;
+    public final static double COLLISION_HEIGHT = .99;
 
     private final UUID identifier = UUID.randomUUID();
     private int index;

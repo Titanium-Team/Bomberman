@@ -23,7 +23,7 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
     private TextField portTextField;
     private TextField serverNameField;
 
-    private VerticalView serverList;
+    private VerticalList serverList;
     private List<Button> serverButtons = new ArrayList<>();
 
     public PlayMenuView(int width, int height, ViewManager viewManager) {
@@ -48,7 +48,7 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
         });
         this.getRoot().addChild(hostGameButton);
 
-        this.serverList = new VerticalView(LayoutParams.obtain(0.55f, 0.05f, 0.4f, 0.8f), this);
+        this.serverList = new VerticalList(LayoutParams.obtain(0.55f, 0.05f, 0.4f, 0.8f), this);
         this.getRoot().addChild(serverList);
 
         this.refreshServerListButton = new Button(LayoutParams.obtain(0.55f, 0.85f, 0.4f, 0.1f), this, "Refresh Server List");
