@@ -145,6 +145,7 @@ public class Tile {
                 this.spawn(new PowerUp(this, lifespan, PowerUpTypes.SPIKEBOMB));
                 break;
         }
+
     }
 
     public void destroyObject() {

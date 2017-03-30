@@ -21,7 +21,4 @@ public class ExceptionPopup extends PopupWindow {
 		this.getExitButton().setText("Continue");
 		this.getExitButton().setParams(LayoutParams.obtain(0.59f,0.01f,0.36f,0.16f));
 
-		this.closeButton = new Button(LayoutParams.obtain(0.2f,0.65f,0.6f,0.2f),v,"Close Window");
-		closeButton.addListener(()->System.exit(1));
-		this.addChild(closeButton);
 	}}
