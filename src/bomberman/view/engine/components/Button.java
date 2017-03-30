@@ -21,7 +21,7 @@ public class Button extends ViewComponentClickable {
         if (this.state == State.Default) {
             batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .4f, .4f, .4f, 1f);
-        } else if (this.state == State.Pressed) {
+        } else if (this.state == State.Pressed && isClickable()) {
             batch.draw(null, (getX()), (getY()), (getWidth()), (getHeight()), 1f, 1f, 1f, 1f);
             batch.draw(null, (getX() + 5), (getY() + 5), (getWidth() - 10), (getHeight() - 10), .2f, .2f, .2f, 1f);
         } else if (this.state == State.Hover) {

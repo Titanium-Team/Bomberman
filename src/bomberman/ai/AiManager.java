@@ -23,8 +23,15 @@ public class AiManager {
     private GameMap map;
     private Random random;
     private boolean[][] dangerTiles;
+    private String[] firstName = new String[] {"Mark","Tom","Tim","Will","John","Hu","Her","Gün","Aris","Bruce","Ju","Li","Da","Fa","To","Kneb"};
+    private String[] middleName = new String[] {"","tote","li","bi","ni","lew"};
+    private String[] lastName = new String[] {"","ter","as","helm","bert","on","us","el","les","lk","_Wayne","an","am","ski"};
 
     private final static double wallWeight = 20;
+    private final static int amountOfFirst = 16;
+    private final static int amountOfMiddle = 6;
+    private final static int amountOfLast = 13;
+    private final static int amountOfXtra = 100;
 
     public AiManager(GameSession gameSession, ArrayList<Player> nonAiPlayers) {
 
@@ -47,7 +54,7 @@ public class AiManager {
     }
 
     public Player createAi(String name, Location center) {
-        AiPlayer aiPlayer = new AiPlayer(gameSession, name, center, players, dangerTiles, this);
+        AiPlayer aiPlayer = new AiPlayer(gameSession, generateName(), center, players, dangerTiles, this);
         aiPlayers.add(aiPlayer);
         players.add(new PlayerRelevance(aiPlayer));
         return aiPlayer;
@@ -123,5 +130,30 @@ public class AiManager {
         for(int j = y+1; j < Math.min(tiles[x].length,y+range) && tiles[x][j].getTileType().isWalkable();j++){
             dangerTiles[x][j] = true;
         }
+    }
+
+    private String generateName() {
+        int first = (int) (Math.random() * amountOfFirst);
+        int middle = (int) (Math.random() * 2);
+        if (middle != 0) {
+            middle = (int) (Math.random() * amountOfMiddle + 1);
+        }
+
+        int last = (int) (Math.random() * 5);
+        if (last !=0) {
+            last = (int) (Math.random() * amountOfLast);
+        }
+        int xtra = (int) (Math.random() * amountOfXtra);
+        if (xtra > 88 && xtra <= 90){
+            return ("ERROR 404");
+        }else if (xtra>90&&xtra<=92){
+            return ("xX_" + firstName[first] + middleName[middle] + lastName[last] + "_Xx");
+        }else if (xtra>92&&xtra<=94){
+            return ("oO_" + firstName[first] + middleName[middle] + lastName[last] + "_Oo");
+        }else if (xtra>94&&xtra<=100){
+            xtra = (int) (Math.random()*2017);
+            return (firstName[first] + middleName[middle] + lastName[last] + xtra);
+        }
+        return (firstName[first] + middleName[middle] + lastName[last]);
     }
 }
