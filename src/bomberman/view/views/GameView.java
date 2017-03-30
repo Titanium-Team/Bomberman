@@ -144,20 +144,30 @@ public class GameView extends LightingView {
                 }
 
                 float rotation = 0;
-                if (player.getFacingDirection() == Player.FacingDirection.NORTH_EAST)
-                    rotation = (float) Math.toRadians(45);
-                else if (player.getFacingDirection() == Player.FacingDirection.EAST)
-                    rotation = (float) Math.toRadians(90);
-                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH_EAST)
-                    rotation = (float) Math.toRadians(90 + 45);
-                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH)
-                    rotation = (float) Math.toRadians(180);
-                else if (player.getFacingDirection() == Player.FacingDirection.SOUTH_WEST)
-                    rotation = (float) Math.toRadians(180 + 45);
-                else if (player.getFacingDirection() == Player.FacingDirection.WEST)
-                    rotation = (float) Math.toRadians(270);
-                else if (player.getFacingDirection() == Player.FacingDirection.NORTH_WEST)
-                    rotation = (float) Math.toRadians(270 + 45);
+                /** Für Timmy Tim, den ********* **/
+                switch(player.getFacingDirection()){
+                    case NORTH_EAST:
+                        rotation = (float) Math.toRadians(45);
+                        break;
+                    case EAST:
+                        rotation = (float) Math.toRadians(90);
+                        break;
+                    case SOUTH_EAST:
+                        rotation = (float) Math.toRadians(90 + 45);
+                        break;
+                    case SOUTH:
+                        rotation = (float) Math.toRadians(180);
+                        break;
+                    case SOUTH_WEST:
+                        rotation = (float) Math.toRadians(180 + 45);
+                        break;
+                    case WEST:
+                        rotation = (float) Math.toRadians(270);
+                        break;
+                    case NORTH_WEST:
+                        rotation = (float) Math.toRadians(270 + 45);
+                        break;
+                }
 
                 batch.draw(tex, (float) b.getMin().getX() * tileSize, (float) b.getMin().getY() * tileSize, (float) b.getWidth() * tileSize, (float) b.getHeight() * tileSize, rotation);
             }
@@ -303,32 +313,33 @@ public class GameView extends LightingView {
         }
     }
 
-	private class StatPopup extends PopupWindow{
+	private class StatPopup extends PopupWindow {
 
-		private Label range, powerup;
-		public StatPopup( View v) {
-			super(LayoutParams.obtain(0,0,0.2f,1), v);
-			this.range = new Label(LayoutParams.obtain(0,0.2f,1,0.1f),v,"Range :" + gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
-			this.addChild(range);
-			powerup=null;
-		}
+        private Label range, powerup;
 
-		@Override
-		public void draw(Batch batch) {
-			super.draw(batch);
-			float max = this.getWidth() * 0.8f;
-			batch.draw(null,this.getX() + 0.1f * this.getWidth(), this.getY() + 0.1f * this.getHeight(),max *((float) gameplayManager.getCurrentSession().getLocalPlayer().getHealth()/gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getMax(PropertyTypes.HEALTH)), 0.1f*this.getHeight(),1,0,0,0.4f);
-			if(gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup()!=null){
-				if(powerup == null){
-					this.powerup = new Label(LayoutParams.obtain(0,0.3f,1,0.1f),this.getView(), "Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
-					this.addChild(powerup);
-					this.getView().requestLayout();
-				}else{
-					powerup.setText("Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
-				}
-			}
-		}
-	}
+        public StatPopup(View v) {
+            super(LayoutParams.obtain(0, 0, 0.2f, 1), v);
+            this.range = new Label(LayoutParams.obtain(0, 0.2f, 1, 0.1f), v, "Range :" + (int) gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
+            this.addChild(range);
+            this.powerup = new Label(LayoutParams.obtain(0, 0.3f, 1, 0.1f), this.getView(),"");
+            this.addChild(powerup);
+            this.getView().requestLayout();
+        }
+
+        @Override
+        public void draw(Batch batch) {
+            super.draw(batch);
+            float max = this.getWidth() * 0.8f;
+            batch.draw(null, this.getX() + 0.1f * this.getWidth(), this.getY() + 0.1f * this.getHeight(), max * ((float) gameplayManager.getCurrentSession().getLocalPlayer().getHealth() / gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getMax(PropertyTypes.HEALTH)), 0.1f * this.getHeight(), 1, 0, 0, 0.4f);
+            if (gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup() != null) {
+                    powerup.setText("Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
+
+            }
+            range.setText("Range :" + (int) gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
+
+        }
+
+    }
 
 	private class NotificationPopup extends PopupWindow{
 		private Label text;
