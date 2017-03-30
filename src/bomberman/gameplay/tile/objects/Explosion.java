@@ -6,6 +6,7 @@ import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.utils.BoundingBox;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.rendering.Animation;
 import bomberman.view.engine.rendering.Texture;
@@ -28,20 +29,27 @@ public class Explosion extends TileObject {
     }
 
     @Override
-    public void execute() {
-        //@TODO Implement
-        //System.out.println("Despawn explosion");
-    }
+    public void execute() {}
 
     @Override
     public void interact(Player player) {
-        if(player.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) <= 0){
-            player.loseHealth();
 
-            if(!(player == this.owner)) {
-                this.owner.getGameStatistic().update(Statistics.KILLS, 1);
-            } else {
-                this.owner.getGameStatistic().update(Statistics.SUICIDES, 1);
+        //---
+        BoundingBox playerBox = player.getBoundingBox();
+        BoundingBox explosionBox = this.getParent().getBoundingBox();
+
+        double x_overlap = Math.max(0, Math.min(playerBox.getMax().getX(), explosionBox.getMax().getX()) - Math.max(playerBox.getMin().getX(), explosionBox.getMin().getX()));
+        double y_overlap = Math.max(0, Math.min(playerBox.getMax().getY(), explosionBox.getMax().getY()) - Math.max(playerBox.getMin().getY(), explosionBox.getMin().getY()));
+
+        if((x_overlap * y_overlap) > .2D) {
+            if (player.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) <= 0) {
+                player.loseHealth();
+
+                if (!(player == this.owner)) {
+                    this.owner.getGameStatistic().update(Statistics.KILLS, 1);
+                } else {
+                    this.owner.getGameStatistic().update(Statistics.SUICIDES, 1);
+                }
             }
         }
     }
@@ -63,12 +71,6 @@ public class Explosion extends TileObject {
 
             return true;
         }
-        /* ES MACHT KEINEN SINN; WARUM SOLLTE TRUE ZURÜCK GEGEBEN WERDEN WENN KEINE MAUER ZERSTÖRT WIRD
-        else if(!(this.getParent().getTileType().isDestroyable())) {
-
-            return true;
-        }
-        */
 
         return false;
 
@@ -77,8 +79,7 @@ public class Explosion extends TileObject {
     @Override
     public void update(float delta) {
         super.update(delta);
-
-        animation.update(delta);
+        this.animation.update(delta);
     }
 
 }

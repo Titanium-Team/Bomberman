@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 public class LocalPlayer extends Player {
 
     //--- Settings
-    private final static float ACCELERATION_STEP = .5F;
+    private final static float ACCELERATION_STEP = .2F;
     private final static float ACCELERATION_LIMIT = 1.1F;
     private final static float ACCELERATION_TIMER = 0.01F;
 
