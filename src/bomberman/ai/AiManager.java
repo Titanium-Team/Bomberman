@@ -53,7 +53,7 @@ public class AiManager {
         //calcDangerTiles();
     }
 
-    public Player createAi(String name, Location center) {
+    public Player createAi(Location center) {
         AiPlayer aiPlayer = new AiPlayer(gameSession, generateName(), center, players, dangerTiles, this);
         aiPlayers.add(aiPlayer);
         players.add(new PlayerRelevance(aiPlayer));

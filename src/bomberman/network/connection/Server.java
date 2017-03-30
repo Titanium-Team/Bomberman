@@ -148,7 +148,7 @@ public class Server extends Connection {
 
                     Type typeFacing = new TypeToken<Player.FacingDirection>(){}.getType();
                     Player.FacingDirection facingDirection = gson.fromJson(jsonMapMove.get("facingDirection"), typeFacing);
-                    movePlayer(sender, jsonMapMove.get("location"), facingDirection);
+                    movePlayer(sender, jsonMapMove.get("location"), facingDirection, Integer.parseInt(jsonMapMove.get("id")));
 
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
@@ -246,6 +246,13 @@ public class Server extends Connection {
                 getGameplayManager().getCurrentSession().addPlayer(player);
             }
 
+            if(getGameplayManager().getCurrentSession().isSpawnMissingAIs()) {
+                while (!(getGameplayManager().getCurrentSession().getGameMap().getStartPositions().isEmpty())) {
+                    getGameplayManager().getCurrentSession().addAi();
+                }
+                getGameplayManager().getCurrentSession().setSpawnMissingAIs(false);
+            }
+
             gameStarted = true;
         }
 
@@ -256,17 +263,21 @@ public class Server extends Connection {
     }
 
     private void sendUserList(){
-        Player local = getGameplayManager().getCurrentSession().getLocalPlayer();
-        Collection<NetworkPlayer> networkPlayers = getController().getNetworkPlayerMap().values();
-        NetworkPlayer localNetwork = new NetworkPlayer(local.getName(), local.getBoundingBox().getCenter(), getMyData());
-
         List<String> playerList = new ArrayList<>();
-        for (NetworkPlayer networkPlayer : networkPlayers){
-            String player = networkPlayer.toJson();
 
-            playerList.add(player);
+        List<NetworkPlayer> networkPlayers = new ArrayList<>();
+        for (Player player : getGameplayManager().getCurrentSession().getPlayers()){
+            if (player instanceof NetworkPlayer){
+                networkPlayers.add((NetworkPlayer) player);
+            }else {
+                NetworkPlayer networkPlayer = new NetworkPlayer(player.getName(), player.getBoundingBox().getCenter(), getMyData());
+                networkPlayers.add(networkPlayer);
+            }
         }
-        playerList.add(localNetwork.toJson());
+
+        for (NetworkPlayer networkPlayer : networkPlayers){
+            playerList.add(networkPlayer.toJson());
+        }
 
         for (String s : playerList){
             sendToAll("playerList§", s, getMyData().getNetworkData(), true, false);

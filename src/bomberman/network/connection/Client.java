@@ -144,7 +144,7 @@ public class Client extends Connection {
 
                     Type typeFacing = new TypeToken<Player.FacingDirection>(){}.getType();
                     Player.FacingDirection facingDirection = gson.fromJson(jsonMapMovement.get("facingDirection"), typeFacing);
-                    movePlayer(sender, jsonMapMovement.get("location"), facingDirection);
+                    movePlayer(sender, jsonMapMovement.get("location"), facingDirection, Integer.parseInt(jsonMapMovement.get("id")));
 
                     sendRecieved(message, server);
                     break;

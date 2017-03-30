@@ -1,5 +1,6 @@
 package bomberman.ai;
 
+import bomberman.Main;
 import bomberman.ai.utility.NavigationNode;
 import bomberman.ai.utility.PlayerRelevance;
 import bomberman.ai.utility.Stack;
@@ -122,10 +123,15 @@ public class AiPlayer extends Player {
 
     private void placeBomb(){
         Tile tile = this.getTile();
-        getGameSession().getGameMap().spawn(new Bomb(this, tile, 2, 1));
+
+        Bomb bomb = new Bomb(this, tile, 2, 1);
+
+        getGameSession().getGameMap().spawn(bomb);
         this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
         aiManager.bombFound((int)Math.floor(getBoundingBox().getCenter().getX()),(int)Math.floor(getBoundingBox().getCenter().getY()),Math.round(this.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS)));
         planEvade();
+
+        Main.instance.getNetworkController().plantBomb(bomb);
     }
 
     private void moveTo(float dt){
@@ -143,6 +149,8 @@ public class AiPlayer extends Player {
                     this.getBoundingBox().setCenter(this.getBoundingBox().getCenter().getX() + dtMovement.getX(), this.getBoundingBox().getCenter().getY() + dtMovement.getY());
                 }
                 facingDirection = FacingDirection.from(maxMovement);
+
+                Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex(), getFacingDirection());
             }else{
                 moveTo = null;
             }
