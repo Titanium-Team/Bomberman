@@ -1,7 +1,8 @@
-package bomberman.view.engine.components;
+package bomberman.view.engine.components.popups;
 
 import bomberman.Main;
 import bomberman.view.engine.View;
+import bomberman.view.engine.components.*;
 import org.lwjgl.input.Keyboard;
 
 /**
