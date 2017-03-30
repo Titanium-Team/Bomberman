@@ -56,7 +56,7 @@ public class TextField extends ViewComponentClickable {
         if (textFieldState == TextFieldState.Focussed) {
             if (key == Keyboard.KEY_BACK) {
                 if (text != null && !text.isEmpty()) {
-                    int tmp = pointer -1;
+                    int tmp = pointer - 1;
                     int tmp2 = pointer;
                     if (pointer == 0) {
                         tmp++;
@@ -85,7 +85,7 @@ public class TextField extends ViewComponentClickable {
     @Override
     public void onMouseDown(int button, int mouseX, int mouseY) {
         super.onMouseDown(button, mouseX, mouseY);
-        if(!Utility.viewComponentIsCollidingWithMouse(this,mouseX,mouseY) && textFieldState == TextFieldState.Focussed){
+        if (!Utility.viewComponentIsCollidingWithMouse(this, mouseX, mouseY) && textFieldState == TextFieldState.Focussed) {
             textFieldState = TextFieldState.Unfocussed;
         }
     }
