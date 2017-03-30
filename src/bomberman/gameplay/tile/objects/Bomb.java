@@ -19,7 +19,6 @@ import java.util.Map;
 
 public class Bomb extends TileObject {
 
-
     public final static float EXPLOSION_LIFESPAN = 1F;
 
     private List<Player> walkable = new ArrayList<>();

@@ -3,6 +3,8 @@ package bomberman.gameplay;
 
 import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
 import org.lwjgl.input.Keyboard;
@@ -90,7 +92,6 @@ public class GameplayManager {
                 .startPosition(1, 11)
             .build()
         );
-
 
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
 

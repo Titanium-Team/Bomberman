@@ -11,7 +11,7 @@ public abstract class PopupWindow extends Panel {
 
         this.setBackgroundColor(0.5f, 0.5f, 0.5f, 0.5f);
 
-        this.exitButton = new Button(LayoutParams.obtain(0.75f, 0f, 0.25f, 0.1f), v, "Exit");
+        this.exitButton = new Button(LayoutParams.obtain(0.7f, 0f, 0.25f, 0.15f), v, "Exit");
         this.exitButton.addListener(() -> this.closeSelf());
         this.addChild(exitButton);
     }

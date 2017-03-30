@@ -29,7 +29,7 @@ public class GameMap implements Cloneable {
 
         assert !(name == null);
         assert !(startPositions == null);
-        assert (startPositions.size() > 1);
+        //assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
         this.name = name;

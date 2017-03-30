@@ -14,8 +14,6 @@ import java.util.*;
 
 public class Tile {
 
-    private static Random random = new Random();
-
     private Map<Player, Float> players = new HashMap<>();
 
     private TileType tileType;
