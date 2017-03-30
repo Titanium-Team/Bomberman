@@ -43,11 +43,11 @@ public class AiManager {
         players.sort((o1, o2) -> (int) Math.round(o1.getRelevance() - o2.getRelevance()));
         this.aiPlayers = new ArrayList<>();
 
-        calcDangerTiles();
+        //calcDangerTiles();
     }
 
     public Player createAi(String name, Location center) {
-        AiPlayer aiPlayer = new AiPlayer(gameSession, name, center, players, dangerTiles);
+        AiPlayer aiPlayer = new AiPlayer(gameSession, name, center, players, dangerTiles, this);
         aiPlayers.add(aiPlayer);
         players.add(new PlayerRelevance(aiPlayer));
         return aiPlayer;
@@ -74,7 +74,7 @@ public class AiManager {
         updateTime = -dt;
         if(updateTime < halveUpdateTime){
             halveUpdateTime = Float.NEGATIVE_INFINITY;
-            calcDangerTiles();
+            //calcDangerTiles();
         }
         if (updateTime < 0) {
             updateTime = random.nextFloat();
@@ -87,7 +87,7 @@ public class AiManager {
         }
     }
 
-    private void calcDangerTiles(){
+    public void calcDangerTiles(){
         for(int i = 0; i < dangerTiles.length; i++){
             for(int j = 0; j < dangerTiles[i].length; j++){
                 dangerTiles[i][j] = false;
@@ -100,7 +100,7 @@ public class AiManager {
                     dangerTiles[i][j] = true;
                 }else{
                     if(tiles[i][j].getTileObject() instanceof Bomb){
-                        /*int range = ((Bomb) tiles[i][j].getTileObject()).();
+                        int range = ((Bomb) tiles[i][j].getTileObject()).getRange();
                         for(int x = i+1; x < i+range && tiles[x-1][j].getTileType().isWalkable(); x++){
                             dangerTiles[x][j] = true;
                         }
@@ -113,7 +113,6 @@ public class AiManager {
                         for(int y = i-1; y > i-range && tiles[i][y+1].getTileType().isWalkable(); y--){
                             dangerTiles[i][y] = true;
                         }
-                        */
                     }
                 }
             }

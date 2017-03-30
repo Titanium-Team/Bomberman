@@ -57,7 +57,7 @@ public class Vector2 {
         y *= r;
     }
 
-    public void multiply(float m){
+    public void multiply(float m) {
         x *= m;
         y *= m;
     }
@@ -74,6 +74,6 @@ public class Vector2 {
 
     @Override
     public Vector2 clone() throws CloneNotSupportedException {
-        return new Vector2(x,y);
+        return new Vector2(x, y);
     }
 }

@@ -23,13 +23,12 @@ public class Bomb extends TileObject {
     public final static float EXPLOSION_LIFESPAN = 1F;
 
     private List<Player> walkable = new ArrayList<>();
-    private Player player;
+    protected Player player;
 
-    private final int range;
+    protected final int range;
     private final double damage;
 
     public Bomb(Player player, Tile parent, float lifespan, double damage) {
-
         super(parent, lifespan);
 
         this.player = player;
@@ -86,12 +85,12 @@ public class Bomb extends TileObject {
                 stopLeft = this.createExplosion((x - i), y, EXPLOSION_LIFESPAN);
             }
 
-            if ((y - i) < this.player.getGameSession().getGameMap().getHeight() && !stopUp) {
-                stopUp = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
+            if ((y + i) < this.player.getGameSession().getGameMap().getHeight() && !stopUp) {
+                stopUp = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
             }
 
-            if ((y + i) > 0 && !stopDown) {
-                stopDown = this.createExplosion(x, (y + i), EXPLOSION_LIFESPAN);
+            if ((y - i) > 0 && !stopDown) {
+                stopDown = this.createExplosion(x, (y - i), EXPLOSION_LIFESPAN);
             }
 
         }
@@ -108,11 +107,9 @@ public class Bomb extends TileObject {
         super.update(delta);
     }
 
-    private boolean createExplosion(int x, int y, float lifespan) {
-
+    protected boolean createExplosion(int x, int y, float lifespan) {
 
         Explosion explosion = new Explosion(this.player, this.player.getGameSession().getGameMap().getTile(x, y).get(), lifespan, this.damage);
-
 
         //--- spawning explosion
         if(this.player.getGameSession().getGameMap().getTile(x,y).get().getTileObject() instanceof Bomb) {

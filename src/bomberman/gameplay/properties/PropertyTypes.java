@@ -93,7 +93,7 @@ public enum PropertyTypes implements PropertyType {
     BOMBTYPE{
         @Override
         public float defaultValue() {
-            return 0F;
+            return 2F;
         }
 
         @Override
