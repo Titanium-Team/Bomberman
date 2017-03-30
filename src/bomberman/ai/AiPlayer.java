@@ -62,28 +62,30 @@ public class AiPlayer extends Player {
             int currY = (int) Math.floor(this.getBoundingBox().getCenter().getY());
             if (moveTo != null) {
                 moveTo(delta);
-                if (moveTo == null && !dangerTiles[currX][currY]) {
-                    System.out.println("Test");
-                    if (canBomb()) {
-                        System.out.println("Test2");
+                if (moveTo == null) {
+                    if (!ignore && !dangerTiles[currX][currY] && canBomb()) {
                         steps = new Stack<>();
                         placeBomb();
-                        planEvade();
                     }else{
-                        //findPath();
+                        if(ignore || dangerTiles[currX][currY]){
+                            planEvade();
+                        }else {
+                            findPath();
+                        }
                     }
                 }
+
             } else {
                 if (!ignore && dangerTiles[currX][currY]) {
                     planEvade();
                 } else if (steps != null && !steps.isEmpty()) {
                     if (targetDistance() < UPDATE_DISTANCE || ignore) {
                         switch (steps.top().stepType) {
-                            case MOVE: //Negative Y
+                            case MOVE:
                                 if (ignore || !dangerTiles[((MoveStep)steps.top()).getX()][((MoveStep)steps.top()).getY()]) {
                                     moveTo = new Vector2(((MoveStep)steps.top()).getX()+0.5f, ((MoveStep)steps.top()).getY()+0.5f);
                                 } else {
-                                    findPath();
+                                    planEvade();
                                 }
                                 break;
                             case PLACEBOMB:
@@ -91,8 +93,6 @@ public class AiPlayer extends Player {
                                 break;
                             case EVADE:
                                 planEvade();
-                                break;
-                            case FLEE:
                                 break;
                             case IGNORE:
                                 if (ignore) {
@@ -107,21 +107,25 @@ public class AiPlayer extends Player {
                         searchTarget();
                     }
                 } else {
-                    if (target == null) {
-                        searchTarget();
+                    if(dangerTiles[currX][currY]){
+                        planEvade();
+                    }else {
+                        if (target == null) {
+                            searchTarget();
+                        }
+                        findPath();
                     }
-                    findPath();
                 }
             }
         }
     }
 
     private void placeBomb(){
-        System.out.println("Bombe");
         Tile tile = this.getTile();
         getGameSession().getGameMap().spawn(new Bomb(this, tile, 2, 1));
         this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
-        aiManager.calcDangerTiles();
+        aiManager.bombFound((int)Math.floor(getBoundingBox().getCenter().getX()),(int)Math.floor(getBoundingBox().getCenter().getY()),Math.round(this.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS)));
+        planEvade();
     }
 
     private void moveTo(float dt){
@@ -132,7 +136,6 @@ public class AiPlayer extends Player {
                 Vector2 dtMovement = maxMovement.clone();
                 dtMovement.normalize();
                 dtMovement.multiply(dt * this.getPropertyRepository().getValue(PropertyTypes.SPEED_FACTOR));
-                //System.out.println("maxMove:(" + maxMovement.getX() + "|" + maxMovement.getY() + ") dtMove:" + dtMovement.getX() + "|" + dtMovement.getY() + ") moveTo:(" + moveTo.getX() + "|" + moveTo.getY() + ") currPos:(" + currPos.getX() + "|" + currPos.getY() + ")");
                 if (dtMovement.getLength() > maxMovement.getLength()) {
                     this.getBoundingBox().setCenter(this.getBoundingBox().getCenter().getX() + maxMovement.getX(), this.getBoundingBox().getCenter().getY() + maxMovement.getY());
                     moveTo = null;
@@ -230,6 +233,8 @@ public class AiPlayer extends Player {
     }
 
     private void findPath() {
+        moveTo = null;
+
         int targetX = (int) Math.floor(target.getPlayer().getBoundingBox().getCenter().getX());
         int targetY = (int) Math.floor(target.getPlayer().getBoundingBox().getCenter().getY());
         int startX = (int) Math.floor(this.getBoundingBox().getCenter().getX());
@@ -250,6 +255,9 @@ public class AiPlayer extends Player {
     }
 
     private void planEvade() {
+        moveTo = null;
+        ignore = true;
+
         int startX = (int) Math.floor(this.getBoundingBox().getCenter().getX());
         int startY = (int) Math.floor(this.getBoundingBox().getCenter().getY());
         int currX = startX;
@@ -260,7 +268,6 @@ public class AiPlayer extends Player {
 
         while (dangerTiles[currX][currY]) {
             int[] curr = dijsktraStep(currX,currY,false);
-            System.out.println("curr:("+currX+"|"+currY+")");
             currX = curr[0];
             currY = curr[1];
         }
@@ -268,7 +275,6 @@ public class AiPlayer extends Player {
         steps = new Stack<>();
         steps.push(new Step(StepType.IGNORE));
         goBack(currX,currY,startX,startY);
-        ignore = true;
     }
 
     //----- DIJKSTRA HELPER METHODS -----
@@ -320,23 +326,19 @@ public class AiPlayer extends Player {
 
     private void goBack(int currX,int currY,int startX,int startY){
         while (currX != startX || currY != startY) {
+            steps.push(new MoveStep(currX,currY,StepType.MOVE));
             int nextX = navigationMap[currX][currY].getPrevX();
             int nextY = navigationMap[currX][currY].getPrevY();
-            System.out.println("next:("+nextX+"|"+nextY+") curr:("+currX+"|"+currY+") start:("+startX+"|"+startY+")");
-            steps.push(new MoveStep(nextX,nextY,StepType.MOVE));
-            if (!navigationMap[nextX][nextY].getTile().getTileType().isWalkable()) {
-                steps.push(new Step(StepType.EVADE));
-                steps.push(new Step(StepType.PLACEBOMB));
+            if(nextX >= 0 && nextX < navigationMap.length && nextY >= 0 && nextY < navigationMap[nextX].length) {
+                if (!navigationMap[nextX][nextY].getTile().getTileType().isWalkable()) {
+                    steps.push(new Step(StepType.EVADE));
+                    steps.push(new Step(StepType.PLACEBOMB));
+                }
+            }else{
+                return;
             }
             currX = nextX;
             currY = nextY;
-        }
-        System.out.println("GoBack finish");
-
-        if(steps.top() instanceof MoveStep){
-            if(((MoveStep)steps.top()).getX() == startX && ((MoveStep)steps.top()).getY() == startY){
-                steps.pop();
-            }
         }
     }
 
@@ -370,7 +372,6 @@ public class AiPlayer extends Player {
     private enum StepType{
         PLACEBOMB, //Ai platziert eine Bombe
         EVADE, //Ai plant Ausweichen vor Bombe
-        FLEE, //Ai flieht vor anderen Spielern
         IGNORE, //Ai ignoriert Bomben oder hört auf Bomben zu ignorieren
         MOVE; //Ai bewegt sich
     }

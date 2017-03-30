@@ -2,11 +2,14 @@ package bomberman.gameplay;
 
 import bomberman.Main;
 import bomberman.ai.AiManager;
+import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
+import bomberman.gameplay.tile.objects.PowerUp;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class GameSession {
@@ -20,6 +23,7 @@ public class GameSession {
     private float powerupTimer = POWERUP_TIME;
 
     private boolean powerupSpawning = true;
+    private boolean powerupCleaning = false;
 
 
     public GameSession(GameMap gameMap) {
@@ -81,6 +85,19 @@ public class GameSession {
     }
 
     public synchronized void update(float delta) {
+
+        //--- Stuff
+        if(!(this.powerupSpawning) && !(this.powerupCleaning)) {
+            Tile[][] tiles = this.getGameMap().getTiles();
+            Stream.of(tiles).forEach(e -> Stream.of(e).forEach(t -> {
+                if(t.getTileObject() instanceof PowerUp) {
+                    t.destroyObject();
+                }
+            }));
+            this.powerupCleaning = true;
+        }
+
+        //--- Updates
         for(int i = 0; i < this.players.size(); i++) {
             this.players.get(i).update(delta);
         }

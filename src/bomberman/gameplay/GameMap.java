@@ -1,5 +1,6 @@
 package bomberman.gameplay;
 
+import bomberman.Main;
 import bomberman.gameplay.tile.*;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.tile.objects.PowerUp;
