@@ -140,11 +140,11 @@ public class GameView extends LightingView {
             if (playerLightMap.get(player).getLightCamera() != camera) {
                 BoundingBox b = player.getBoundingBox();
                 ITexture tex = ViewManager.getTexture("SwagBear.png");
-                if (player.getIndex() == 2) {
+                if (player.getIndex() == 1) {
                     tex = ViewManager.getTexture("YellowBear.png");
-                } else if (player.getIndex() == 3) {
+                } else if (player.getIndex() == 2) {
                     tex = ViewManager.getTexture("BrownBear.png");
-                } else if (player.getIndex() == 4) {
+                } else if (player.getIndex() == 3) {
                     tex = ViewManager.getTexture("DrunkBeer.png");
                 }
 
