@@ -2,11 +2,13 @@ package bomberman.gameplay;
 
 
 import bomberman.gameplay.tile.TileAbility;
+import bomberman.gameplay.tile.TileType;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.tile.objects.PowerUpTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
+import net.java.games.input.Controller;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -26,17 +28,17 @@ public class GameplayManager {
         //map 0
         this.addMap(
             GameMap.builder()
-                .name("Map 0")
+                .name("Standard")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.WALL_BREAKABLE, TileAbility.NORMAL)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
-                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
-                .horizontalPattern("WBWBWBWBWBWBWBW", 4)
-                .horizontalPattern("WBWBWBWBWBWBWBW", 6)
-                .horizontalPattern("WBWBWBWBWBWBWBW", 8)
-                .horizontalPattern("WGWBWBWBWBWGWGW", 10)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                .fillEmptyRandom(TileTypes.GROUND, TileTypes.WALL_BREAKABLE, 0.1)
+                .horizontalPattern("WGGRRRRRRRRRGGW", 1)
+                .horizontalPattern("WGWRWRWRWRWRWGW", 2)
+                .horizontalPattern("WGWRWRWRWRWRWGW", 4)
+                .horizontalPattern("WGWRWRWRWRWRWGW", 6)
+                .horizontalPattern("WGWRWRWRWRWRWGW", 8)
+                .horizontalPattern("WGWRWRWRWRWRWGW", 10)
+                .horizontalPattern("WGGRRRRRRRRRGGW", 11)
                 .startPosition(1, 1)
                 .startPosition(13, 1)
                 .startPosition(1, 11)
@@ -47,12 +49,12 @@ public class GameplayManager {
         //map 1
         this.addMap(
             GameMap.builder()
-                .name("Map 1")
+                .name("Special")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.WALL_BREAKABLE, TileAbility.NORMAL)
                 .horizontalPattern("WGGBBGGGGGBBGGW", 1)
-                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
+                .horizontalPattern("WGWBWWWBWWWBWGW", 2)
                 .horizontalPattern("WBIBBBBBBBBBIBW", 3)
                 .horizontalPattern("WIGIWBWBWBWIGIW", 4)
                 .horizontalPattern("WBIBBBGGGBBBIBW", 5)
@@ -60,7 +62,7 @@ public class GameplayManager {
                 .horizontalPattern("WBIBBBGGGBBBIBW", 7)
                 .horizontalPattern("WIGIWBWBWBWIGIW", 8)
                 .horizontalPattern("WBIBBBBBBBBBIBW", 9)
-                .horizontalPattern("WGWBWBWBWBWBWGW", 10)
+                .horizontalPattern("WGWBWWWBWWWBWGW", 10)
                 .horizontalPattern("WGGBBGGGGGBBGGW", 11)
                 .startPosition(1, 1)
                 .startPosition(13, 1)
@@ -84,7 +86,7 @@ public class GameplayManager {
         //map 2
         this.addMap(
             GameMap.builder()
-                .name("Map 2")
+                .name("Powerup")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
                 .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
@@ -101,10 +103,31 @@ public class GameplayManager {
                 .horizontalPattern("WGGGGGBBBGGGGGW", 11)
                 .startPosition(1, 1)
                 .startPosition(1, 11)
-                .startPosition(12, 11)
+                .startPosition(13, 11)
                 .startPosition(1, 11)
             .build()
         );
+        //map 3
+        this.addMap(
+            GameMap.builder()
+                .name("Madness")
+                .dimension(20,20)
+                .frame(TileTypes.WALL)
+                .fillEmptyRandom(TileTypes.WALL_BREAKABLE, TileTypes.WALL_BREAKABLE_IMPROVBED, 0.8)
+                .replace(TileTypes.WALL_BREAKABLE_IMPROVBED, TileAbility.RANDOM_TELEPORT)
+                .replace(TileTypes.WALL_BREAKABLE_IMPROVBED, TileTypes.GROUND, 1)
+                .replace(TileTypes.WALL_BREAKABLE, TileTypes.GROUND, 0.3)
+                .horizontalPattern("WGGWWWWWWWWWWWWWWGGW", 1)
+                .horizontalPattern("WGGWWWWWWWWWWWWWWGGW", 18)
+                .verticalPattern("WGGWWWWWWWWWWWWWWGGW", 1)
+                .verticalPattern("WGGWWWWWWWWWWWWWWGGW", 18)
+                .startPosition(1, 1)
+                .startPosition(1, 18)
+                .startPosition(18, 18)
+                .startPosition(1, 18)
+            .build()
+        );
+
 
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
 

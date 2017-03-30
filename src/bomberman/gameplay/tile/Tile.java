@@ -206,7 +206,6 @@ public class Tile {
                         break;
 
                         case EAST: {
-                            System.out.println(deltaTime);
                             player.getBoundingBox().move(.006F * Math.min(deltaTime, 2), 0);
                         }
                         break;
