@@ -106,6 +106,16 @@ public class GameplayManager {
             .build()
         );
 
+        this.addMap(
+                GameMap.builder().dimension(100, 100).fillEmpty(TileTypes.GROUND).frame(TileTypes.WALL)
+                        .name("AND ANOTHER ONE")
+                        .startPosition(1, 1)
+                        .startPosition(1, 2)
+                        .startPosition(1, 3)
+                        .startPosition(1, 4)
+                        .build()
+        );
+
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
 
 
