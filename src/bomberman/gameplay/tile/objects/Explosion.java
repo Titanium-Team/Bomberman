@@ -59,6 +59,10 @@ public class Explosion extends TileObject {
             if(this.getParent().getHealth() <= 0) {
                 this.owner.getGameStatistic().update(Statistics.DESTROYED_WALLS, 1);
                 this.getParent().setTileType(TileTypes.GROUND);
+                int random = (int) (Math.random() * 3);
+                if(random== 0){
+                    this.getParent().spawnPowerup(15);
+                }
             }
 
             return true;
