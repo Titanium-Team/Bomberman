@@ -12,6 +12,10 @@ import java.util.List;
 public class TextField extends ViewComponentClickable {
 
 
+    public void focus() {
+        this.textFieldState = TextFieldState.Focussed;
+    }
+
     private enum TextFieldState {
         Focussed, Unfocussed;
     }

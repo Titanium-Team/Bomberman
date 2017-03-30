@@ -285,7 +285,7 @@ public class GameView extends LightingView {
                 } else {
                     this.chatWindow.showSelf();
                     gameplayManager.getCurrentSession().getLocalPlayer().setMoveable(false);
-
+                    chatWindow.getTextField().focus();
                 }
             }
         }

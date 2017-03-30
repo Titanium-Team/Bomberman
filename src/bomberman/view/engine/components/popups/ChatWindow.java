@@ -55,4 +55,8 @@ public class ChatWindow extends PopupWindow {
 	public boolean isTextFieldFocused(){
 		return textField.isSelected();
 	}
+
+    public TextField getTextField() {
+        return textField;
+    }
 }
