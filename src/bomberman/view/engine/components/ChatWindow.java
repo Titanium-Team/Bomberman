@@ -12,7 +12,7 @@ public class ChatWindow extends PopupWindow {
     private Button sendButton;
 
     public ChatWindow(View v) {
-        super(LayoutParams.obtain(0.6f,0,0.4f,1), v);
+        super(LayoutParams.obtain(0.7f,0,0.3f,1), v);
         this.verticalList = new VerticalList(LayoutParams.obtain(0f,0.11f,1,0.69f),v);
         this.addChild(verticalList);
 

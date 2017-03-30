@@ -74,7 +74,7 @@ public class TextField extends ViewComponentClickable {
                 } else {
                     if (isFilterChars()){
                         for (Character character : getAcceptedChars()){
-                            if (character.charValue() == c){
+                            if (character == c){
                                 addChar(c);
                                 break;
                             }
