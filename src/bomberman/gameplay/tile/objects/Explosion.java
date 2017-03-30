@@ -63,6 +63,9 @@ public class Explosion extends TileObject {
 
             this.getParent().setHealth(this.getParent().getHealth() - this.damage);
 
+            if (this.getParent().getTileType() == TileTypes.WALL_BREAKABLE_IMPROVBED) {
+
+            }
             if(this.getParent().getHealth() <= 0) {
                 this.owner.getGameStatistic().update(Statistics.DESTROYED_WALLS, 1);
                 this.getParent().setTileType(TileTypes.GROUND);
@@ -70,6 +73,8 @@ public class Explosion extends TileObject {
                 if(random== 0){
                     this.getParent().spawnPowerup(15);
                 }
+            } else if (this.getParent().getTileType() == TileTypes.WALL_BREAKABLE_IMPROVBED) {
+                this.getParent().setTileType(TileTypes.WALL_BREAKABLE);
             }
 
             return true;

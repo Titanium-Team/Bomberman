@@ -193,9 +193,10 @@ public class Client extends Connection {
                             leftPlayer[0] = value;
                         }
                     });
+                    getController().getNetworkPlayerMap().remove(leftPlayer[0]);
 
                     if (Main.instance.getViewManager().getCurrentView() instanceof GameView){
-                        //TODO Message
+                        Main.instance.getViewManager().getCurrentView().displayError(leftPlayer[0].getName() + " left");
                     }else {
                         updateUserList();
                     }
