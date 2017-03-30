@@ -202,4 +202,9 @@ public class TextField extends ViewComponentClickable {
     public void addFilterChar(char c){
         acceptedChars.add(c);
     }
+
+    @Override
+    public boolean isSelected() {
+        return textFieldState == TextFieldState.Focussed;
+    }
 }
