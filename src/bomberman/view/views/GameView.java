@@ -180,7 +180,25 @@ public class GameView extends LightingView {
                             batch.draw(ViewManager.getTexture("ground.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1f, 1f, 1f, 1);
                         }
                         if (tiles[i][j].getTileType().isWalkable()) {
-                            if (tiles[i][j].getTileObject() != null) {
+	                        if (tiles[i][j].getTileAbility().equals(TileAbility.TREADMILL)) {
+		                        double rotation;
+		                        switch (tiles[i][j].getTreadMillDirection()) {
+			                        case NORTH:
+				                        rotation = Math.toRadians(90.0);
+				                        break;
+			                        case EAST:
+				                        rotation = Math.toRadians(180.);
+				                        break;
+			                        case SOUTH:
+				                        rotation = Math.toRadians(270.);
+				                        break;
+			                        default:
+				                        rotation = 0;
+				                        break;
+		                        }
+		                        batch.draw(ViewManager.getTexture("arrow.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f * this.tileSize, 0.5f * this.tileSize, (float) rotation, 1, 1, 1, 1);
+	                        }
+	                        if (tiles[i][j].getTileObject() != null) {
                                 if (tiles[i][j].getTileObject() instanceof Bomb) {
                                     batch.draw(ViewManager.getTexture("bomb.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
                                 } else if (tiles[i][j].getTileObject() instanceof PowerUp) {
@@ -209,23 +227,6 @@ public class GameView extends LightingView {
                                 }
                             } else if (tiles[i][j].getTileAbility().equals(TileAbility.TELEPORT) || tiles[i][j].getTileAbility().equals(TileAbility.RANDOM_TELEPORT)) {
                                 batch.draw(ViewManager.getTexture("teleport.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
-                            } else if (tiles[i][j].getTileAbility().equals(TileAbility.TREADMILL)) {
-                                double rotation;
-                                switch (tiles[i][j].getTreadMillDirection()) {
-                                    case NORTH:
-                                        rotation = Math.toRadians(90.0);
-                                        break;
-                                    case EAST:
-                                        rotation = Math.toRadians(180.);
-                                        break;
-                                    case SOUTH:
-                                        rotation = Math.toRadians(270.);
-                                        break;
-                                    default:
-                                        rotation = 0;
-                                        break;
-                                }
-                                batch.draw(ViewManager.getTexture("arrow.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 0.5f * this.tileSize, 0.5f * this.tileSize, (float) rotation, 1, 1, 1, 1);
                             }
                         }
                     }
