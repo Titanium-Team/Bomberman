@@ -25,8 +25,6 @@ public class Client extends Connection {
 
     private RefreshableServerList refreshable;
 
-    private boolean custom = false;
-
     public Client(NetworkController controller) throws IOException {
         super(controller);
 
@@ -85,10 +83,6 @@ public class Client extends Connection {
                         refreshable.refreshListView(serverList);
                     }
 
-                    if (custom){
-                        join(connectionData);
-                    }
-
                     System.out.println("ConnectionData from Server");
 
                     break;
@@ -123,7 +117,7 @@ public class Client extends Connection {
                     sendRecieved(message, server);
                     break;
                 case "startGame":
-                    getGameplayManager().setMapIndex(Integer.parseInt(splittedMessage[1]));
+                    getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(splittedMessage[1]));
                     Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(GameView.class));
 
                     sendRecieved(message, server);
@@ -153,6 +147,15 @@ public class Client extends Connection {
 
                     sendRecieved(message, server);
                     break;
+                case "bombExplode":
+                    String bombExplode = decrypt(splittedMessage[1]);
+
+                    Bomb bomb1 = Bomb.fromJson(bombExplode);
+
+                    //TODO: Schnauz leute an vernünftige Methoden zu schreiben.
+
+                    break;
+
                 case "powerUpSpawn":
                     String powerUpSpawn = splittedMessage[1];
 
@@ -189,6 +192,22 @@ public class Client extends Connection {
     }
 
     @Override
+    public void explodedBomb(Location location) {
+        send("bombExplode§" + location.toJson(), server.getNetworkData(), false);
+    }
+
+    @Override
+    public void hit(double health, int playerId) {
+        Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("health", String.valueOf(health));
+        jsonMap.put("id", String.valueOf(playerId));
+
+        Gson gson = new Gson();
+
+        send("gotHit" + gson.toJson(jsonMap), server.getNetworkData(), false);
+    }
+
+    @Override
     public void leave() {
         getSocket().close();
 
@@ -217,11 +236,5 @@ public class Client extends Connection {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-    }
-
-    public void join(NetworkData data) {
-        send("hello§" + getMyData().toJson(), data, false);
-
-        custom = true;
     }
 }

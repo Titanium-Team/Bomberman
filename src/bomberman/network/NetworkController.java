@@ -11,8 +11,6 @@ import bomberman.network.connection.RefreshableServerList;
 import bomberman.network.connection.Server;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.Socket;
 import java.net.SocketException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -83,20 +81,23 @@ public class NetworkController implements Runnable {
         requestDataQueue.add(() -> connection.plantBomb(blomb));
     }
 
+    public void explodedBomb(Location location) {
+        requestDataQueue.add(() -> connection.explodedBomb(location));
+    }
+
+    public void hit(int playerId, double healthLeft) {
+        requestDataQueue.add(() -> connection.hit(healthLeft, playerId));
+    }
+
     public void joinServer(ServerConnectionData data) {
         if (!host) {
             requestDataQueue.add(() -> ((Client) connection).join(data));
         }
     }
 
-    public void joinServer(NetworkData data){
-        if (!host){
-            requestDataQueue.add(() -> ((Client) connection).join(data));
-        }
-    }
 
     public List<ServerConnectionData> getServerList(){
-        if (!host && connection != null){
+        if (!host){
             return ((Client) connection).getServerList();
         }
 
@@ -118,17 +119,15 @@ public class NetworkController implements Runnable {
     }
 
     public void startServer(String serverName, int customPort){
-        if (isHostable(customPort)) {
-            host = true;
-            requestDataQueue.add(() -> {
-                connection.close();
-                try {
-                    connection = new Server(Main.instance.getNetworkController(), customPort, serverName);
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
+        host = true;
+        requestDataQueue.add(() -> {
+            connection.close();
+            try {
+                connection = new Server(Main.instance.getNetworkController(), customPort, serverName);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void startClient(){
@@ -165,17 +164,5 @@ public class NetworkController implements Runnable {
         if (host){
             requestDataQueue.add(() -> ((Server) connection).powerUpSpawn(powerUp));
         }
-    }
-
-    public boolean isHostable(int customPort){
-        boolean hostable = true;
-
-        try {
-            new DatagramSocket(customPort).close();
-        } catch (Exception e) {
-            hostable = false;
-        }
-
-        return hostable;
     }
 }

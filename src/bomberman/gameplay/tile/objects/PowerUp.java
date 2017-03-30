@@ -41,8 +41,6 @@ public class PowerUp extends TileObject {
         PropertyRepository repo = player.getPropertyRepository();
         player.getGameStatistic().update(Statistics.COLLECTED_POWERUPS, 1);
 
-        player.setLastPowerup(this.powerUpType);
-
         switch (this.powerUpType) {
 
             case SPEEDUP: {

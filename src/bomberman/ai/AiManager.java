@@ -43,7 +43,7 @@ public class AiManager {
         players.sort((o1, o2) -> (int) Math.round(o1.getRelevance() - o2.getRelevance()));
         this.aiPlayers = new ArrayList<>();
 
-        //calcDangerTiles();
+        calcDangerTiles();
     }
 
     public Player createAi(String name, Location center) {
@@ -74,7 +74,7 @@ public class AiManager {
         updateTime = -dt;
         if(updateTime < halveUpdateTime){
             halveUpdateTime = Float.NEGATIVE_INFINITY;
-            //calcDangerTiles();
+            calcDangerTiles();
         }
         if (updateTime < 0) {
             updateTime = random.nextFloat();

@@ -81,9 +81,7 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 9)
                 .startPosition(1, 1)
-                .startPosition(1, 11)
                 .startPosition(12, 11)
-                .startPosition(1, 11)
                 .treadmill(new Location(1, 1), Player.FacingDirection.WEST)
                 .treadmill(new Location(2, 1), Player.FacingDirection.WEST)
                 .treadmill(new Location(3, 1), Player.FacingDirection.WEST)
@@ -143,7 +141,7 @@ public class GameplayManager {
     private void createGameSession() {
         this.currentSession = new GameSession(this.getMap(this.mapIndex));
         this.currentSession.addPlayer(new LocalPlayer(this.currentSession, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
-        //this.currentSession.addAi(); Nur zum Testen der AI. Nicht nutzen, AI funktioniert nicht!
+        this.currentSession.addAi(); //Nur zum Testen der AI. Nicht nutzen, AI funktioniert nicht!
     }
 
     public void update(float delta) {

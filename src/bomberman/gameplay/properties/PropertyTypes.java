@@ -22,7 +22,7 @@ public enum PropertyTypes implements PropertyType {
     BOMB_BLAST_RADIUS {
         @Override
         public float defaultValue() {
-            return 1;
+            return 3;
         }
 
         @Override
