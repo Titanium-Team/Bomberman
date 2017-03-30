@@ -4,10 +4,7 @@ import bomberman.Main;
 import bomberman.network.ServerConnectionData;
 import bomberman.network.connection.RefreshableServerList;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.components.Button;
-import bomberman.view.engine.components.LayoutParams;
-import bomberman.view.engine.components.TextField;
-import bomberman.view.engine.components.VerticalList;
+import bomberman.view.engine.components.*;
 
 
 import java.util.ArrayList;
@@ -35,6 +32,10 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
 
         this.portTextField = new TextField(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "1638", "Port Number");
         this.getRoot().addChild(portTextField);
+        this.portTextField.setFilterOnlyNumbers();
+        this.portTextField.addTypeListeners((key, c) -> {
+            hostGameButton.setClickable(Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText())));
+        });
 
         this.serverNameField = new TextField(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "", "Server Name");
         this.getRoot().addChild(serverNameField);
@@ -51,6 +52,7 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
             PlayMenuView.this.changeView(LobbyView.class);
         });
         this.getRoot().addChild(hostGameButton);
+        this.hostGameButton.setClickable(Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText())));
 
         this.serverList = new VerticalList(LayoutParams.obtain(0.55f, 0.05f, 0.4f, 0.8f), this);
         this.getRoot().addChild(serverList);
