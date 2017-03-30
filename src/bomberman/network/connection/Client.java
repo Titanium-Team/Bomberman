@@ -7,6 +7,8 @@ import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
 import bomberman.view.views.GameView;
+import bomberman.view.views.HomeView;
+import bomberman.view.views.LobbyView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,9 +28,12 @@ public class Client extends Connection {
     private RefreshableServerList refreshable;
 
     private boolean custom = false;
+    private List<String> nameList;
 
     public Client(NetworkController controller) throws IOException {
         super(controller);
+
+        nameList = new ArrayList<>();
 
         setGameplayManager(Main.instance.getGameplayManager());
 
@@ -124,6 +129,8 @@ public class Client extends Connection {
                     break;
                 case "startGame":
                     getGameplayManager().setMapIndex(Integer.parseInt(splittedMessage[1]));
+
+                    getGameplayManager().getCurrentSession().setPowerupSpawning(false);
                     Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(GameView.class));
 
                     sendRecieved(message, server);
@@ -161,14 +168,58 @@ public class Client extends Connection {
 
                     sendRecieved(message, server);
                     break;
+                case "joined":
+                    String names = decrypt(splittedMessage[1]);
+
+                    Type typeNameList = new TypeToken<List<String>>(){}.getType();
+                    nameList = gson.fromJson(names, typeNameList);
+
+                    updateUserList();
+
+                    sendRecieved(message, server);
+                    break;
                 case "ok":
                     recieved(splittedMessage[1], sender);
 
+                    break;
+                case "left":
+                    String leftId = decrypt(splittedMessage[1]);
+
+                    final NetworkPlayer[] leftPlayer = {null};
+                    getController().getNetworkPlayerMap().forEach((key, value) -> {
+                        if (value.getIndex() == Integer.parseInt(leftId)){
+                            leftPlayer[0] = value;
+                        }
+                    });
+
+                    if (Main.instance.getViewManager().getCurrentView() instanceof GameView){
+                        //TODO Message
+                    }else {
+                        updateUserList();
+                    }
+
+
+
+                    sendRecieved(message, server);
+                    break;
+                case "close":
+
+                    Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(HomeView.class));
+
+                    sendRecieved(message, server);
                     break;
             }
         } else if (sender.getPort() != -1){
             send("error", sender, true);
         }
+    }
+
+    private void updateUserList() {
+
+        if (Main.instance.getViewManager().getCurrentView() instanceof LobbyView){
+            Main.instance.getViewManager().postOnUIThread(() -> ((LobbyView) Main.instance.getViewManager().getCurrentView()).refreshListView(nameList));
+        }
+
     }
 
     @Override
@@ -190,8 +241,9 @@ public class Client extends Connection {
 
     @Override
     public void leave() {
-        getSocket().close();
+        send("leave§", server.getNetworkData(), false);
 
+        getSocket().close();
     }
 
     public void join(ServerConnectionData data){

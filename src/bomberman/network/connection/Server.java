@@ -115,15 +115,7 @@ public class Server extends Connection {
                     NetworkPlayer player = new NetworkPlayer(name, new Location(0, 0), dataConnectionMap.get(sender));
                     getController().getNetworkPlayerMap().put(sender, player);
 
-                    if (Main.instance.getViewManager().getCurrentView() instanceof LobbyView){
-                        List<String> stringList = new ArrayList<String>();
-                        for (Player p : getController().getNetworkPlayerMap().values()){
-                            stringList.add(p.getName());
-                        }
-                        stringList.add(getGameplayManager().getCurrentSession().getLocalPlayer().getName());
-
-                        Main.instance.getViewManager().postOnUIThread(() -> ((LobbyView) Main.instance.getViewManager().getCurrentView()).refreshListView(stringList));
-                    }
+                    updateUserList();
 
                     System.out.println("Joined Player: " + name);
 
@@ -165,11 +157,41 @@ public class Server extends Connection {
 
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
+                case "leave":
+
+                    sendToAll("left§", String.valueOf(getController().getNetworkPlayerMap().get(sender).getIndex()), sender,true, true);
+
+                    getController().getNetworkPlayerMap().remove(sender);
+
+                    if (gameStarted){
+                        //TODO Message
+                    }else {
+                        updateUserList();
+                    }
+
+                    sendRecieved(message, dataConnectionMap.get(sender));
+                    break;
             }
         } else if (sender.getPort() != -1){
             send("error", sender, true);
         }
 
+    }
+
+    private void updateUserList() {
+        Gson gson = new Gson();
+
+        if (Main.instance.getViewManager().getCurrentView() instanceof LobbyView){
+            List<String> stringList = new ArrayList<String>();
+            for (Player p : getController().getNetworkPlayerMap().values()){
+                stringList.add(p.getName());
+            }
+            stringList.add(getGameplayManager().getCurrentSession().getLocalPlayer().getName());
+
+            sendToAll("joined§", gson.toJson(stringList), getMyData().getNetworkData(), true, true);
+
+            Main.instance.getViewManager().postOnUIThread(() -> ((LobbyView) Main.instance.getViewManager().getCurrentView()).refreshListView(stringList));
+        }
     }
 
     @Override
@@ -203,10 +225,10 @@ public class Server extends Connection {
             if (!value.getConnectionData().getNetworkData().getIp().getHostAddress().equals(networkData.getIp().getHostAddress()) || value.getConnectionData().getNetworkData().getPort() != networkData.getPort()) {
                 String messageSend = message;
                 if (encrypt){
-                    value.getConnectionData().encrypt(message);
+                    messageSend = value.getConnectionData().encrypt(message);
                 }
 
-                send(prefix + message, value.getConnectionData().getNetworkData(), resend);
+                send(prefix + messageSend, value.getConnectionData().getNetworkData(), resend);
             }
         });
     }
