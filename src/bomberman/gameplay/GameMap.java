@@ -62,7 +62,16 @@ public class GameMap implements Cloneable {
         return thumbnailKey;
     }
 
+    public List<Location> getStartPositions() {
+        return this.startPositions;
+    }
+
     public Location getRandomStartPosition() {
+
+        if(this.startPositions.isEmpty()) {
+            return null;
+        }
+
         return this.startPositions.remove(GameMap.random.nextInt(this.startPositions.size()));
     }
 

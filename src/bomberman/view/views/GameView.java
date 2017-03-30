@@ -120,9 +120,11 @@ public class GameView extends LightingView {
                             if (tiles[i][j].getTileType().equals(TileTypes.WALL)) {
                                 batch.draw(ViewManager.getTexture("wall.png"), i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.5f, 0.5f, 0.5f, 1);
                             } else if (tiles[i][j].getTileType().equals(TileTypes.WALL_BREAKABLE)) {
-                                batch.draw(ViewManager.getTexture("breakableWall.png"), i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.25f, 0.25f, 0.25f, 1);
-                            }
-                        }
+                            batch.draw(ViewManager.getTexture("breakableWall.png"), i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.25f, 0.25f, 0.25f, 1);
+                            } else if (tiles[i][j].getTileType().equals(TileTypes.WALL_BREAKABLE_IMPROVBED)) {
+                            batch.draw(ViewManager.getTexture("BreakableImprovedWall.png"), i * this.tileSize, j * this.tileSize, this.tileSize + 1, this.tileSize + 1, 0.25f, 0.25f, 0.25f, 1);
+                             }
+                    }
                     }
                 }
             }
@@ -270,12 +272,14 @@ public class GameView extends LightingView {
                 this.pausePopup.showSelf();
             }
         }else if(key == Keyboard.KEY_T){
-            if(chatWindow.isShown()){
-	            if(!chatWindow.isTextFieldFocused()) {
-		            this.chatWindow.closeSelf();
-	            }
-            }else{
-                this.chatWindow.showSelf();
+            if(!chatWindow.isTextFieldFocused()) {
+                if (chatWindow.isShown()) {
+                    this.chatWindow.closeSelf();
+                    gameplayManager.getCurrentSession().getLocalPlayer().setMoveable(true);
+                } else {
+                    this.chatWindow.showSelf();
+                    gameplayManager.getCurrentSession().getLocalPlayer().setMoveable(false);
+                }
             }
         }
     }

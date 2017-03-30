@@ -10,7 +10,7 @@ public enum PropertyTypes implements PropertyType {
 
         @Override
         public float maxValue() {
-            return 1.3F;
+            return 1.5F;
         }
 
         @Override

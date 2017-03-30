@@ -5,6 +5,7 @@ import bomberman.ai.AiManager;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.utils.Location;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,6 +25,8 @@ public class GameSession {
 
     private boolean powerupSpawning = true;
     private boolean powerupCleaning = false;
+
+    private boolean spawnMissingAIs = true;
 
 
     public GameSession(GameMap gameMap) {
@@ -85,6 +88,14 @@ public class GameSession {
     }
 
     public synchronized void update(float delta) {
+
+        //--- Spawning AIs
+        /*if(this.spawnMissingAIs) {
+            while (!(this.gameMap.getStartPositions().isEmpty())) {
+                this.addAi();
+            }
+            this.spawnMissingAIs = false;
+        }*/
 
         //--- Stuff
         if(!(this.powerupSpawning) && !(this.powerupCleaning)) {

@@ -377,6 +377,9 @@ public class LocalPlayer extends Player {
 
     public void keyDown(int keyCode, char c) {
 
+        if (!this.isMoveable()) {
+            return;
+        }
         switch (keyCode) {
 
             case Keyboard.KEY_UP:

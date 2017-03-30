@@ -6,6 +6,7 @@ import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
+import bomberman.view.views.LobbyView;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -120,9 +121,7 @@ public abstract class Connection {
 
             getSocket().send(packet);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
     }
 
     public boolean checksum(String[] message) {
@@ -175,7 +174,7 @@ public abstract class Connection {
         }
     }
 
-    public void movePlayer(NetworkData networkData, String locationJson, Player.FacingDirection facingDirection){
+    protected void movePlayer(NetworkData networkData, String locationJson, Player.FacingDirection facingDirection){
 
         Location location = new Location(locationJson);
 
@@ -184,6 +183,7 @@ public abstract class Connection {
         player.setFacingDirection(facingDirection);
 
     }
+
 
     public abstract void message(String message);
     public abstract void listen();
