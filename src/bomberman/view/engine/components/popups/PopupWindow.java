@@ -7,7 +7,7 @@ import bomberman.view.engine.components.Panel;
 
 public abstract class PopupWindow extends Panel {
 
-    private Button exitButton;
+    protected Button exitButton;
 
     public PopupWindow(LayoutParams params, View v) {
         super(params, v);
