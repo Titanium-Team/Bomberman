@@ -94,7 +94,11 @@ public class GameView extends LightingView {
 
     private void addPlayer(Player player) {
         Location playerLocation = player.getBoundingBox().getCenter();
-        Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize); // TODO: adjust color
+        int size = 400;
+        if(!player.equals(gameplayManager.getCurrentSession().getLocalPlayer())) {
+            size = 1;
+        }
+        Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize,size); // TODO: adjust color
         playerLight.setOwner(player);
         playerLightMap.put(player, playerLight);
         this.addLight(playerLight);
@@ -281,6 +285,7 @@ public class GameView extends LightingView {
                 } else {
                     this.chatWindow.showSelf();
                     gameplayManager.getCurrentSession().getLocalPlayer().setMoveable(false);
+
                 }
             }
         }
@@ -305,12 +310,12 @@ public class GameView extends LightingView {
      * @param y Die y-Koordinate des Mittelpunktes.
      * @return Ein zufällig gefärbtes Licht.
      */
-    private Light randomLight(float x, float y) {
+    private Light randomLight(float x, float y, int rad) {
         float r = random.nextFloat() / 2 + 0.5f;
         float g = random.nextFloat() / 2 + 0.5f;
         float b = random.nextFloat() / 2 + 0.5f;
 
-        return new Light(x, y, 400, r, g, b);
+        return new Light(x, y, rad, r, g, b);
     }
 
     private class PausePopup extends PopupWindow {
@@ -335,7 +340,7 @@ public class GameView extends LightingView {
         private Label range, powerup;
 
         public StatPopup(View v) {
-            super(LayoutParams.obtain(0, 0, 0.2f, 1), v);
+            super(LayoutParams.obtain(0, 0, 0.25f, 1), v);
             super.removeChild(exitButton);
             this.range = new Label(LayoutParams.obtain(0, 0.2f, 1, 0.1f), v, "Range :" + (int) gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
             this.addChild(range);
