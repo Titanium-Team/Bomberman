@@ -165,13 +165,14 @@ public class Server extends Connection {
 
                     sendToAll("left§", String.valueOf(getController().getNetworkPlayerMap().get(sender).getIndex()), sender,true, true);
 
-                    getController().getNetworkPlayerMap().remove(sender);
 
                     if (gameStarted){
-                        //TODO Message
+                        Main.instance.getViewManager().getCurrentView().displayError(getController().getNetworkPlayerMap().get(sender).getName() + " left");
                     }else {
                         updateUserList();
                     }
+
+                    getController().getNetworkPlayerMap().remove(sender);
 
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;

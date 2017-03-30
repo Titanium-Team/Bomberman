@@ -56,13 +56,15 @@ public class LobbyView extends BaseMenuView {
             Image thumbnailImage = new Image(LayoutParams.obtain(0f, 0.3f, 0.8f, 0.7f), this, map.getThumbnailKey());
             container.addChild(thumbnailImage);
 
-            Button voteButton = new Button(LayoutParams.obtain(0.7f, 0f, 0.3f, 1f), this, "Vote");
-            voteButton.addListener(() -> {
-                gameplayManager.setMapIndex(index);
-            });
-            container.addChild(voteButton);
+            if (Main.instance.getNetworkController().isHost()) {
+                Button voteButton = new Button(LayoutParams.obtain(0.7f, 0f, 0.3f, 1f), this, "Vote");
+                voteButton.addListener(() -> {
+                    gameplayManager.setMapIndex(index);
+                });
+                container.addChild(voteButton);
 
-            this.mapVotingList.addChild(container);
+                this.mapVotingList.addChild(container);
+            }
         }
     }
 

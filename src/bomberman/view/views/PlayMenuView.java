@@ -40,7 +40,13 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
         this.getRoot().addChild(portTextField);
         this.portTextField.setFilterOnlyNumbers();
         this.portTextField.addTypeListeners((key, c) -> {
-            hostGameButton.setClickable(Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText())));
+            if (Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText()))){
+                hostGameButton.setClickable(true);
+            }else {
+                hostGameButton.setClickable(false);
+
+                this.displayError("Port schon vergeben");
+            }
         });
 
         this.serverNameField = new TextField(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "", "Server Name");
@@ -60,7 +66,9 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
                     Main.instance.getNetworkController().joinServer(new NetworkData(InetAddress.getByName(serverIpField.getText()), Integer.parseInt(portTextField.getText())));
 
                     PlayMenuView.this.changeView(LobbyView.class);
-                } catch (UnknownHostException e) {}
+                } catch (UnknownHostException e) {
+                    this.displayError("IP und Port passen nicht zusammen");
+                }
             }
         });
 
