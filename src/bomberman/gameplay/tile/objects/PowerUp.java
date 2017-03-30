@@ -1,5 +1,6 @@
 package bomberman.gameplay.tile.objects;
 
+import bomberman.Main;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyRepository;
 import bomberman.gameplay.properties.PropertyTypes;
@@ -7,6 +8,13 @@ import bomberman.gameplay.statistic.Statistic;
 import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
+import bomberman.gameplay.utils.Location;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PowerUp extends TileObject {
 
@@ -18,6 +26,8 @@ public class PowerUp extends TileObject {
 
         this.parent = parent;
         this.powerUpType = powerUpType;
+
+        Main.instance.getNetworkController().powerUpSpawn(this);
     }
 
     @Override
@@ -30,6 +40,8 @@ public class PowerUp extends TileObject {
 
         PropertyRepository repo = player.getPropertyRepository();
         player.getGameStatistic().update(Statistics.COLLECTED_POWERUPS, 1);
+
+        player.setLastPowerup(this.powerUpType);
 
         switch (this.powerUpType) {
 
@@ -113,4 +125,27 @@ public class PowerUp extends TileObject {
         return new PowerUp(parent, this.getLifespan(), this.powerUpType);
     }
 
+    public static PowerUp fromJson(String json){
+        Gson gson = new Gson();
+        Type typeMap = new TypeToken<Map<String, String>>(){}.getType();
+
+        Map<String, String> jsonMap = gson.fromJson(json, typeMap);
+
+        Type typeType = new TypeToken<PowerUpTypes>(){}.getType();
+
+        Location location = new Location(jsonMap.get("location"));
+        Tile tile = Main.instance.getGameplayManager().getCurrentSession().getGameMap().getTile((int) location.getX(), (int) location.getY()).get();
+        return new PowerUp(tile, Float.parseFloat(jsonMap.get("lifeSpan")), gson.fromJson(jsonMap.get("type"), typeType));
+    }
+
+    public String toJson() {
+        Gson gson = new Gson();
+
+        Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("location", getParent().getBoundingBox().getCenter().toJson());
+        jsonMap.put("lifeSpan", String.valueOf(getLifespan()));
+        jsonMap.put("type", gson.toJson(powerUpType));
+
+        return gson.toJson(jsonMap);
+    }
 }

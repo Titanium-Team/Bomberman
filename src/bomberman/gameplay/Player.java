@@ -7,6 +7,7 @@ import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUpType;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
@@ -21,8 +22,8 @@ import java.util.stream.Stream;
 public abstract class Player {
 
     //--- Settings
-    public final static double COLLISION_WIDTH = 1;
-    public final static double COLLISION_HEIGHT = 1;
+    public final static double COLLISION_WIDTH = .99;
+    public final static double COLLISION_HEIGHT = .99;
 
     private final UUID identifier = UUID.randomUUID();
     private int index;
@@ -32,12 +33,14 @@ public abstract class Player {
     private final GameSession gameSession;
 
     //--- PlayerProperties
-    private final String name;
+    private String name;
 
     private final PlayerType playerType;
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
 
     private final BoundingBox boundingBox;
+
+    private PowerUpType lastPowerup;
 
     public Player(GameSession gameSession, PlayerType playerType, String name, Location center) {
 
@@ -66,6 +69,14 @@ public abstract class Player {
 
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public PowerUpType getLastPowerup() {
+        return this.lastPowerup;
     }
 
     public boolean isAlive() {
@@ -110,8 +121,12 @@ public abstract class Player {
         return this.gameSession;
     }
 
-    protected void setIndex(int index) {
+    public void setIndex(int index) {
         this.index = index;
+    }
+
+    public void setLastPowerup(PowerUpType lastPowerup) {
+        this.lastPowerup = lastPowerup;
     }
 
     public void respawn(){

@@ -16,7 +16,7 @@ public class GamepadConfig {
     }
 
     public Action getAction(Event event) {
-        switch(event.getComponent().getIdentifier().getName()) {
+        switch (event.getComponent().getIdentifier().getName()) {
             case "0":
                 return Action.Accept;
             case "1":

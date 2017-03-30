@@ -1,5 +1,9 @@
 package bomberman.network;
 
+import bomberman.Main;
+import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.connection.Client;
 import bomberman.network.connection.Connection;
@@ -7,6 +11,8 @@ import bomberman.network.connection.RefreshableServerList;
 import bomberman.network.connection.Server;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,7 +26,7 @@ public class NetworkController implements Runnable {
 
     private Map<NetworkData, NetworkPlayer> networkPlayerMap;
 
-    private Queue<RequestData> requestDataQueue;
+    private Queue<Runnable> requestDataQueue;
 
     private boolean host = false;
 
@@ -52,64 +58,11 @@ public class NetworkController implements Runnable {
             }
 
             while (true){
-                RequestData requestData = requestDataQueue.poll();
-
-
-
-                if (requestData != null) {
-                    switch (requestData.getType()){
-                        case "startServer":
-                            connection.close();
-                            try {
-                                connection = new Server(this, (Integer) requestData.getObjects()[0], (String) requestData.getObjects()[1]);
-                            } catch (SocketException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-
-                        case "startClient":
-                            connection.close();
-                            try {
-                                connection = new Client(this);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-
-                        case "hello":
-                            ((Client) connection).refreshServers((RefreshableServerList) requestData.getObjects()[0]);
-                            break;
-
-                        case "message":
-                            connection.message((String) requestData.getObjects()[0]);
-                            break;
-
-                        case "position":
-                            connection.move((Location) requestData.getObjects()[0], (Integer) requestData.getObjects()[1]);
-                            break;
-
-                        case "plant":
-                            connection.plantBomb((Location) requestData.getObjects()[0]);
-                            break;
-
-                        case "exploded":
-                            connection.explodedBomb((Location) requestData.getObjects()[0]);
-                            break;
-
-                        case "hit":
-                            connection.hit((double) requestData.getObjects()[0], (Integer) requestData.getObjects()[1]);
-                            break;
-
-                        case "join":
-                            ((Client) connection).join((ServerConnectionData) requestData.getObjects()[0]);
-                            break;
-
-                        case "startGame":
-                            ((Server) connection).startGame((int) requestData.getObjects()[0]);
-                            break;
-                    }
-
+                Runnable runnable = requestDataQueue.poll();
+                if (runnable != null){
+                    runnable.run();
                 }
+
                 Thread.sleep(0);
             }
         } catch (InterruptedException e) {
@@ -119,34 +72,31 @@ public class NetworkController implements Runnable {
     }
 
     public void chatMessage(String message) {
-        requestDataQueue.add(new RequestData("message", new Object[]{message}));
+        requestDataQueue.add(() -> connection.message(message));
     }
 
-    public void move(Location location, int playerId) {
-        requestDataQueue.add(new RequestData("position", new Object[]{location, playerId}));
+    public void move(Location location, int playerId, Player.FacingDirection facingDirection) {
+        requestDataQueue.add(() -> connection.move(location, facingDirection, playerId));
     }
 
-    public void plantBomb(Location location) {
-        requestDataQueue.add(new RequestData("plant", new Object[]{location}));
-    }
-
-    public void explodedBomb(Location location) {
-        requestDataQueue.add(new RequestData("exploded",new Object[]{location}));
-    }
-
-    public void hit(int playerId, double healthLeft) {
-        requestDataQueue.add(new RequestData("hit", new Object[]{healthLeft, playerId}));
+    public void plantBomb(Bomb blomb) {
+        requestDataQueue.add(() -> connection.plantBomb(blomb));
     }
 
     public void joinServer(ServerConnectionData data) {
         if (!host) {
-            requestDataQueue.add(new RequestData("join", new Object[]{data}));
+            requestDataQueue.add(() -> ((Client) connection).join(data));
         }
     }
 
+    public void joinServer(NetworkData data){
+        if (!host){
+            requestDataQueue.add(() -> ((Client) connection).join(data));
+        }
+    }
 
     public List<ServerConnectionData> getServerList(){
-        if (!host){
+        if (!host && connection != null){
             return ((Client) connection).getServerList();
         }
 
@@ -155,7 +105,7 @@ public class NetworkController implements Runnable {
 
     public void refreshServers(RefreshableServerList refreshable){
         if (!host){
-            requestDataQueue.add(new RequestData("hello", new Object[]{refreshable}));
+            requestDataQueue.add(() -> ((Client) connection).refreshServers(refreshable));
         }
     }
 
@@ -168,13 +118,29 @@ public class NetworkController implements Runnable {
     }
 
     public void startServer(String serverName, int customPort){
-        host = true;
-        requestDataQueue.add(new RequestData("startServer", new Object[]{customPort, serverName}));
+        if (isHostable(customPort)) {
+            host = true;
+            requestDataQueue.add(() -> {
+                connection.close();
+                try {
+                    connection = new Server(Main.instance.getNetworkController(), customPort, serverName);
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     public void startClient(){
         host = false;
-        requestDataQueue.add(new RequestData("startClient", null));
+        requestDataQueue.add(() -> {
+            connection.close();
+            try {
+                connection = new Client(Main.instance.getNetworkController());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void leave() {
@@ -191,25 +157,25 @@ public class NetworkController implements Runnable {
 
     public void startGame(int mapIndex) {
         if (host){
-            requestDataQueue.add(new RequestData("startGame", new Object[]{mapIndex}));
+            requestDataQueue.add(() -> ((Server) connection).startGame(mapIndex));
         }
     }
 
-    private class RequestData{
-        private String type;
-        private Object[] objects;
+    public void powerUpSpawn(PowerUp powerUp) {
+        if (host){
+            requestDataQueue.add(() -> ((Server) connection).powerUpSpawn(powerUp));
+        }
+    }
 
-        public RequestData(String type, Object[] objects) {
-            this.type = type;
-            this.objects = objects;
+    public boolean isHostable(int customPort){
+        boolean hostable = true;
+
+        try {
+            new DatagramSocket(customPort).close();
+        } catch (Exception e) {
+            hostable = false;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public Object[] getObjects() {
-            return objects;
-        }
+        return hostable;
     }
 }

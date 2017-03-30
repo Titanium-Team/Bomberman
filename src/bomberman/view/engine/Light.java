@@ -4,7 +4,6 @@ import bomberman.view.engine.rendering.FrameBuffer;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.GL11;
 
 public class Light {
 

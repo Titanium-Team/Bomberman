@@ -346,7 +346,7 @@ public class LocalPlayer extends Player {
             this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
         );
 
-        Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex());
+        Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex(), getFacingDirection());
 
     }
 
@@ -415,6 +415,10 @@ public class LocalPlayer extends Player {
                 this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
 
                 this.getGameStatistic().update(Statistics.BOMBS_PLANTED, 1);
+
+                if (tile.getTileObject() instanceof Bomb) {
+                    Main.instance.getNetworkController().plantBomb((Bomb) tile.getTileObject());
+                }
 
             }
             break;

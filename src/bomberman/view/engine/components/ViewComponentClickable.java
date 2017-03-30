@@ -3,7 +3,6 @@ package bomberman.view.engine.components;
 
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -29,7 +28,7 @@ public abstract class ViewComponentClickable extends ViewComponent {
     protected void updateState() {
         if ((Utility.viewComponentIsCollidingWithMouse(this, Mouse.getX(), Display.getHeight() - Mouse.getY()) || this.selected) && state != State.Pressed) {
             state = State.Hover;
-        } else if (state == State.Hover){
+        } else if (state == State.Hover) {
             state = State.Default;
         }
     }

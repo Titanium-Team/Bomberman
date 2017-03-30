@@ -19,7 +19,7 @@ public class LobbyView extends BaseMenuView {
 
     private Button startButton;
 
-    private VerticalView mapVotingList, joinedUsers;
+    private VerticalList mapVotingList, joinedUsers;
 
     public LobbyView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
@@ -37,10 +37,10 @@ public class LobbyView extends BaseMenuView {
             this.getRoot().addChild(startButton);
         }
 
-        this.mapVotingList = new VerticalView(LayoutParams.obtain(0.65f, 0.05f, 0.3f, 0.9f), this);
+        this.mapVotingList = new VerticalList(LayoutParams.obtain(0.65f, 0.05f, 0.3f, 0.9f), this);
         this.getRoot().addChild(mapVotingList);
 
-        this.joinedUsers = new VerticalView(LayoutParams.obtain(0.35f, 0.05f, 0.3f, 0.9f), this);
+        this.joinedUsers = new VerticalList(LayoutParams.obtain(0.35f, 0.05f, 0.3f, 0.9f), this);
         this.getRoot().addChild(joinedUsers);
 
         GameplayManager gameplayManager = Main.instance.getGameplayManager();
@@ -69,7 +69,7 @@ public class LobbyView extends BaseMenuView {
     public void refreshListView(List<String> names) {
         joinedUsers.removeAllChildren();
 
-        for (String name : names){
+        for (String name : names) {
             Label label = new Label(LayoutParams.obtain(0f, 0f, 0f, 0f), this, name);
             joinedUsers.addChild(label);
         }

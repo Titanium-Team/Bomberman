@@ -1,10 +1,6 @@
 package bomberman.view.engine.components;
 
 import bomberman.view.engine.View;
-import bomberman.view.engine.components.LayoutParams;
-import bomberman.view.engine.components.VerticalView;
-import bomberman.view.engine.components.ViewComponent;
-import bomberman.view.engine.components.ViewGroup;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Utility;
 import org.lwjgl.input.Mouse;
@@ -14,12 +10,13 @@ import org.lwjgl.input.Mouse;
  */
 
 public class Scrollbar extends ViewGroup {
-	private VerticalView parent;
+
+	private VerticalList parent;
 	private ScrollTab tab;
 	private int elements, visibleElements;
 
 
-	public Scrollbar(LayoutParams params, View v, VerticalView parent) {
+	public Scrollbar(LayoutParams params, View v, VerticalList parent) {
 		super(params, v);
 		this.elements = 0;
 		this.visibleElements = 0;
@@ -126,4 +123,5 @@ public class Scrollbar extends ViewGroup {
 	public float getScrollDistance(){
 		return tab.pos-tab.previousPos;
 	}
+
 }
