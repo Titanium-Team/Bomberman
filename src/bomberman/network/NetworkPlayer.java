@@ -4,6 +4,7 @@ import bomberman.Main;
 import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameSession;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.utils.Location;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -36,7 +37,13 @@ public class NetworkPlayer extends Player {
 
     @Override
     public void update(float delta) {
+        Main.instance.getGameplayManager().getCurrentSession().getGameMap().checkInteraction(this);
 
+        //--- Update INVINCIBILITY Timer
+        this.getPropertyRepository().setValue(
+                PropertyTypes.INVINCIBILITY,
+                this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
+        );
     }
 
     public ConnectionData getConnectionData() {
@@ -50,6 +57,7 @@ public class NetworkPlayer extends Player {
         Map<String, String> jsonMap = gson.fromJson(jsonSting, type);
 
         NetworkPlayer player = new NetworkPlayer(jsonMap.get("name"), new Location(jsonMap.get("location")), new ConnectionData(new NetworkData(jsonMap.get("networkData"))));
+        player.setIndex(Integer.parseInt(jsonMap.get("index")));
 
         return player;
     }
@@ -59,6 +67,7 @@ public class NetworkPlayer extends Player {
         jsonMap.put("networkData", connectionData.getNetworkData().toJson());
         jsonMap.put("name", getName());
         jsonMap.put("location", getBoundingBox().getCenter().toJson());
+        jsonMap.put("index", String.valueOf(getIndex()));
 
         Gson gson = new Gson();
         return gson.toJson(jsonMap);
