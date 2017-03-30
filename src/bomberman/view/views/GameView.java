@@ -143,7 +143,7 @@ public class GameView extends LightingView {
                 if (player.getIndex() == 2) {
                     tex = ViewManager.getTexture("YellowBear.png");
                 } else if (player.getIndex() == 3) {
-                    tex = ViewManager.getTexture("SwagBear.png");
+                    tex = ViewManager.getTexture("BrownBear.png");
                 } else if (player.getIndex() == 4) {
                     tex = ViewManager.getTexture("DrunkBeer.png");
                 }
