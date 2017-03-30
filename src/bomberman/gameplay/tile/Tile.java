@@ -23,7 +23,7 @@ public class Tile {
     private TileObject tileObject;
 
     //--- Abilities
-    private long deltaTime = System.currentTimeMillis();
+    private float deltaTime = System.currentTimeMillis();
     private Tile connectedTile = null;
     private Player.FacingDirection treadMillDirection = null;
 
@@ -155,9 +155,6 @@ public class Tile {
 
     public void interact(Player player) {
 
-        long deltaTime = (System.currentTimeMillis() - this.deltaTime);
-        this.deltaTime = System.currentTimeMillis();
-
         if(this.players.containsKey(player)) {
             return;
         }
@@ -193,26 +190,27 @@ public class Tile {
 
                 case TREADMILL: {
 
+                    float CONST = 3F;
                     switch (this.treadMillDirection) {
 
                         case NORTH: {
-                            player.getBoundingBox().move(0, .006F * Math.min(deltaTime, 2));
+                            player.getBoundingBox().move(0, (CONST * deltaTime));
                         }
                         break;
 
                         case WEST: {
-                            player.getBoundingBox().move(-(.006F * Math.min(deltaTime, 2)), 0);
+                            player.getBoundingBox().move(-(CONST * deltaTime), 0);
                         }
                         break;
 
                         case EAST: {
                             System.out.println(deltaTime);
-                            player.getBoundingBox().move(.006F * Math.min(deltaTime, 2), 0);
+                            player.getBoundingBox().move(CONST * deltaTime, 0);
                         }
                         break;
 
                         case SOUTH: {
-                            player.getBoundingBox().move(0, -(.006F * Math.min(deltaTime, 2)));
+                            player.getBoundingBox().move(0, -(CONST * deltaTime));
                         }
                         break;
 
@@ -228,6 +226,7 @@ public class Tile {
 
     public void update(float delta) {
 
+        this.deltaTime = delta;
 
         //--- Abilities
         if(!(this.tileAbility == TileAbility.NORMAL)) {
