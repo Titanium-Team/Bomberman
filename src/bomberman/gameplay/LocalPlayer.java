@@ -5,7 +5,6 @@ import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.objects.Bomb;
-import bomberman.gameplay.tile.objects.SpikeBomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
@@ -457,7 +456,7 @@ public class LocalPlayer extends Player {
             }
         }
         else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)==2F) {
-            tile.spawn(new SpikeBomb(this, tile, 2, 1));
+            tile.spawn(new Bomb(this, tile, 2, 1));
 
         }
     }

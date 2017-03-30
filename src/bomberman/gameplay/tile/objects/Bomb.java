@@ -3,6 +3,7 @@ package bomberman.gameplay.tile.objects;
 import bomberman.Main;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyRepository;
+import bomberman.gameplay.properties.PropertyType;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
@@ -107,7 +108,6 @@ public class Bomb extends TileObject {
     }
 
     protected boolean createExplosion(int x, int y, float lifespan) {
-
         Explosion explosion = new Explosion(this.player, this.player.getGameSession().getGameMap().getTile(x, y).get(), lifespan, this.damage);
 
         //--- spawning explosion
