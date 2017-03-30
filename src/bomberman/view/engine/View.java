@@ -1,10 +1,8 @@
 package bomberman.view.engine;
 
 import bomberman.Main;
-import bomberman.view.engine.components.LayoutParams;
-import bomberman.view.engine.components.Panel;
-import bomberman.view.engine.components.ViewComponent;
-import bomberman.view.engine.components.ViewComponentClickable;
+import bomberman.view.engine.components.*;
+import bomberman.view.engine.components.popups.ExceptionPopup;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
@@ -243,5 +241,10 @@ public abstract class View {
 
     public void setBlockBackNavigation(boolean blockBackNavigation) {
         this.blockBackNavigation = blockBackNavigation;
+    }
+
+    public void displayError(String errorMsg){
+        ExceptionPopup ecp = new ExceptionPopup(this,errorMsg);
+        ecp.showSelf();
     }
 }
