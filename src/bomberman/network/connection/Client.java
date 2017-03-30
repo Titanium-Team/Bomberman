@@ -123,7 +123,7 @@ public class Client extends Connection {
                         } else {
                             getController().getNetworkPlayerMap().put(sender, player);
 
-                            getGameplayManager().getCurrentSession().addPlayer(player);
+                            getGameplayManager().getCurrentSession().addPlayer(player, player.getIndex());
                         }
                     }
 

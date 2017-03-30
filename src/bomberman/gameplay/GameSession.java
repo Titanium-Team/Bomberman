@@ -27,7 +27,7 @@ public class GameSession {
     private boolean powerupSpawning = true;
     private boolean powerupCleaning = false;
 
-    private boolean spawnMissingAIs = true;
+    private boolean spawnMissingAIs = false;
 
 
     public GameSession(GameMap gameMap) {
@@ -81,6 +81,16 @@ public class GameSession {
         }
         this.players.add(player);
         player.setIndex(this.players.indexOf(player));
+        aiManager.addPlayer(player);
+    }
+
+    public synchronized void addPlayer(Player player, int index) {
+
+        if(this.players.contains(player)) {
+            throw new IllegalStateException("Do not add the same instance more than once.");
+        }
+        this.players.add(player);
+        player.setIndex(index);
         aiManager.addPlayer(player);
     }
 
