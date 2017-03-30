@@ -3,6 +3,7 @@ package bomberman.gameplay;
 import bomberman.Main;
 import bomberman.ai.AiManager;
 import bomberman.gameplay.tile.Tile;
+import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.Location;
@@ -145,7 +146,7 @@ public class GameSession {
     private void checkPowerups() {
         int x = (int) (Math.random() * this.gameMap.getWidth());
         int y = (int) (Math.random() * this.gameMap.getHeight());
-        if (this.gameMap.getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameMap.getTile(x, y).get().getTileObject() == null) {
+        if (this.gameMap.getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameMap.getTile(x, y).get().getTileObject() == null &&  this.gameMap.getTile(x, y).get().getTileAbility()== TileAbility.NORMAL ) {
             this.gameMap.getTile(x, y).get().spawnPowerup(15);
         } else {
             this.checkPowerups();

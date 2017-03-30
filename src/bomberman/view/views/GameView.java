@@ -140,11 +140,11 @@ public class GameView extends LightingView {
             if (playerLightMap.get(player).getLightCamera() != camera) {
                 BoundingBox b = player.getBoundingBox();
                 ITexture tex = ViewManager.getTexture("SwagBear.png");
-                if (player.getIndex() == 2) {
+                if (player.getIndex() == 1) {
                     tex = ViewManager.getTexture("YellowBear.png");
+                } else if (player.getIndex() == 2) {
+                    tex = ViewManager.getTexture("BrownBear.png");
                 } else if (player.getIndex() == 3) {
-                    tex = ViewManager.getTexture("SwagBear.png");
-                } else if (player.getIndex() == 4) {
                     tex = ViewManager.getTexture("DrunkBeer.png");
                 }
 
@@ -334,6 +334,7 @@ public class GameView extends LightingView {
 
         public StatPopup(View v) {
             super(LayoutParams.obtain(0, 0, 0.2f, 1), v);
+            super.removeChild(exitButton);
             this.range = new Label(LayoutParams.obtain(0, 0.2f, 1, 0.1f), v, "Range :" + (int) gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
             this.addChild(range);
             this.powerup = new Label(LayoutParams.obtain(0, 0.3f, 1, 0.1f), this.getView(),"");
