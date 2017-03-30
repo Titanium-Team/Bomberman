@@ -198,4 +198,8 @@ public class TextField extends ViewComponentClickable {
         acceptedChars.add('8');
         acceptedChars.add('9');
     }
+
+    public void addFilterChar(char c){
+        acceptedChars.add(c);
+    }
 }
