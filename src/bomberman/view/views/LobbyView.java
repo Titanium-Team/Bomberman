@@ -69,7 +69,7 @@ public class LobbyView extends BaseMenuView {
     public void refreshListView(List<String> names) {
         joinedUsers.removeAllChildren();
 
-        for (String name : names){
+        for (String name : names) {
             Label label = new Label(LayoutParams.obtain(0f, 0f, 0f, 0f), this, name);
             joinedUsers.addChild(label);
         }

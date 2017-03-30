@@ -7,6 +7,7 @@ import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameSession;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyTypes;
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.Sys;
@@ -26,9 +27,10 @@ public class AiPlayer extends Player {
     private boolean ignoreBombs;
     private static boolean[][] dangerTiles;
 
+    private FacingDirection facingDirection;
     private Vector2 moveTo;
 
-    private final static double UPDATE_DISTANCE = 5;
+    private final static double UPDATE_DISTANCE = 100;
     private final static int WALL_DIST_BASE = 20;
 
     public AiPlayer(GameSession gameSession, String name, Location center, ArrayList<PlayerRelevance> playerRelevances, boolean[][] dangerTiles) {
@@ -44,12 +46,12 @@ public class AiPlayer extends Player {
                 navigationMap[i][j] = new NavigationNode(map.getTiles()[i][j]);
             }
         }
+        facingDirection = FacingDirection.DEFAULT;
     }
 
     @Override
     public FacingDirection getFacingDirection() {
-        //@TODO Bitte implementieren. Danke.
-        throw new NotImplementedException();
+        return this.facingDirection;
     }
 
     public void update(float delta) {
@@ -71,11 +73,10 @@ public class AiPlayer extends Player {
             } else {
                 if (steps != null && !steps.isEmpty()) {
                     if (targetDistance() < UPDATE_DISTANCE) {
-
                         switch (steps.top().stepType) {
                             case MOVE: //Negative Y
                                 if (ignoreBombs || !dangerTiles[((MoveStep)steps.top()).getX()][((MoveStep)steps.top()).getY()]) {
-                                    moveTo = new Vector2(((MoveStep)steps.top()).getX(), ((MoveStep)steps.top()).getY());
+                                    moveTo = new Vector2(((MoveStep)steps.top()).getX()+0.5f, ((MoveStep)steps.top()).getY()+0.5f);
                                 } else {
                                     findPath();
                                 }
@@ -118,13 +119,14 @@ public class AiPlayer extends Player {
             Vector2 dtMovement = maxMovement.clone();
             dtMovement.normalize();
             dtMovement.multiply(dt*this.getPropertyRepository().getValue(PropertyTypes.SPEED_FACTOR));
+            System.out.println("maxMove:("+maxMovement.getX()+"|"+maxMovement.getY()+") dtMove:"+dtMovement.getX()+"|"+dtMovement.getY()+")");
             if(dtMovement.getLength() > maxMovement.getLength()){
-                this.getBoundingBox().getCenter().set(maxMovement.getX(),maxMovement.getY());
+                this.getBoundingBox().setCenter(this.getBoundingBox().getCenter().getX()+maxMovement.getX(),this.getBoundingBox().getCenter().getY()+maxMovement.getY());
                 moveTo = null;
             }else{
-                this.getBoundingBox().getCenter().set(dtMovement.getX(),dtMovement.getY());
+                this.getBoundingBox().setCenter(this.getBoundingBox().getCenter().getX()+dtMovement.getX(),this.getBoundingBox().getCenter().getY()+dtMovement.getY());
             }
-            this.getFacingDirection().from(maxMovement);
+            facingDirection = FacingDirection.from(maxMovement);
         }catch (CloneNotSupportedException e){
             System.out.println("FEHLER!!!!!!!!!!!");
         }
@@ -314,12 +316,14 @@ public class AiPlayer extends Player {
     }
 
     private void goBack(int currX,int currY,int startX,int startY){
+        System.out.println("Going back");
         while (currX != startX || currY != startY) {
             int nextX = navigationMap[currX][currY].getPrevX();
             int nextY = navigationMap[currX][currY].getPrevY();
             steps.push(new MoveStep(nextX,nextY,StepType.MOVE));
-
+            System.out.println("curr:("+currX+"|"+currY+" start:("+startX+"|"+startY+")"+" next:("+nextX+"|"+nextY+")");
             if (!navigationMap[nextX][nextY].getTile().getTileType().isWalkable()) {
+                System.out.println("Plane Bombe Legen");
                 steps.push(new Step(StepType.EVADE));
                 steps.push(new Step(StepType.PLACEBOMB));
             }

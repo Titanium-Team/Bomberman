@@ -1,6 +1,8 @@
 package bomberman.network.connection;
 
 import bomberman.Main;
+import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
 import bomberman.view.views.GameView;
@@ -92,7 +94,7 @@ public class Client extends Connection {
                     sendRecieved(message, server);
                     break;
                 case "playerList":
-                    String playerString = decrypt(splittedMessage[1]);
+                    String playerString = splittedMessage[1];
 
                     NetworkPlayer player = NetworkPlayer.fromJson(playerString);
 
@@ -109,16 +111,19 @@ public class Client extends Connection {
                     sendRecieved(message, server);
                     break;
                 case "startGame":
-                    Main.instance.getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(decrypt(splittedMessage[1])));
+                    Main.instance.getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(splittedMessage[1]));
                     Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(GameView.class));
 
                     sendRecieved(message, server);
                     break;
                 case "position":
-                    String movement = decrypt(splittedMessage[1]);
+                    String movement = splittedMessage[1];
                     Type typeMovement = new TypeToken<Map<String, String>>(){}.getType();
                     Map<String, String> jsonMapMovement = gson.fromJson(movement,typeMovement);
-                    movePlayer(sender, jsonMapMovement.get("location"));
+
+                    Type typeFacing = new TypeToken<Player.FacingDirection>(){}.getType();
+                    Player.FacingDirection facingDirection = gson.fromJson(jsonMapMovement.get("facingDirection"), typeFacing);
+                    movePlayer(sender, jsonMapMovement.get("location"), facingDirection);
 
                     sendRecieved(message, server);
                     break;
@@ -128,16 +133,23 @@ public class Client extends Connection {
 
                     sendRecieved(message, server);
                     break;
-                case "plantBomb":
-                    //TODO: DI DIS
+                case "plant":
+                    String bombPlant = splittedMessage[1];
+
+                    Bomb bomb = Bomb.fromJson(bombPlant);
+                    Main.instance.getGameplayManager().getCurrentSession().getGameMap().spawn(bomb);
 
                     sendRecieved(message, server);
                     break;
                 case "bombExplode":
-                    // TODO: DO DIS
+                    String bombExplode = decrypt(splittedMessage[1]);
 
-                    sendRecieved(message, server);
+                    Bomb bomb1 = Bomb.fromJson(bombExplode);
+
+                    //TODO: Schnauz leute an vernünftige Methoden zu schreiben.
+
                     break;
+
                 case "ok":
                     recieved(splittedMessage[1], sender);
 
@@ -149,19 +161,20 @@ public class Client extends Connection {
     }
 
     @Override
-    public void move(Location location, int playerId) {
+    public void move(Location location, Player.FacingDirection facingDirection, int playerId) {
+        Gson gson = new Gson();
+
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("location", location.toJson());
         jsonMap.put("id", String.valueOf(playerId));
+        jsonMap.put("facingDirection", gson.toJson(facingDirection));
 
-        Gson gson = new Gson();
-
-        send("position§" + server.encrypt(gson.toJson(jsonMap)), server.getNetworkData(), false);
+        send("position§" + gson.toJson(jsonMap), server.getNetworkData(), false);
     }
 
     @Override
-    public void plantBomb(Location location) {
-        send("movement§" + location.toJson(), server.getNetworkData(), true);
+    public void plantBomb(Bomb bomb) {
+        send("plant§" + bomb.toJson(), server.getNetworkData(), true);
     }
 
     @Override

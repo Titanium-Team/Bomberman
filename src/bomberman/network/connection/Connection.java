@@ -1,14 +1,11 @@
 package bomberman.network.connection;
 
 import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
-import bomberman.view.engine.utility.Vector2;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -18,8 +15,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.zip.Adler32;
-import java.util.zip.Checksum;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -163,21 +158,26 @@ public abstract class Connection {
         });
 
         for (String s : messages) {
-            send(s, fromWho, true);
+            if (s != null) {
+                send(s, fromWho, true);
+            }
         }
     }
 
-    public void movePlayer(NetworkData networkData, String locationJson){
+    public void movePlayer(NetworkData networkData, String locationJson, Player.FacingDirection facingDirection){
 
         Location location = new Location(locationJson);
 
-        controller.getNetworkPlayerMap().get(networkData).getBoundingBox().setCenter(location);
+        NetworkPlayer player = controller.getNetworkPlayerMap().get(networkData);
+        player.getBoundingBox().setCenter(location);
+        player.setFacingDirection(facingDirection);
+
     }
 
     public abstract void message(String message);
     public abstract void listen();
-    public abstract void move(Location location, int playerId);
-    public abstract void plantBomb(Location location);
+    public abstract void move(Location location, Player.FacingDirection facingDirection, int playerId);
+    public abstract void plantBomb(Bomb bomb);
     public abstract void explodedBomb(Location location);
     public abstract void hit(double health, int playerId);
     public abstract void leave();

@@ -9,13 +9,13 @@ import bomberman.view.engine.components.VerticalList;
 /**
  * Created by Tim Bolz on 22.03.2017.
  */
-public class TestView extends BaseMenuView{
+public class TestView extends BaseMenuView {
 
 	private VerticalList verticalList;
 	private Button addButton, deleteButton;
 
-	public TestView(int width, int height, ViewManager viewManager) {
-		super(width, height, viewManager);
+    public TestView(int width, int height, ViewManager viewManager) {
+        super(width, height, viewManager);
 
 		this.verticalList = new VerticalList(LayoutParams.obtain(0.65f,0.2f,0.35f,0.7f),this);
 		this.getRoot().addChild(verticalList);

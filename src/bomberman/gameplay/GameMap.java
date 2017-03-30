@@ -93,6 +93,10 @@ public class GameMap implements Cloneable {
 
     }
 
+    public void spawn(TileObject tileObject) {
+        this.tiles[(int) tileObject.getParent().getBoundingBox().getCenter().getX()][(int) tileObject.getParent().getBoundingBox().getCenter().getY()].spawn(tileObject);
+    }
+
     public Player.Direction checkCollision(LocalPlayer player) {
 
         BoundingBox playerBox = player.getBoundingBox();

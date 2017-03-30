@@ -3,9 +3,7 @@ package bomberman.view.views;
 import bomberman.Main;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.Button;
-import bomberman.view.engine.components.ClickListener;
 import bomberman.view.engine.components.LayoutParams;
-import org.lwjgl.opengl.Display;
 
 /**
  * View for Start
@@ -16,7 +14,7 @@ import org.lwjgl.opengl.Display;
  **/
 public class HomeView extends BaseMenuView {
 
-    private Button optionsButton, playButton,testButton;
+    private Button optionsButton, playButton, testButton;
 
     public HomeView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);

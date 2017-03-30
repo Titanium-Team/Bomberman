@@ -4,7 +4,10 @@ import bomberman.Main;
 import bomberman.network.ServerConnectionData;
 import bomberman.network.connection.RefreshableServerList;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.components.*;
+import bomberman.view.engine.components.Button;
+import bomberman.view.engine.components.LayoutParams;
+import bomberman.view.engine.components.TextField;
+import bomberman.view.engine.components.VerticalView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +43,7 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
             String serverName = serverNameField.getText();
             if (portTextField.getText() != "") {
                 Main.instance.getNetworkController().startServer(serverName, Integer.parseInt(portTextField.getText()));
-            }else {
+            } else {
                 Main.instance.getNetworkController().startServer(serverName);
             }
 

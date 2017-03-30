@@ -10,6 +10,7 @@ import org.lwjgl.input.Mouse;
  */
 
 public class Scrollbar extends ViewGroup {
+
 	private VerticalList parent;
 	private ScrollTab tab;
 	private int elements, visibleElements;
@@ -122,4 +123,5 @@ public class Scrollbar extends ViewGroup {
 	public float getScrollDistance(){
 		return tab.pos-tab.previousPos;
 	}
+
 }

@@ -19,7 +19,9 @@ import org.lwjgl.opengl.DisplayMode;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Queue;
 
 import net.java.games.input.EventQueue;
 
@@ -204,7 +206,7 @@ public class ViewManager {
             currentView.render(batch);
         }
 
-        while(!runnableQueue.isEmpty()) {
+        while (!runnableQueue.isEmpty()) {
             runnableQueue.poll().run();
         }
 
