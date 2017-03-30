@@ -80,9 +80,16 @@ public class GameSession {
         this.players.add(aiManager.createAi("TestAi",gameMap.getRandomStartPosition()));
     }
 
-    public void update(float delta) {
-        this.players.iterator().forEachRemaining(e -> e.update(delta));
-        Stream.of(this.gameMap.getTiles()).iterator().forEachRemaining(e -> Stream.of(e).iterator().forEachRemaining(t -> t.update(delta)));
+    public synchronized void update(float delta) {
+        for(int i = 0; i < this.players.size(); i++) {
+            this.players.get(i).update(delta);
+        }
+
+        for(int x = 0; x < this.gameMap.getWidth(); x++) {
+            for(int y = 0; y < this.gameMap.getHeight(); y++) {
+                this.gameMap.getTile(x, y).get().update(delta);
+            }
+        }
 
         //--- Powerup Spawn Timer
         this.powerupTimer -= delta;
