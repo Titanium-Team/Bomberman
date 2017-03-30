@@ -272,12 +272,14 @@ public class GameView extends LightingView {
                 this.pausePopup.showSelf();
             }
         }else if(key == Keyboard.KEY_T){
-            if(chatWindow.isShown()){
-	            if(!chatWindow.isTextFieldFocused()) {
-		            this.chatWindow.closeSelf();
-	            }
-            }else{
-                this.chatWindow.showSelf();
+            if(!chatWindow.isTextFieldFocused()) {
+                if (chatWindow.isShown()) {
+                    this.chatWindow.closeSelf();
+                    gameplayManager.getCurrentSession().getLocalPlayer().setMoveable(true);
+                } else {
+                    this.chatWindow.showSelf();
+                    gameplayManager.getCurrentSession().getLocalPlayer().setMoveable(false);
+                }
             }
         }
     }

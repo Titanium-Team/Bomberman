@@ -90,12 +90,12 @@ public class GameSession {
     public synchronized void update(float delta) {
 
         //--- Spawning AIs
-        if(this.spawnMissingAIs) {
+        /*if(this.spawnMissingAIs) {
             while (!(this.gameMap.getStartPositions().isEmpty())) {
                 this.addAi();
             }
             this.spawnMissingAIs = false;
-        }
+        }*/
 
         //--- Stuff
         if(!(this.powerupSpawning) && !(this.powerupCleaning)) {
