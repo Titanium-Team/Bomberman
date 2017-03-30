@@ -101,21 +101,27 @@ public class AiManager {
                 }else{
                     if(tiles[i][j].getTileObject() instanceof Bomb){
                         int range = ((Bomb) tiles[i][j].getTileObject()).getRange();
-                        for(int x = i+1; x < i+range && tiles[x-1][j].getTileType().isWalkable(); x++){
-                            dangerTiles[x][j] = true;
-                        }
-                        for(int x = i-1; x > i-range && tiles[x+1][j].getTileType().isWalkable(); x--){
-                            dangerTiles[x][j] = true;
-                        }
-                        for(int y = i+1; y < i+range && tiles[i][y-1].getTileType().isWalkable(); y++){
-                            dangerTiles[i][y] = true;
-                        }
-                        for(int y = i-1; y > i-range && tiles[i][y+1].getTileType().isWalkable(); y--){
-                            dangerTiles[i][y] = true;
-                        }
+                        bombFound(i,j,range);
                     }
                 }
             }
+        }
+    }
+
+    public void bombFound(int x,int y,int range){
+        Tile[][] tiles = map.getTiles();
+        dangerTiles[x][y] = true;
+        for(int i = x-1; i > Math.max(0,x-range) && tiles[i][y].getTileType().isWalkable();i--){
+            dangerTiles[i][y] = true;
+        }
+        for(int i = x+1; i < Math.min(tiles.length,x+range) && tiles[i][y].getTileType().isWalkable();i++){
+            dangerTiles[i][y] = true;
+        }
+        for(int j = y-1; j > Math.max(0,y-range) && tiles[x][j].getTileType().isWalkable();j--){
+            dangerTiles[x][j] = true;
+        }
+        for(int j = y+1; j < Math.min(tiles[x].length,y+range) && tiles[x][j].getTileType().isWalkable();j++){
+            dangerTiles[x][j] = true;
         }
     }
 }
