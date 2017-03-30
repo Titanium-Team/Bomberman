@@ -19,6 +19,8 @@ import java.util.List;
  **/
 public class PlayMenuView extends BaseMenuView implements RefreshableServerList {
 
+    private TextField serverIpField;
+    private TextField playerNameField;
     private Button hostGameButton;
     private Button refreshServerListButton;
     private TextField portTextField;
@@ -40,7 +42,13 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
         this.serverNameField = new TextField(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "", "Server Name");
         this.getRoot().addChild(serverNameField);
 
-        this.hostGameButton = new Button(LayoutParams.obtain(0.1f, 0.55f, 0.2f, 0.1f), this, "Host Game");
+        this.playerNameField = new TextField(LayoutParams.obtain(0.1f,0.55f,0.2f,0.1f),this,"","Player Name");
+        this.getRoot().addChild(playerNameField);
+
+        this.serverIpField = new TextField(LayoutParams.obtain(0.1f,0.7f,0.2f,0.1f),this,"","Server Ip");
+        this.getRoot().addChild(serverIpField);
+
+        this.hostGameButton = new Button(LayoutParams.obtain(0.1f, 0.85f, 0.2f, 0.1f), this, "Host Game");
         this.hostGameButton.addListener(() -> {
             String serverName = serverNameField.getText();
             if (portTextField.getText() != "") {
