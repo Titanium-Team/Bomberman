@@ -334,6 +334,7 @@ public class GameView extends LightingView {
 
         public StatPopup(View v) {
             super(LayoutParams.obtain(0, 0, 0.2f, 1), v);
+            super.removeChild(exitButton);
             this.range = new Label(LayoutParams.obtain(0, 0.2f, 1, 0.1f), v, "Range :" + (int) gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
             this.addChild(range);
             this.powerup = new Label(LayoutParams.obtain(0, 0.3f, 1, 0.1f), this.getView(),"");
