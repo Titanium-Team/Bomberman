@@ -1,11 +1,13 @@
 package bomberman.gameplay;
 
+
 import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.utils.Location;
 import net.java.games.input.Component;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class GameplayManager {
 
     private GameState gameState = GameState.IN_MENU;
     private final List<GameMap> maps = new LinkedList<>();
+
 
     private int mapIndex = 0;
 
@@ -77,8 +80,10 @@ public class GameplayManager {
                 .horizontalPattern("WGPBBGGGGGBBGGW", TileAbility.NORMAL, 7)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 8)
                 .horizontalPattern("WGPBBBBBBBBBGGW", TileAbility.NORMAL, 9)
-                //.startPosition(1, 1)
+                .startPosition(1, 1)
+                .startPosition(1, 11)
                 .startPosition(12, 11)
+                .startPosition(1, 11)
                 .treadmill(new Location(1, 1), Player.FacingDirection.WEST)
                 .treadmill(new Location(2, 1), Player.FacingDirection.WEST)
                 .treadmill(new Location(3, 1), Player.FacingDirection.WEST)
@@ -90,7 +95,9 @@ public class GameplayManager {
             .build()
         );
 
+
         this.currentSession = new GameSession(this.getMap(this.mapIndex).clone());
+
 
         //@TODO
         this.setMapIndex(0);
@@ -127,6 +134,10 @@ public class GameplayManager {
 
         this.mapIndex = mapIndex;
         this.createGameSession();
+    }
+
+    public int getMapIndex() {
+        return mapIndex;
     }
 
     private void createGameSession() {

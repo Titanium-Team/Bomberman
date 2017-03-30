@@ -1,12 +1,8 @@
 package bomberman.gameplay.tile.objects;
 
-import bomberman.gameplay.statistic.Statistics;
-import bomberman.view.engine.ViewManager;
-
-import bomberman.gameplay.properties.PropertyTypes;
-import bomberman.gameplay.tile.TileObject;
-import bomberman.Main;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.properties.PropertyTypes;
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileObject;
 import bomberman.gameplay.tile.TileTypes;
@@ -40,7 +36,6 @@ public class Explosion extends TileObject {
     @Override
     public void interact(Player player) {
         if(player.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) <= 0){
-            System.out.println("player dead");
             player.loseHealth();
 
             if(!(player == this.owner)) {
@@ -57,7 +52,6 @@ public class Explosion extends TileObject {
 
     public boolean destroyWall() {
 
-
         if (this.getParent().getTileType().isDestroyable()) {
 
             this.getParent().setHealth(this.getParent().getHealth() - this.damage);
@@ -68,10 +62,13 @@ public class Explosion extends TileObject {
             }
 
             return true;
-        } else if(!(this.getParent().getTileType().isDestroyable())) {
+        }
+        /* ES MACHT KEINEN SINN; WARUM SOLLTE TRUE ZURÜCK GEGEBEN WERDEN WENN KEINE MAUER ZERSTÖRT WIRD
+        else if(!(this.getParent().getTileType().isDestroyable())) {
 
             return true;
         }
+        */
 
         return false;
 

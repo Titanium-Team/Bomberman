@@ -7,9 +7,11 @@ import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileTypes;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUpType;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 
 import java.util.HashMap;
@@ -20,8 +22,9 @@ import java.util.stream.Stream;
 public abstract class Player {
 
     //--- Settings
-    public final static double COLLISION_WIDTH = .95;
-    public final static double COLLISION_HEIGHT = .95;
+    public final static double COLLISION_WIDTH = .99;
+    public final static double COLLISION_HEIGHT = .99;
+
 
     private final UUID identifier = UUID.randomUUID();
     private int index;
@@ -37,6 +40,8 @@ public abstract class Player {
     private final PropertyRepository propertyRepository = new PropertyRepository(this);
 
     private final BoundingBox boundingBox;
+
+    private PowerUpType lastPowerup;
 
     public Player(GameSession gameSession, PlayerType playerType, String name, Location center) {
 
@@ -65,6 +70,10 @@ public abstract class Player {
 
     public String getName() {
         return this.name;
+    }
+
+    public PowerUpType getLastPowerup() {
+        return this.lastPowerup;
     }
 
     public boolean isAlive() {
@@ -109,8 +118,12 @@ public abstract class Player {
         return this.gameSession;
     }
 
-    protected void setIndex(int index) {
+    public void setIndex(int index) {
         this.index = index;
+    }
+
+    public void setLastPowerup(PowerUpType lastPowerup) {
+        this.lastPowerup = lastPowerup;
     }
 
     public void respawn(){
@@ -134,11 +147,15 @@ public abstract class Player {
             this.getPropertyRepository().setValue(PropertyTypes.INVINCIBILITY, 3F);
             this.respawn();
         }else{
-            System.out.println("gameover");
+            System.out.println(name + "is dead!");
+            //spieler in die mitte
+            //this.boundingBox.setCenter(this.gameMap.getTile(this.gameMap.getWidth()/2,this.gameMap.getHeight()/2).get().getBoundingBox().getCenter());
+            //anstatt spieler in die mitte: player bild entfernen, bounding box entfernen -> noclip
         }
     }
 
     public abstract void update(float delta);
+
 
     @Override
     public boolean equals(Object o) {

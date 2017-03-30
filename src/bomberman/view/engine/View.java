@@ -21,6 +21,8 @@ public abstract class View {
     protected final ViewManager viewManager;
     private View parentView = null;
 
+    private boolean blockBackNavigation = false;
+
     private Camera uiCamera;
     private Camera sceneCamera;
 
@@ -222,7 +224,7 @@ public abstract class View {
     }
 
     public void onGamepadEvent(Component component, float value) {
-        if (component.getIdentifier() == Component.Identifier.Button._1 && value == 0) {
+        if (component.getIdentifier() == Component.Identifier.Button._1 && value == 0 && !blockBackNavigation) {
             this.navigateBack();
         }
 
@@ -233,5 +235,13 @@ public abstract class View {
         }
 
         root.onGamepadEvent(component, value);
+    }
+
+    public boolean isBlockBackNavigation() {
+        return blockBackNavigation;
+    }
+
+    public void setBlockBackNavigation(boolean blockBackNavigation) {
+        this.blockBackNavigation = blockBackNavigation;
     }
 }

@@ -1,12 +1,11 @@
 package bomberman.view.views;
 
 import bomberman.Main;
-import bomberman.network.ConnectionData;
-import bomberman.network.NetworkData;
 import bomberman.network.ServerConnectionData;
-import bomberman.network.connection.Refreshable;
+import bomberman.network.connection.RefreshableServerList;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +17,14 @@ import java.util.List;
 /**
  * leads to LobbyView
  **/
-public class PlayMenuView extends BaseMenuView implements Refreshable {
+public class PlayMenuView extends BaseMenuView implements RefreshableServerList {
 
     private Button hostGameButton;
     private Button refreshServerListButton;
     private TextField portTextField;
     private TextField serverNameField;
 
-    private VerticalView serverList;
+    private VerticalList serverList;
     private List<Button> serverButtons = new ArrayList<>();
 
     public PlayMenuView(int width, int height, ViewManager viewManager) {
@@ -33,24 +32,29 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
 
         this.portTextField = new TextField(LayoutParams.obtain(0.1f, 0.25f, 0.2f, 0.1f), this, "1638", "Port Number");
         this.getRoot().addChild(portTextField);
+        this.portTextField.setFilterOnlyNumbers();
+        this.portTextField.addTypeListeners((key, c) -> {
+            hostGameButton.setClickable(Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText())));
+        });
 
         this.serverNameField = new TextField(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "", "Server Name");
         this.getRoot().addChild(serverNameField);
 
         this.hostGameButton = new Button(LayoutParams.obtain(0.1f, 0.55f, 0.2f, 0.1f), this, "Host Game");
         this.hostGameButton.addListener(() -> {
-            PlayMenuView.this.changeView(LobbyView.class);
-
             String serverName = serverNameField.getText();
             if (portTextField.getText() != "") {
                 Main.instance.getNetworkController().startServer(serverName, Integer.parseInt(portTextField.getText()));
-            }else {
+            } else {
                 Main.instance.getNetworkController().startServer(serverName);
             }
+
+            PlayMenuView.this.changeView(LobbyView.class);
         });
         this.getRoot().addChild(hostGameButton);
+        this.hostGameButton.setClickable(Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText())));
 
-        this.serverList = new VerticalView(LayoutParams.obtain(0.55f, 0.05f, 0.4f, 0.8f), this);
+        this.serverList = new VerticalList(LayoutParams.obtain(0.55f, 0.05f, 0.4f, 0.8f), this);
         this.getRoot().addChild(serverList);
 
         this.refreshServerListButton = new Button(LayoutParams.obtain(0.55f, 0.85f, 0.4f, 0.1f), this, "Refresh Server List");
@@ -72,7 +76,7 @@ public class PlayMenuView extends BaseMenuView implements Refreshable {
 
         for (int i = 0; i < connectionDataList.size(); i++) {
             String text = connectionDataList.get(i).getName();
-            NetworkData data = connectionDataList.get(i).getNetworkData();
+            ServerConnectionData data = connectionDataList.get(i);
             if (!serverButtons.contains(text)) {
                 Button button = new Button(LayoutParams.obtain(0f, 0f, 0f, 0f), this, text);
                 button.addListener(() -> {

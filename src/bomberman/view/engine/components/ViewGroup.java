@@ -1,10 +1,8 @@
 package bomberman.view.engine.components;
 
-import bomberman.Main;
 import bomberman.view.engine.View;
 import bomberman.view.engine.rendering.Batch;
 import net.java.games.input.Component;
-import net.java.games.input.Controller;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -61,45 +59,60 @@ public abstract class ViewGroup extends ViewComponent {
     }
 
     public void addChild(ViewComponent child) {
-        this.children.add(child);
+        if (!children.contains(child)) {
+            this.children.add(child);
+        }
     }
 
     public void removeChild(ViewComponent child) {
-        this.children.remove(child);
+        if (children.contains(child)) {
+            this.children.remove(child);
+        }
+    }
+
+    public void removeAllChildren() {
+        this.children.clear();
     }
 
     public void onKeyDown(int key, char c) {
-        for (ViewComponent v : children) {
+        for (int i = 0; i < children.size(); i++) {
+            ViewComponent v = children.get(i);
             v.onKeyDown(key, c);
         }
     }
 
     public void onKeyUp(int key, char c) {
-        for (ViewComponent v : children) {
+        for (int i = 0; i < children.size(); i++) {
+            ViewComponent v = children.get(i);
             v.onKeyUp(key, c);
         }
     }
 
     public void onMouseDown(int button, int mouseX, int mouseY) {
-        for (ViewComponent v : children) {
+        for (int i = 0; i < children.size(); i++) {
+            ViewComponent v = children.get(i);
             v.onMouseDown(button, mouseX, mouseY);
         }
     }
 
     public void onMouseUp(int button, int mouseX, int mouseY) {
-        for (ViewComponent v : children) {
+        for (int i = 0; i < children.size(); i++) {
+            ViewComponent v = children.get(i);
+
             v.onMouseUp(button, mouseX, mouseY);
         }
     }
 
     public void onMouseWheel(int wheel) {
-        for (ViewComponent v : children) {
+        for (int i = 0; i < children.size(); i++) {
+            ViewComponent v = children.get(i);
             v.onMouseWheel(wheel);
         }
     }
 
     public void onGamepadEvent(Component component, float value) {
-        for (ViewComponent v : children) {
+        for (int i = 0; i < children.size(); i++) {
+            ViewComponent v = children.get(i);
             v.onGamepadEvent(component, value);
         }
     }

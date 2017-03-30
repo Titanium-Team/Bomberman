@@ -19,7 +19,9 @@ import org.lwjgl.opengl.DisplayMode;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Queue;
 
 import net.java.games.input.EventQueue;
 
@@ -43,8 +45,13 @@ public class ViewManager {
             loadTexture("explosion.png");
             loadTexture("speedPowerUp.png");
             loadTexture("explosionPowerUp.png");
-
+            loadTexture("DrunkBeer.png");
+            loadTexture("BrownBear.png");
+            loadTexture("SwagBear.png");
+            loadTexture("YellowBear.png");
             loadTexture("wall.png");
+            loadTexture("breakableWall.png");
+            loadTexture("ground.png");
 
             loadTexture("bomb.png");
 
@@ -178,7 +185,7 @@ public class ViewManager {
             Display.setFullscreen(fullscreen);
             Display.setResizable(true);
             Display.setTitle("Boom-Bär-Man");
-            Display.setVSyncEnabled(Main.instance.getConfig().isvSync());
+            //Display.setVSyncEnabled(Main.instance.getConfig().isvSync());
         } catch (LWJGLException e) {
             System.out.println("Unable to setup mode " + width + "x" + height + " fullscreen=" + fullscreen + e);
         }
@@ -199,7 +206,7 @@ public class ViewManager {
             currentView.render(batch);
         }
 
-        while(!runnableQueue.isEmpty()) {
+        while (!runnableQueue.isEmpty()) {
             runnableQueue.poll().run();
         }
 

@@ -1,9 +1,11 @@
 package bomberman.gameplay;
 
+import bomberman.Main;
 import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.SpikeBomb;
 import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
@@ -50,6 +52,7 @@ public class LocalPlayer extends Player {
         return this.facingDirection;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public void update(float delta) {
 
@@ -84,6 +87,7 @@ public class LocalPlayer extends Player {
         }
 
         //--- Facing Direction
+        GameMap map = this.getGameSession().getGameMap();
         FacingDirection facing = FacingDirection.from(this.vector);
         this.facingDirection = (facing == FacingDirection.DEFAULT ? this.facingDirection : facing);
 
@@ -91,10 +95,10 @@ public class LocalPlayer extends Player {
         Location location = this.getBoundingBox().getCenter();
         this.getBoundingBox().move(this.vector.getX() * delta, this.vector.getY() * delta);
 
-        Player.Direction direction = this.getGameSession().getGameMap().checkCollision(this);
+        Player.Direction direction = map.checkCollision(this);
 
-        BoundingBox min = this.getGameSession().getGameMap().getMin().get().getBoundingBox();
-        BoundingBox max = this.getGameSession().getGameMap().getMax().get().getBoundingBox();
+        BoundingBox min = map.getMin().get().getBoundingBox();
+        BoundingBox max = map.getMax().get().getBoundingBox();
 
         double minX = (min.getMax().getX() + (COLLISION_WIDTH / 2));
         double minY = (min.getMax().getY() + (COLLISION_HEIGHT / 2));
@@ -102,44 +106,48 @@ public class LocalPlayer extends Player {
         double maxX = (max.getMin().getX() - (COLLISION_WIDTH / 2));
         double maxY = (max.getMin().getY() - (COLLISION_HEIGHT / 2));
 
+        //---
+        BoundingBox playerBox = this.getBoundingBox();
+        BoundingBox currentTileBox = this.getTile().getBoundingBox();
+
         switch (direction) {
 
             case UP: {
-                Tile tile = this.getGameSession().getGameMap().getTile(
-                    (int) this.getTile().getBoundingBox().getCenter().getX(),
-                    (int) (this.getTile().getBoundingBox().getCenter().getY() - 1)
+                Tile tile = map.getTile(
+                    (int) currentTileBox.getCenter().getX(),
+                    (int) (currentTileBox.getCenter().getY() - 1)
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.NORTH) {
-                    if (this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
-                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                    if (playerBox.getCenter().getX() < currentTileBox.getCenter().getX()) {
+                        playerBox.move(Math.min(-(this.vector.getY() * delta), (currentTileBox.getCenter().getX() - playerBox.getCenter().getX())), 0);
                     } else {
-                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                        playerBox.move((this.vector.getY() * delta), 0);
                     }
                 } else if(this.getFacingDirection() == FacingDirection.NORTH) {
-                    Tile left = this.getGameSession().getGameMap().getTile(
-                        (int) (this.getTile().getBoundingBox().getCenter().getX() - 1),
-                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    Tile left = map.getTile(
+                        (int) (currentTileBox.getCenter().getX() - 1),
+                        (int) (currentTileBox.getCenter().getY())
                     ).get();
-                    Tile right = this.getGameSession().getGameMap().getTile(
-                        (int) (this.getTile().getBoundingBox().getCenter().getX() + 1),
-                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    Tile right = map.getTile(
+                        (int) (currentTileBox.getCenter().getX() + 1),
+                        (int) (currentTileBox.getCenter().getY())
                     ).get();
 
                     if(left.canVisit(this) && right.canVisit(this)) {
-                        if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
-                            this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                        if (playerBox.getCenter().getX() > currentTileBox.getCenter().getX()) {
+                            playerBox.move(-(this.vector.getY() * delta), 0);
                         } else {
-                            this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                            playerBox.move((this.vector.getY() * delta), 0);
                         }
                     } else if(left.canVisit(this)) {
-                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                        playerBox.move((this.vector.getY() * delta), 0);
                     } else if(right.canVisit(this)) {
-                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                        playerBox.move(-(this.vector.getY() * delta), 0);
                     } else {
                         this.vector.setX(0);
                         this.vector.setY(0);
-                        this.getBoundingBox().setCenter(
+                        playerBox.setCenter(
                             range(minX, location.getX(), maxX),
                             range(minY, location.getY(), maxY)
                         );
@@ -149,50 +157,50 @@ public class LocalPlayer extends Player {
                     this.vector.setY(0);
                 }
 
-                this.getBoundingBox().setCenter(
-                        range(minX, this.getBoundingBox().getCenter().getX(), maxX),
-                        range(minY, location.getY(), maxY)
+                playerBox.setCenter(
+                    range(minX, playerBox.getCenter().getX(), maxX),
+                    range(minY, location.getY(), maxY)
                 );
 
             }
             break;
 
             case DOWN: {
-                Tile tile = this.getGameSession().getGameMap().getTile(
-                        (int) this.getTile().getBoundingBox().getCenter().getX(),
-                        (int) (this.getTile().getBoundingBox().getCenter().getY() + 1)
+                Tile tile = map.getTile(
+                        (int) currentTileBox.getCenter().getX(),
+                        (int) (currentTileBox.getCenter().getY() + 1)
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.SOUTH) {
-                    if (this.getBoundingBox().getCenter().getX() < this.getTile().getBoundingBox().getCenter().getX()) {
-                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                    if (playerBox.getCenter().getX() < currentTileBox.getCenter().getX()) {
+                        playerBox.move(Math.min((this.vector.getY() * delta), (currentTileBox.getCenter().getX() - playerBox.getCenter().getX())), 0);
                     } else {
-                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                        playerBox.move(-(this.vector.getY() * delta), 0);
                     }
                 } else if(this.getFacingDirection() == FacingDirection.SOUTH) {
-                    Tile left = this.getGameSession().getGameMap().getTile(
-                            (int) (this.getTile().getBoundingBox().getCenter().getX() - 1),
-                            (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    Tile left = map.getTile(
+                            (int) (currentTileBox.getCenter().getX() - 1),
+                            (int) (currentTileBox.getCenter().getY())
                     ).get();
-                    Tile right = this.getGameSession().getGameMap().getTile(
-                            (int) (this.getTile().getBoundingBox().getCenter().getX() + 1),
-                            (int) (this.getTile().getBoundingBox().getCenter().getY())
+                    Tile right = map.getTile(
+                            (int) (currentTileBox.getCenter().getX() + 1),
+                            (int) (currentTileBox.getCenter().getY())
                     ).get();
 
                     if(left.canVisit(this) && right.canVisit(this)) {
-                        if (this.getBoundingBox().getCenter().getX() > this.getTile().getBoundingBox().getCenter().getX()) {
-                            this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                        if (playerBox.getCenter().getX() > currentTileBox.getCenter().getX()) {
+                            playerBox.move((this.vector.getY() * delta), 0);
                         } else {
-                            this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                            playerBox.move(-(this.vector.getY() * delta), 0);
                         }
                     } else if(left.canVisit(this)) {
-                        this.getBoundingBox().move(-(this.vector.getY() * delta), 0);
+                        playerBox.move(-(this.vector.getY() * delta), 0);
                     } else if(right.canVisit(this)) {
-                        this.getBoundingBox().move((this.vector.getY() * delta), 0);
+                        playerBox.move((this.vector.getY() * delta), 0);
                     } else {
                         this.vector.setX(0);
                         this.vector.setY(0);
-                        this.getBoundingBox().setCenter(
+                        playerBox.setCenter(
                             range(minX, location.getX(), maxX),
                             range(minY, location.getY(), maxY)
                         );
@@ -202,49 +210,49 @@ public class LocalPlayer extends Player {
                     this.vector.setY(0);
                 }
 
-                this.getBoundingBox().setCenter(
-                    range(minX, this.getBoundingBox().getCenter().getX(), maxX),
+                playerBox.setCenter(
+                    range(minX, playerBox.getCenter().getX(), maxX),
                     range(minY, location.getY(), maxY)
                 );
             }
             break;
 
             case LEFT: {
-                Tile tile = this.getGameSession().getGameMap().getTile(
-                        (int) this.getTile().getBoundingBox().getCenter().getX() - 1,
-                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                Tile tile = map.getTile(
+                        (int) currentTileBox.getCenter().getX() - 1,
+                        (int) (currentTileBox.getCenter().getY())
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.WEST) {
-                    if (this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
-                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                    if (playerBox.getCenter().getY() < currentTileBox.getCenter().getY()) {
+                        playerBox.move(0, Math.min(-(this.vector.getX() * delta), currentTileBox.getCenter().getY() - playerBox.getCenter().getY()));
                     } else {
-                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                        playerBox.move(0, (this.vector.getX() * delta));
                     }
                 } else if(this.getFacingDirection() == FacingDirection.WEST) {
-                    Tile up = this.getGameSession().getGameMap().getTile(
-                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
-                            (int) (this.getTile().getBoundingBox().getCenter().getY() - 1)
+                    Tile up = map.getTile(
+                            (int) (currentTileBox.getCenter().getX()),
+                            (int) (currentTileBox.getCenter().getY() - 1)
                     ).get();
-                    Tile down = this.getGameSession().getGameMap().getTile(
-                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
-                            (int) (this.getTile().getBoundingBox().getCenter().getY() + 1)
+                    Tile down = map.getTile(
+                            (int) (currentTileBox.getCenter().getX()),
+                            (int) (currentTileBox.getCenter().getY() + 1)
                     ).get();
 
                     if(up.canVisit(this) && down.canVisit(this)) {
-                        if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
-                            this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                        if (playerBox.getCenter().getY() > currentTileBox.getCenter().getY()) {
+                            playerBox.move(0, -(this.vector.getX() * delta));
                         } else {
-                            this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                            playerBox.move(0, (this.vector.getX() * delta));
                         }
                     } else if(up.canVisit(this)) {
-                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                        playerBox.move(0, (this.vector.getX() * delta));
                     } else if(down.canVisit(this)) {
-                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                        playerBox.move(0, -(this.vector.getX() * delta));
                     } else {
                         this.vector.setX(0);
                         this.vector.setY(0);
-                        this.getBoundingBox().setCenter(
+                        playerBox.setCenter(
                                 range(minX, location.getX(), maxX),
                                 range(minY, location.getY(), maxY)
                         );
@@ -254,51 +262,51 @@ public class LocalPlayer extends Player {
                     this.vector.setX(0);
                 }
 
-                this.getBoundingBox().setCenter(
+                playerBox.setCenter(
                     range(minX, location.getX(), maxX),
-                    range(minY, this.getBoundingBox().getCenter().getY(), maxY)
+                    range(minY, playerBox.getCenter().getY(), maxY)
                 );
             }
             break;
 
             case RIGHT: {
-                Tile tile = this.getGameSession().getGameMap().getTile(
-                        (int) this.getTile().getBoundingBox().getCenter().getX() + 1,
-                        (int) (this.getTile().getBoundingBox().getCenter().getY())
+                Tile tile = map.getTile(
+                        (int) currentTileBox.getCenter().getX() + 1,
+                        (int) (currentTileBox.getCenter().getY())
                 ).get();
 
                 if(tile.canVisit(this) && this.getFacingDirection() == FacingDirection.EAST) {
-                    if (this.getBoundingBox().getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
-                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                    if (playerBox.getCenter().getY() < this.getTile().getBoundingBox().getCenter().getY()) {
+                        playerBox.move(0, Math.min((this.vector.getX() * delta), (currentTileBox.getCenter().getY() - playerBox.getCenter().getY())));
                     } else {
-                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                        playerBox.move(0, -(this.vector.getX() * delta));
                     }
                 } else if(this.getFacingDirection() == FacingDirection.EAST) {
-                    Tile up = this.getGameSession().getGameMap().getTile(
-                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
-                            (int) (this.getTile().getBoundingBox().getCenter().getY() - 1)
+                    Tile up = map.getTile(
+                            (int) (currentTileBox.getCenter().getX()),
+                            (int) (currentTileBox.getCenter().getY() - 1)
                     ).get();
-                    Tile down = this.getGameSession().getGameMap().getTile(
-                            (int) (this.getTile().getBoundingBox().getCenter().getX()),
-                            (int) (this.getTile().getBoundingBox().getCenter().getY() + 1)
+                    Tile down = map.getTile(
+                            (int) (currentTileBox.getCenter().getX()),
+                            (int) (currentTileBox.getCenter().getY() + 1)
                     ).get();
 
                     if(up.canVisit(this) && down.canVisit(this)) {
-                        if (this.getBoundingBox().getCenter().getY() > this.getTile().getBoundingBox().getCenter().getY()) {
-                            this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                        if (playerBox.getCenter().getY() > currentTileBox.getCenter().getY()) {
+                            playerBox.move(0, (this.vector.getX() * delta));
                         } else {
-                            this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                            playerBox.move(0, -(this.vector.getX() * delta));
                         }
                     } else if(up.canVisit(this)) {
-                        this.getBoundingBox().move(0, -(this.vector.getX() * delta));
+                        playerBox.move(0, -(this.vector.getX() * delta));
                     } else if(down.canVisit(this)) {
-                        this.getBoundingBox().move(0, (this.vector.getX() * delta));
+                        playerBox.move(0, (this.vector.getX() * delta));
                     } else {
                         this.vector.setX(0);
                         this.vector.setY(0);
-                        this.getBoundingBox().setCenter(
-                                range(minX, location.getX(), maxX),
-                                range(minY, location.getY(), maxY)
+                        playerBox.setCenter(
+                            range(minX, location.getX(), maxX),
+                            range(minY, location.getY(), maxY)
                         );
                         break;
                     }
@@ -306,16 +314,16 @@ public class LocalPlayer extends Player {
                     this.vector.setX(0);
                 }
 
-                this.getBoundingBox().setCenter(
-                        range(minX, location.getX(), maxX),
-                        range(minY, this.getBoundingBox().getCenter().getY(), maxY)
+                playerBox.setCenter(
+                    range(minX, location.getX(), maxX),
+                    range(minY, playerBox.getCenter().getY(), maxY)
                 );
 
             }
             break;
 
             case STOP_VERTICAL_MOVEMENT:
-                this.getBoundingBox().setCenter(
+                playerBox.setCenter(
                     range(minX, location.getX(), maxX),
                     range(minY, location.getY(), maxY)
                 );
@@ -330,13 +338,15 @@ public class LocalPlayer extends Player {
 
         }
 
-        this.getGameSession().getGameMap().checkInteraction(this);
+        map.checkInteraction(this);
 
         //--- Update INVINCIBILITY Timer
         this.getPropertyRepository().setValue(
             PropertyTypes.INVINCIBILITY,
             this.getPropertyRepository().getValue(PropertyTypes.INVINCIBILITY) - delta
         );
+
+        Main.instance.getNetworkController().move(getBoundingBox().getCenter(), getIndex(), getFacingDirection());
 
     }
 
@@ -372,25 +382,21 @@ public class LocalPlayer extends Player {
 
             case Keyboard.KEY_UP:
             case Keyboard.KEY_W:
-                //this.keyUp(Keyboard.KEY_LEFT, 'L');
                 this.acceleratingDirections.get(Direction.UP).setPressed(true);
                 break;
 
             case Keyboard.KEY_LEFT:
             case Keyboard.KEY_A:
-                //this.keyUp(Keyboard.KEY_UP, 'L');
                 this.acceleratingDirections.get(Direction.LEFT).setPressed(true);
                 break;
 
             case Keyboard.KEY_RIGHT:
             case Keyboard.KEY_D:
-                //this.keyUp(Keyboard.KEY_UP, 'L');
                 this.acceleratingDirections.get(Direction.RIGHT).setPressed(true);
                 break;
 
             case Keyboard.KEY_DOWN:
             case Keyboard.KEY_S:
-                //this.keyUp(Keyboard.KEY_LEFT, 'L');
                 this.acceleratingDirections.get(Direction.DOWN).setPressed(true);
                 break;
 
@@ -401,20 +407,56 @@ public class LocalPlayer extends Player {
                 int bombsLeft = (int) this.getPropertyRepository().getValue(PropertyTypes.BOMB_AMOUNT);
 
                 if(tile.getTileObject() instanceof Bomb || bombsLeft <= 0) {
-                    assert bombsLeft == 0;
                     return;
                 }
 
+                manageBombs();
+
                 this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
-                tile.spawn(new Bomb(this, tile, 2, 1));
 
                 this.getGameStatistic().update(Statistics.BOMBS_PLANTED, 1);
+
+                if (tile.getTileObject() instanceof Bomb) {
+                    Main.instance.getNetworkController().plantBomb((Bomb) tile.getTileObject());
+                }
 
             }
             break;
 
         }
 
+    }
+
+    private void manageBombs(){
+        Tile tile = this.getTile();
+        //MANAGE BOMBS
+        System.out.println(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE));
+        if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE) == 0F) {
+            //normale Bombe
+
+            tile.spawn(new Bomb(this, tile, 2, 1));
+            this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
+
+        }else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)== 1F){
+            //Powerbombe
+            if(this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)==0F){
+                float tmpBlast =this.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS) ;
+                this.getPropertyRepository().setValue(PropertyTypes.BOMB_BLAST_RADIUS,
+                        this.getPropertyRepository().getMax(PropertyTypes.BOMB_BLAST_RADIUS));
+                tile.spawn(new Bomb(this, tile, 2, 1));
+                this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
+
+                this.getPropertyRepository().setValue(PropertyTypes.BOMB_BLAST_RADIUS,tmpBlast);
+            }else{
+                //normale Bombe, wenn eine Powerbomb bereits liegt
+                tile.spawn(new Bomb(this, tile, 2, 1));
+                this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
+            }
+        }
+        else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)==2F) {
+            tile.spawn(new SpikeBomb(this, tile, 2, 1));
+
+        }
     }
 
     public void move(Direction d) {

@@ -1,17 +1,13 @@
 package bomberman.network.connection;
 
+import bomberman.Main;
+import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
-import bomberman.network.ConnectionData;
-import bomberman.network.NetworkController;
-import bomberman.network.NetworkData;
-import bomberman.network.Request;
-import bomberman.view.engine.utility.Vector2;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import bomberman.network.*;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -21,8 +17,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.zip.Adler32;
-import java.util.zip.Checksum;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -36,16 +30,20 @@ public abstract class Connection {
     private ConnectionData myData;
     private final KeyPair keyPair;
 
+    private GameplayManager gameplayManager;
+
     private Map<String, Request> requestMap;
 
     public Connection(NetworkController controller) {
+        this.controller = controller;
+
         requestMap = new LinkedHashMap<>();
 
         KeyPair tempKeys = null;
 
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(1024);
+            keyPairGenerator.initialize(2048);
 
             tempKeys = keyPairGenerator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
@@ -53,9 +51,6 @@ public abstract class Connection {
         }
 
         keyPair = tempKeys;
-
-
-        this.controller = controller;
 
         listener = new Thread(() -> {
             while (true) {
@@ -100,6 +95,14 @@ public abstract class Connection {
         return myData;
     }
 
+    protected GameplayManager getGameplayManager() {
+        return gameplayManager;
+    }
+
+    public void setGameplayManager(GameplayManager gameplayManager) {
+        this.gameplayManager = gameplayManager;
+    }
+
     public void close() {
         getListener().interrupt();
         getSocket().close();
@@ -141,7 +144,17 @@ public abstract class Connection {
     }
 
     public void recieved(String message, NetworkData reciever) {
-        requestMap.get(message).setRecieved(reciever);
+        if (requestMap.containsKey(message)) {
+            requestMap.get(message).setRecieved(reciever);
+
+            if (requestMap.get(message).allRecieved()) {
+                requestMap.remove(message);
+            }
+        }
+    }
+
+    public void sendRecieved(String message, ConnectionData connectionData){
+        send("ok§" + message, connectionData.getNetworkData(), false);
     }
 
     public void error(NetworkData fromWho) {
@@ -156,22 +169,25 @@ public abstract class Connection {
         });
 
         for (String s : messages) {
-            send(s, fromWho, true);
+            if (s != null) {
+                send(s, fromWho, true);
+            }
         }
     }
 
-    public void movePlayer(NetworkData networkData, String locationJson, int id){
+    public void movePlayer(NetworkData networkData, String locationJson, Player.FacingDirection facingDirection){
 
         Location location = new Location(locationJson);
 
-        controller.getNetworkPlayerMap().get(networkData).getBoundingBox().setCenter(location);
+        NetworkPlayer player = controller.getNetworkPlayerMap().get(networkData);
+        player.getBoundingBox().setCenter(location);
+        player.setFacingDirection(facingDirection);
+
     }
 
     public abstract void message(String message);
     public abstract void listen();
-    public abstract void move(Location location, int playerId);
-    public abstract void plantBomb(Location location);
-    public abstract void explodedBomb(Location location);
-    public abstract void hit(double health, int playerId);
+    public abstract void move(Location location, Player.FacingDirection facingDirection, int playerId);
+    public abstract void plantBomb(Bomb bomb);
     public abstract void leave();
 }

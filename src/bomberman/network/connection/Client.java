@@ -1,9 +1,12 @@
 package bomberman.network.connection;
 
 import bomberman.Main;
+import bomberman.gameplay.Player;
+import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
-import bomberman.view.engine.utility.Vector2;
+import bomberman.view.views.GameView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -13,20 +16,21 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Client extends Connection {
 
     private ConnectionData server;
     private List<ServerConnectionData> serverList;
 
-    private Refreshable refreshable;
+    private RefreshableServerList refreshable;
 
     public Client(NetworkController controller) throws IOException {
         super(controller);
+
+        setGameplayManager(Main.instance.getGameplayManager());
+
+        Main.instance.getGameplayManager().getCurrentSession().setPowerupSpawning(false);
 
         setSocket(new DatagramSocket());
         getSocket().setBroadcast(true);
@@ -49,7 +53,7 @@ public class Client extends Connection {
 
     @Override
     public void listen() {
-        DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+        DatagramPacket packet = new DatagramPacket(new byte[2048], 2048);
 
         try {
             getSocket().receive(packet);
@@ -87,39 +91,83 @@ public class Client extends Connection {
 
                     System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
 
+                    sendRecieved(message, server);
                     break;
-
                 case "error":
                     error(sender);
+
+                    sendRecieved(message, server);
                     break;
-                case "playerlist":
-                    String playerlist = decrypt(splittedMessage[1]);
-                    Type typePlayerlist = new TypeToken<Map<NetworkData, NetworkPlayer>>(){}.getType();
-                    getController().setNetworkPlayerMap(gson.fromJson(playerlist, typePlayerlist));
+                case "playerList":
+                    String playerString = splittedMessage[1];
+
+                    NetworkPlayer player = NetworkPlayer.fromJson(playerString);
+
+                    synchronized (getGameplayManager().getCurrentSession()) {
+                        if (player.getConnectionData().getNetworkData().equals(getMyData().getNetworkData())) {
+                            getGameplayManager().getCurrentSession().getLocalPlayer().getBoundingBox().setCenter(player.getBoundingBox().getCenter());
+                            getGameplayManager().getCurrentSession().getLocalPlayer().setIndex(player.getIndex());
+                        } else {
+                            getController().getNetworkPlayerMap().put(sender, player);
+
+                            getGameplayManager().getCurrentSession().addPlayer(player);
+                        }
+                    }
+
+                    sendRecieved(message, server);
                     break;
                 case "startGame":
-                    String map = decrypt(splittedMessage[1]);
-                    Main.instance.getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(map));
+                    getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(splittedMessage[1]));
+                    Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(GameView.class));
+
+                    sendRecieved(message, server);
                     break;
                 case "position":
-                    String movement = decrypt(splittedMessage[1]);
+                    String movement = splittedMessage[1];
                     Type typeMovement = new TypeToken<Map<String, String>>(){}.getType();
                     Map<String, String> jsonMapMovement = gson.fromJson(movement,typeMovement);
-                    movePlayer(sender, jsonMapMovement.get("location"), Integer.parseInt(jsonMapMovement.get("id")));
+
+                    Type typeFacing = new TypeToken<Player.FacingDirection>(){}.getType();
+                    Player.FacingDirection facingDirection = gson.fromJson(jsonMapMovement.get("facingDirection"), typeFacing);
+                    movePlayer(sender, jsonMapMovement.get("location"), facingDirection);
+
+                    sendRecieved(message, server);
                     break;
                 case "playerGone":
-                    String player = decrypt(splittedMessage[1]);
-                    System.out.println("Der Spieler "+ player +" hat das Spiel verlassen.");
-                    break;
-                case "plantBomb":
-                    //TODO: DI DIS
+                    String playerGone = decrypt(splittedMessage[1]);
+                    System.out.println("Der Spieler "+ playerGone +" hat das Spiel verlassen.");
 
+                    sendRecieved(message, server);
+                    break;
+                case "plant":
+                    String bombPlant = splittedMessage[1];
+
+                    Bomb bomb = Bomb.fromJson(bombPlant);
+                    getGameplayManager().getCurrentSession().getGameMap().spawn(bomb);
+
+                    sendRecieved(message, server);
                     break;
                 case "bombExplode":
-                    // TODO: DO DIS
+                    String bombExplode = decrypt(splittedMessage[1]);
+
+                    Bomb bomb1 = Bomb.fromJson(bombExplode);
+
+                    //TODO: Schnauz leute an vernünftige Methoden zu schreiben.
 
                     break;
 
+                case "powerUpSpawn":
+                    String powerUpSpawn = splittedMessage[1];
+
+                    PowerUp powerUp = PowerUp.fromJson(powerUpSpawn);
+                    getGameplayManager().getCurrentSession().getGameMap().spawn(powerUp);
+
+                    sendRecieved(message, server);
+                    break;
+                case "ok":
+                    recieved(splittedMessage[1], sender);
+
+                    break;
             }
         } else if (sender.getPort() != -1){
             send("error", sender, true);
@@ -127,35 +175,20 @@ public class Client extends Connection {
     }
 
     @Override
-    public void move(Location location, int playerId) {
+    public void move(Location location, Player.FacingDirection facingDirection, int playerId) {
+        Gson gson = new Gson();
+
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("location", location.toJson());
         jsonMap.put("id", String.valueOf(playerId));
+        jsonMap.put("facingDirection", gson.toJson(facingDirection));
 
-        Gson gson = new Gson();
-
-        send("movement§" + gson.toJson(jsonMap), server.getNetworkData(), false);
+        send("position§" + gson.toJson(jsonMap), server.getNetworkData(), false);
     }
 
     @Override
-    public void plantBomb(Location location) {
-        send("movement§" + location.toJson(), server.getNetworkData(), true);
-    }
-
-    @Override
-    public void explodedBomb(Location location) {
-        send("bombExplode§" + location.toJson(), server.getNetworkData(), false);
-    }
-
-    @Override
-    public void hit(double health, int playerId) {
-        Map<String, String> jsonMap = new HashMap<>();
-        jsonMap.put("health", String.valueOf(health));
-        jsonMap.put("id", String.valueOf(playerId));
-
-        Gson gson = new Gson();
-
-        send("gotHit" + gson.toJson(jsonMap), server.getNetworkData(), false);
+    public void plantBomb(Bomb bomb) {
+        send("plant§" + bomb.toJson(), server.getNetworkData(), true);
     }
 
     @Override
@@ -164,16 +197,19 @@ public class Client extends Connection {
 
     }
 
-    public void join(NetworkData data){
-        String username = Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer().getName();
-        send("join§" + username,data,true);
+    public void join(ServerConnectionData data){
+        String username = getGameplayManager().getCurrentSession().getLocalPlayer().getName();
+        send("join§" + data.encrypt(username),data.getNetworkData(),true);
+
+        serverList.clear();
+        server = data;
     }
 
     public List<ServerConnectionData> getServerList() {
         return serverList;
     }
 
-    public void refreshServers(Refreshable refreshable){
+    public void refreshServers(RefreshableServerList refreshable){
         this.refreshable = refreshable;
 
         serverList.clear();

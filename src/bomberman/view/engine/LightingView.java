@@ -80,15 +80,20 @@ public abstract class LightingView extends View {
 
         updateShadowMaps(batch);
 
-        batch.begin(lightingShader);
-        batch.setCombinedMatrix(getSceneCamera().getCombined());
-
         GL11.glClearColor(ambientIntensity, ambientIntensity, ambientIntensity, 1f - ambientIntensity);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+        batch.begin();
+        batch.setCombinedMatrix(getSceneCamera().getCombined());
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        renderNonOccluders(batch, this.getSceneCamera());
+        batch.end();
 
-        for (Light light : lights) {
+        batch.begin(lightingShader);
+        batch.setCombinedMatrix(getSceneCamera().getCombined());
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+        for (int i = 0; i < lights.size(); i++) {
+            Light light = lights.get(i);
             float x = light.getX();
             float y = light.getY();
             int r = light.getRadius();
@@ -98,21 +103,17 @@ public abstract class LightingView extends View {
             batch.draw(light.getShadowMap(), x - r2, y - r2, r, r, light.getR(), light.getG(), light.getB(), 1.0f);
             batch.flush();
         }
-
         batch.end();
 
         batch.begin();
         batch.setCombinedMatrix(getSceneCamera().getCombined());
-
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
         renderOccluders(batch, this.getSceneCamera());
-
-        renderNonOccluders(batch, this.getSceneCamera());
     }
 
     private void updateShadowMaps(Batch batch) {
-        for (Light light : lights) {
+        for (int i = 0; i < lights.size(); i++) {
+            Light light = lights.get(i);
             Camera lightCamera = light.getLightCamera();
 
             FrameBuffer occludersMap = light.getOccludersMap();

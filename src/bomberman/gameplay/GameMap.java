@@ -20,7 +20,6 @@ public class GameMap implements Cloneable {
 
     private final Tile[][] tiles;
     private final List<Location> startPositions;
-    private final Map<Player, Player.Direction> lastDirection = new HashMap<>();
 
     private final int width;
     private final int height;
@@ -30,7 +29,7 @@ public class GameMap implements Cloneable {
 
         assert !(name == null);
         assert !(startPositions == null);
-//        assert (startPositions.size() > 1);
+        assert (startPositions.size() > 1);
         assert tiles.length > 0 && tiles[0].length > 0;
 
         this.name = name;
@@ -84,13 +83,9 @@ public class GameMap implements Cloneable {
         return this.getTile(this.width - 1, this.height - 1);
     }
 
-    public void spawn(TileObject tileObject, int x, int y) {
-
-        assert x >= 0 && x < this.width;
-        assert y >= 0 && y < this.height;
-
-        this.tiles[x][y].spawn(tileObject);
-
+    public void spawn(TileObject tileObject) {
+        Location center = tileObject.getParent().getBoundingBox().getCenter();
+        this.tiles[(int) center.getX()][(int) center.getY()].spawn(tileObject);
     }
 
     public Player.Direction checkCollision(LocalPlayer player) {
@@ -275,7 +270,7 @@ public class GameMap implements Cloneable {
 
     @Override
     public GameMap clone() {
-        return new GameMap(this.name, this.thumbnailKey, this.tiles.clone(), this.startPositions);
+        return new GameMap(this.name, this.thumbnailKey, this.tiles.clone(), new ArrayList<>(this.startPositions));
     }
 
     private static int range(int min, int value, int max) {
@@ -287,9 +282,6 @@ public class GameMap implements Cloneable {
     }
 
     public static class Builder {
-
-        private final static int THUMBNAIL_WIDTH = 50;
-        private final static int THUMBNAIL_HEIGHT = 50;
 
         private String name;
         private String thumbnailKey;

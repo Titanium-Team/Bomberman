@@ -7,11 +7,13 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +53,11 @@ public class ConnectionData {
         }
 
         publicKey = tempKey;
+    }
+
+    public ConnectionData(NetworkData networkData) {
+        this.networkData = networkData;
+        publicKey = null;
     }
 
     public NetworkData getNetworkData() {

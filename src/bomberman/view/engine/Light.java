@@ -4,7 +4,6 @@ import bomberman.view.engine.rendering.FrameBuffer;
 import bomberman.view.engine.utility.Camera;
 import bomberman.view.engine.utility.Vector2;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.GL11;
 
 public class Light {
 
@@ -12,6 +11,8 @@ public class Light {
     private float y;
     private int radius;
     private float r, g, b;
+
+    private Object owner = null;
 
     private FrameBuffer shadowMap;
     private FrameBuffer occludersMap;
@@ -96,5 +97,13 @@ public class Light {
 
     public float getB() {
         return b;
+    }
+
+    public Object getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Object owner) {
+        this.owner = owner;
     }
 }

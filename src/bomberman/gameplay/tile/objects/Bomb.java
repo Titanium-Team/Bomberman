@@ -23,13 +23,12 @@ public class Bomb extends TileObject {
     public final static float EXPLOSION_LIFESPAN = 1F;
 
     private List<Player> walkable = new ArrayList<>();
-    private Player player;
+    protected Player player;
 
-    private final int range;
+    protected final int range;
     private final double damage;
 
     public Bomb(Player player, Tile parent, float lifespan, double damage) {
-
         super(parent, lifespan);
 
         this.player = player;
@@ -57,6 +56,8 @@ public class Bomb extends TileObject {
         //--- Add new bomb
         PropertyRepository repo = this.player.getPropertyRepository();
         repo.setValue(PropertyTypes.BOMB_AMOUNT, repo.getValue(PropertyTypes.BOMB_AMOUNT) + 1);
+        repo.setValue(PropertyTypes.BOMBSDOWN, repo.getValue(PropertyTypes.BOMBSDOWN) - 1);
+
 
         //--- coordinates of the bomb
         int x = (int) this.getParent().getBoundingBox().getMin().getX();
@@ -75,7 +76,8 @@ public class Bomb extends TileObject {
 
         for (int i = 1; i < this.range + 1; i++) {
 
-            if ((x + i) < this.player.getGameSession().getGameMap().getWidth() && (!stopRight)) {
+            System.out.println(range + " = range");
+            if ((x + i) < this.player.getGameSession().getGameMap().getWidth() && !stopRight) {
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
 
@@ -105,11 +107,9 @@ public class Bomb extends TileObject {
         super.update(delta);
     }
 
-    private boolean createExplosion(int x, int y, float lifespan) {
-
+    protected boolean createExplosion(int x, int y, float lifespan) {
 
         Explosion explosion = new Explosion(this.player, this.player.getGameSession().getGameMap().getTile(x, y).get(), lifespan, this.damage);
-
 
         //--- spawning explosion
         if(this.player.getGameSession().getGameMap().getTile(x,y).get().getTileObject() instanceof Bomb) {
@@ -117,7 +117,6 @@ public class Bomb extends TileObject {
         }
 
         this.player.getGameSession().getGameMap().getTile(x, y).get().spawn(explosion);
-
         return explosion.destroyWall();
 
     }

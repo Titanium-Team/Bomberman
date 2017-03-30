@@ -20,8 +20,9 @@ public abstract class ViewComponent {
 
     /**
      * Zeichnet Texturen und Formen auf dem Bildschirm.
+     *
      * @param batch Der vom Viewmanager übergebene Batch.
-	 */
+     */
     public abstract void draw(Batch batch);
 
     public void layout(ViewComponent parent) {
@@ -77,14 +78,17 @@ public abstract class ViewComponent {
 
     /**
      * Wird aufgerufen, wenn ein Maus-Button geklickt wird.
+     *
      * @param button Der Index des Maus-Buttons der geklickt wurde.
      * @param mouseX Die x-Koordinate des Mauszeigers .
      * @param mouseY Die y-Koordinate des Mauszeigers.
-	 */
+     */
     public void onMouseDown(int button, int mouseX, int mouseY) {
     }
+
     /**
      * Wird aufgerufen, wenn ein Maus-Button losgelassen wird.
+     *
      * @param button Der Index des Maus-Buttons der geklickt wurde.
      * @param mouseX Die x-Koordinate des Mauszeigers .
      * @param mouseY Die y-Koordinate des Mauszeigers.
