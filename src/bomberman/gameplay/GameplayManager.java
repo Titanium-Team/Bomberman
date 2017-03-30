@@ -18,7 +18,6 @@ public class GameplayManager {
     private GameState gameState = GameState.IN_MENU;
     private final List<GameMap> maps = new LinkedList<>();
 
-
     private int mapIndex = 0;
 
     private GameSession currentSession;
@@ -30,12 +29,14 @@ public class GameplayManager {
                 .name("Map 0")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 2)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 4)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 6)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 8)
-                .horizontalPattern("WGBGBGBGBGBGBGW", 10)
+                .fillEmpty(TileTypes.WALL_BREAKABLE, TileAbility.NORMAL)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
+                .horizontalPattern("WGWBWBWBWBWBWGW", 2)
+                .horizontalPattern("WBWBWBWBWBWBWBW", 4)
+                .horizontalPattern("WBWBWBWBWBWBWBW", 6)
+                .horizontalPattern("WBWBWBWBWBWBWBW", 8)
+                .horizontalPattern("WGWBWBWBWBWGWGW", 10)
+                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
                 .startPosition(1, 1)
                 .startPosition(13, 1)
                 .startPosition(1, 11)
@@ -49,22 +50,34 @@ public class GameplayManager {
                 .name("Map 1")
                 .dimension(15, 13)
                 .frame(TileTypes.WALL)
-                .fillEmpty(TileTypes.GROUND, TileAbility.NORMAL)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 1)
+                .fillEmpty(TileTypes.WALL_BREAKABLE, TileAbility.NORMAL)
+                .horizontalPattern("WGGBBGGGGGBBGGW", 1)
                 .horizontalPattern("WGWBWBWBWBWBWGW", 2)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 3)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 4)
-                .horizontalPattern("WBBBBBGGGBBBBBW", 5)
+                .horizontalPattern("WBIBBBBBBBBBIBW", 3)
+                .horizontalPattern("WIGIWBWBWBWIGIW", 4)
+                .horizontalPattern("WBIBBBGGGBBBIBW", 5)
                 .horizontalPattern("WBWBWBWGWBWBWBW", 6)
-                .horizontalPattern("WBBBBBGGGBBBBBW", 7)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 8)
-                .horizontalPattern("WBBBBBBBBBBBBBW", 9)
+                .horizontalPattern("WBIBBBGGGBBBIBW", 7)
+                .horizontalPattern("WIGIWBWBWBWIGIW", 8)
+                .horizontalPattern("WBIBBBBBBBBBIBW", 9)
                 .horizontalPattern("WGWBWBWBWBWBWGW", 10)
-                .horizontalPattern("WGGBBBBBBBBBGGW", 11)
+                .horizontalPattern("WGGBBGGGGGBBGGW", 11)
                 .startPosition(1, 1)
                 .startPosition(13, 1)
                 .startPosition(1, 11)
                 .startPosition(12, 11)
+                .treadmill(new Location(5,1), Player.FacingDirection.EAST)
+                .treadmill(new Location(6,1), Player.FacingDirection.EAST)
+                .treadmill(new Location(5,11), Player.FacingDirection.EAST)
+                .treadmill(new Location(6,11), Player.FacingDirection.EAST)
+                .treadmill(new Location(8,1), Player.FacingDirection.WEST)
+                .treadmill(new Location(9,1), Player.FacingDirection.WEST)
+                .treadmill(new Location(8,11), Player.FacingDirection.WEST)
+                .treadmill(new Location(9,11), Player.FacingDirection.WEST)
+                .teleporter(new Location(2,4),new Location(6,5))
+                .teleporter(new Location(12,4),new Location(8,5))
+                .teleporter(new Location(2,8),new Location(6,7))
+                .teleporter(new Location(12,8),new Location(8,7))
             .build()
         );
 
@@ -140,7 +153,6 @@ public class GameplayManager {
     private void createGameSession() {
         this.currentSession = new GameSession(this.getMap(this.mapIndex));
         this.currentSession.addPlayer(new LocalPlayer(this.currentSession, "FizzBuzz", this.currentSession.getGameMap().getRandomStartPosition()));
-        //this.currentSession.addAi(); Nur zum Testen der AI. Nicht nutzen, AI funktioniert nicht!
     }
 
     public void update(float delta) {
