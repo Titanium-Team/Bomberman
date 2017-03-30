@@ -73,7 +73,7 @@ public class GameView extends LightingView {
 
     private void addPlayer(Player player){
         Location playerLocation = player.getBoundingBox().getCenter();
-        Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize);
+        Light playerLight = randomLight(((float) playerLocation.getX()) * tileSize, ((float) playerLocation.getY()) * tileSize); // TODO: adjust color
         playerLight.setOwner(player);
         playerLightMap.put(player, playerLight);
         this.addLight(playerLight);
