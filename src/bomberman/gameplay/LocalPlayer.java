@@ -432,8 +432,8 @@ public class LocalPlayer extends Player {
     private void manageBombs(){
         Tile tile = this.getTile();
         //MANAGE BOMBS
-        if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE) == 0F) {
-            //normale Bombe
+        if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE) == 0F || this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE) == 2F ) {
+            //normale Bombe und spikebomb
 
             tile.spawn(new Bomb(this, tile, 2, 1));
             this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
@@ -453,10 +453,6 @@ public class LocalPlayer extends Player {
                 tile.spawn(new Bomb(this, tile, 2, 1));
                 this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
             }
-        }
-        else if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE)==2F) {
-            tile.spawn(new Bomb(this, tile, 2, 1));
-
         }
     }
 

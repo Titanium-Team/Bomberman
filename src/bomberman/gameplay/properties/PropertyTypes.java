@@ -90,7 +90,7 @@ public enum PropertyTypes implements PropertyType {
         }
 
     },
-
+    //0 = normale bombe, 1= powerbomb, 2 = spikebomb
     BOMBTYPE{
         @Override
         public float defaultValue() {
@@ -109,6 +109,7 @@ public enum PropertyTypes implements PropertyType {
 
     },
 
+    //maxValue muss selber Wert sein wie maxValue bei BombAmount
     BOMBSDOWN{
         @Override
         public float defaultValue() {
