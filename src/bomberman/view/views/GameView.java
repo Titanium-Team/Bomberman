@@ -220,20 +220,28 @@ public class GameView extends LightingView {
                                     ITexture texture = null;
                                     switch (((PowerUp) (tiles[i][j].getTileObject())).getPowerUpType()) {
                                         case SPEEDUP:
-                                            texture = ViewManager.getTexture("speedPowerUp.png");
+                                            texture = ViewManager.getTexture("SpeedUp.png");
+                                            break;
+                                        case SPEEDDOWN:
+                                            texture = ViewManager.getTexture("SpeedDown.png");
                                             break;
                                         case FIREUP:
-                                            texture = ViewManager.getTexture("explosionPowerUp.png");
+                                            texture = ViewManager.getTexture("FireUp.png");
                                             break;
                                         case FIREDOWN:
                                             texture = ViewManager.getTexture("firedown.png");
                                             break;
                                         case BOMBUP:
-                                            texture = ViewManager.getTexture("usa.png");
+                                            texture = ViewManager.getTexture("BombUp.png");
                                             break;
                                         case BOMBDOWN:
-                                            texture = ViewManager.getTexture("peace.png");
+                                            texture = ViewManager.getTexture("BombDown.png");
                                             break;
+                                        case POWERBOMB:
+                                            texture = ViewManager.getTexture("PowerBomb.png");
+                                            break;
+                                        case SPIKEBOMB:
+                                            texture = ViewManager.getTexture("SpikeBomb.png");
                                     }
                                     batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);
                                 } else if (tiles[i][j].getTileObject() instanceof Explosion) {
