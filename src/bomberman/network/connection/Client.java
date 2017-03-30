@@ -100,6 +100,8 @@ public class Client extends Connection {
                 case "message":
                     String stringMessage = decrypt(splittedMessage[1]);
 
+                    ((GameView) Main.instance.getViewManager().getCurrentView()).receive(stringMessage, getController().getNetworkPlayerMap().get(sender).getName());
+
                     System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
 
                     sendRecieved(message, server);

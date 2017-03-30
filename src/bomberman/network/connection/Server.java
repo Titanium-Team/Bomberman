@@ -11,6 +11,7 @@ import bomberman.network.NetworkData;
 import bomberman.network.NetworkPlayer;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.utility.Vector2;
+import bomberman.view.views.GameView;
 import bomberman.view.views.LobbyView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -82,7 +83,7 @@ public class Server extends Connection {
 
             switch (splittedMessage[0]) {
                 case "hello":
-                    if (!gameStarted) {
+                    if (!gameStarted && getController().getNetworkPlayerMap().values().size() != 3) {
                         ConnectionData connectionData = new ConnectionData(sender, splittedMessage[1]);
 
                         if (!getController().getNetworkPlayerMap().containsKey(sender)) {
@@ -103,6 +104,9 @@ public class Server extends Connection {
                     String stringMessage = decrypt(splittedMessage[1]);
 
                     sendToAll("message§", stringMessage, sender, true, true);
+
+                    ((GameView) Main.instance.getViewManager().getCurrentView()).receive(stringMessage, getController().getNetworkPlayerMap().get(sender).getName());
+
 
                     System.out.println("Message from " + packet.getAddress() + " " + packet.getPort() + "\n" + stringMessage);
 
