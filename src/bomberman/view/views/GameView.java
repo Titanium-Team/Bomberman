@@ -26,7 +26,6 @@ import bomberman.view.engine.utility.Vector2;
 import net.java.games.input.Component;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.util.*;
 
 /**
@@ -328,6 +327,33 @@ public class GameView extends LightingView {
 					powerup.setText("Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
 				}
 			}
+		}
+	}
+
+	private class NotificationPopup extends PopupWindow{
+		private Label text;
+		private Button showButton;
+
+		public NotificationPopup( View v, String msg) {
+
+			super(LayoutParams.obtain(0.3f, 0.3f, 0.4f, 0.4f), v);
+			this.text = new Label(LayoutParams.obtain(0.2f,0.2f,0.6f,0.4f),v,msg);
+			this.addChild(text);
+
+			this.showButton = new Button(LayoutParams.obtain(0.4f,0.65f,0.2f,0.2f),v,"Show");
+			showButton.addListener(()->{
+				this.closeSelf();
+				chatWindow.showSelf();
+			});
+			this.addChild(showButton);
+		}
+	}
+
+	public void receive(String msg,String name){
+		this.chatWindow.addText(msg,name);
+		if(!chatWindow.isShown()){
+			NotificationPopup popup = new NotificationPopup(this,name + ": " + msg);
+			popup.showSelf();
 		}
 	}
 
