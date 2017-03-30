@@ -345,6 +345,10 @@ public class GameMap implements Cloneable {
 
         }
 
+        public Builder verticalRow(TileType tileType, int x) {
+            return this.verticalRow(tileType, TileAbility.NORMAL, x);
+        }
+
         public Builder verticalRow(TileType tileType, TileAbility tileAbility, int x) {
 
             assert !(tileType == null);
@@ -357,6 +361,10 @@ public class GameMap implements Cloneable {
 
             return this;
 
+        }
+
+        public Builder verticalPattern(String pattern, int x) {
+            return this.verticalPattern(pattern, TileAbility.NORMAL, x);
         }
 
         public Builder verticalPattern(String pattern, TileAbility tileAbility, int x) {
@@ -373,6 +381,10 @@ public class GameMap implements Cloneable {
 
         }
 
+        public Builder horizontalRow(TileType tileType, int y) {
+            return this.horizontalRow(tileType, TileAbility.NORMAL, y);
+        }
+
         public Builder horizontalRow(TileType tileType, TileAbility tileAbility, int y) {
 
             assert !(tileType == null);
@@ -384,6 +396,10 @@ public class GameMap implements Cloneable {
 
             return this;
 
+        }
+
+        public Builder horizontalPattern(String pattern, int y) {
+            return this.horizontalPattern(pattern, TileAbility.NORMAL, y);
         }
 
         public Builder horizontalPattern(String pattern, TileAbility tileAbility, int y) {
@@ -405,6 +421,10 @@ public class GameMap implements Cloneable {
 
         }
 
+        public Builder fill(TileType tileType, BoundingBox area) {
+            return this.fill(tileType, TileAbility.NORMAL, area);
+        }
+
         public Builder fill(TileType tileType, TileAbility tileAbility, BoundingBox area) {
 
             assert !(tileType == null);
@@ -418,6 +438,10 @@ public class GameMap implements Cloneable {
 
             return this;
 
+        }
+
+        public Builder fillEmpty(TileType tileType) {
+            return this.fillEmpty(tileType, TileAbility.NORMAL);
         }
 
         public Builder fillEmpty(TileType tileType, TileAbility tileAbility) {
@@ -434,6 +458,10 @@ public class GameMap implements Cloneable {
 
             return this;
 
+        }
+
+        public Builder at(TileType tileType, int x, int y) {
+            return this.at(tileType, TileAbility.NORMAL, x, y);
         }
 
         public Builder at(TileType tileType, TileAbility tileAbility, int x, int y) {
