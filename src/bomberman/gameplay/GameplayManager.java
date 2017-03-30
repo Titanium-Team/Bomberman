@@ -127,11 +127,15 @@ public class GameplayManager {
                 .startPosition(1, 18)
             .build()
         );
-
-
+        //map4
         this.addMap(
-                GameMap.builder().dimension(100, 100).fillEmpty(TileTypes.GROUND).frame(TileTypes.WALL)
-                        .name("AND ANOTHER ONE")
+                GameMap.builder()
+                        .name("Giant")
+                        .dimension(100, 100)
+                        .frame(TileTypes.WALL)
+                        .fillEmptyRandom(TileTypes.GROUND, TileTypes.WALL_BREAKABLE, 0.85)
+                        .replace(TileTypes.WALL_BREAKABLE, TileAbility.SLOW)
+                        .replace(TileTypes.WALL_BREAKABLE,TileTypes.GROUND, 1)
                         .startPosition(1, 1)
                         .startPosition(1, 2)
                         .startPosition(1, 3)
