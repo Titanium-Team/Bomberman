@@ -42,6 +42,7 @@ public abstract class Player {
     private final BoundingBox boundingBox;
 
     private PowerUpType lastPowerup;
+    private boolean moveable = true;
 
     public Player(GameSession gameSession, PlayerType playerType, String name, Location center) {
 
@@ -104,6 +105,14 @@ public abstract class Player {
 
     public GameStatistic getGameStatistic() {
         return this.gameStatistic;
+    }
+
+    public boolean isMoveable() {
+        return moveable;
+    }
+
+    public void setMoveable(boolean moveable) {
+        this.moveable = moveable;
     }
 
     public Tile getTile() {
@@ -171,6 +180,7 @@ public abstract class Player {
         return ((Player) o).identifier.equals(this.identifier);
 
     }
+
 
     public enum FacingDirection {
 
