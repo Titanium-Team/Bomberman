@@ -1,5 +1,6 @@
 package bomberman.view.views;
 
+import bomberman.Main;
 import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
@@ -329,7 +330,10 @@ public class GameView extends LightingView {
             this.quitGameButton.addListener(() -> {
                 gameplayManager.setGameState(GameplayManager.GameState.IN_MENU);
 
+
                 GameView.this.navigateBack();
+	            viewManager.getCurrentView().navigateBack();
+	            Main.instance.getNetworkController().leave();
             });
             this.addChild(quitGameButton);
         }
