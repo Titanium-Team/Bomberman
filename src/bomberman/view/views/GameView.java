@@ -69,8 +69,7 @@ public class GameView extends LightingView {
 
 	    this.statPopup = new StatPopup(this);
 	    this.statPopup.showSelf();
-
-	    this.displayError("Fuck off");
+	    
     }
 
     /**
