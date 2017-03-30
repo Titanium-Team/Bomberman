@@ -162,17 +162,18 @@ public class Server extends Connection {
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
                 case "leave":
+                    if (getController().getNetworkPlayerMap().containsKey(sender)) {
+                        sendToAll("left§", String.valueOf(getController().getNetworkPlayerMap().get(sender).getIndex()), sender, true, true);
 
-                    sendToAll("left§", String.valueOf(getController().getNetworkPlayerMap().get(sender).getIndex()), sender,true, true);
 
+                        if (gameStarted) {
+                            Main.instance.getViewManager().getCurrentView().displayError(getController().getNetworkPlayerMap().get(sender).getName() + " left");
+                        } else {
+                            updateUserList();
+                        }
 
-                    if (gameStarted){
-                        Main.instance.getViewManager().getCurrentView().displayError(getController().getNetworkPlayerMap().get(sender).getName() + " left");
-                    }else {
-                        updateUserList();
+                        getController().getNetworkPlayerMap().remove(sender);
                     }
-
-                    getController().getNetworkPlayerMap().remove(sender);
 
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
