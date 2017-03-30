@@ -118,7 +118,7 @@ public class GameSession {
         int x = (int) (Math.random() * this.gameMap.getWidth());
         int y = (int) (Math.random() * this.gameMap.getHeight());
         if (this.gameMap.getTile(x, y).get().getTileType() == TileTypes.GROUND && this.gameMap.getTile(x, y).get().getTileObject() == null) {
-            this.gameMap.getTile(x, y).get().spawnPowerup();
+            this.gameMap.getTile(x, y).get().spawnPowerup(15);
         } else {
             this.checkPowerups();
         }
