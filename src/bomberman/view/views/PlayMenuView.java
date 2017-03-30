@@ -40,13 +40,7 @@ public class PlayMenuView extends BaseMenuView implements RefreshableServerList 
         this.getRoot().addChild(portTextField);
         this.portTextField.setFilterOnlyNumbers();
         this.portTextField.addTypeListeners((key, c) -> {
-            if (Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText()))){
-                hostGameButton.setClickable(true);
-            }else {
-                hostGameButton.setClickable(false);
-
-                this.displayError("Port schon vergeben");
-            }
+            hostGameButton.setClickable(Main.instance.getNetworkController().isHostable(Integer.parseInt(portTextField.getText())));
         });
 
         this.serverNameField = new TextField(LayoutParams.obtain(0.1f, 0.4f, 0.2f, 0.1f), this, "", "Server Name");
