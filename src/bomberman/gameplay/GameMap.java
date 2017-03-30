@@ -413,7 +413,7 @@ public class GameMap implements Cloneable {
 
                 //wenn aktuelles feld 'P' ist, dann erzeuge ein zufälliges powerup
                 if (pattern.charAt(x) == 'P') {
-                    this.tiles[x][y].spawnPowerup();
+                    this.tiles[x][y].spawnPowerup(120);
                 }
             }
 

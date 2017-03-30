@@ -113,32 +113,36 @@ public class Tile {
         this.tileAbility = tileAbility;
     }
 
-    public void spawnPowerup() {
-        int random = (int) (Math.random() * 8);
+    public void spawnPowerup(int lifespan) {
+        //default lifespan = 15
+        int random = (int) (Math.random() * 11);
         switch (random) {
             case 0:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.SPEEDUP));
-                break;
             case 1:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.SPEEDDOWN));
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.SPEEDUP));
                 break;
             case 2:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.FIREUP));
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.SPEEDDOWN));
                 break;
             case 3:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.FIREDOWN));
-                break;
             case 4:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.BOMBUP));
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.FIREUP));
                 break;
             case 5:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.BOMBDOWN));
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.FIREDOWN));
                 break;
             case 6:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.POWERBOMB));
-                break;
             case 7:
-                this.spawn(new PowerUp(this, 15, PowerUpTypes.SPIKEBOMB));
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.BOMBUP));
+                break;
+            case 8:
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.BOMBDOWN));
+                break;
+            case 9:
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.POWERBOMB));
+                break;
+            case 10:
+                this.spawn(new PowerUp(this, lifespan, PowerUpTypes.SPIKEBOMB));
                 break;
         }
     }
