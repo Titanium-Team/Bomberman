@@ -116,7 +116,20 @@ public class ViewManager {
             LwjglNativesLoader.load();
             System.out.println("finished!");
 
-            setDisplayMode(800, 600, false);
+            fullscreen = !fullscreen;
+
+            try {
+                if (fullscreen) {
+                    int w0 = Toolkit.getDefaultToolkit().getScreenSize().width;
+                    int h0 = Toolkit.getDefaultToolkit().getScreenSize().height;
+                    setDisplayMode(w0, h0, true);
+                    onResize(w0, h0);
+                } else {
+                    setDisplayMode(800, 600, false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             Display.create(new PixelFormat(8, 0, 0, msMode.samples));
 
