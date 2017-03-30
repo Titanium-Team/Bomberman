@@ -254,7 +254,9 @@ public class GameView extends LightingView {
                                 }
                             } else if (tiles[i][j].getTileAbility().equals(TileAbility.TELEPORT) || tiles[i][j].getTileAbility().equals(TileAbility.RANDOM_TELEPORT)) {
                                 batch.draw(ViewManager.getTexture("teleport.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
-                            }
+                            } else if (tiles[i][j].getTileAbility().equals(TileAbility.SLOW) || tiles[i][j].getTileAbility().equals(TileAbility.RANDOM_TELEPORT)) {
+                            batch.draw(ViewManager.getTexture("Oil.png"), i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize, 1, 1, 1, 1);
+                        }
                         }
                     }
                 }

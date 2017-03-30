@@ -3,6 +3,7 @@ package bomberman.gameplay.properties;
 public enum PropertyTypes implements PropertyType {
 
     SPEED_FACTOR {
+
         @Override
         public float defaultValue() {
             return 1F;
@@ -98,7 +99,7 @@ public enum PropertyTypes implements PropertyType {
 
         @Override
         public float maxValue() {
-            return 3;
+            return 2;
         }
 
         @Override

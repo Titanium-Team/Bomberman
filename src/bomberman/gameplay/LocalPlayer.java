@@ -432,7 +432,6 @@ public class LocalPlayer extends Player {
     private void manageBombs(){
         Tile tile = this.getTile();
         //MANAGE BOMBS
-        System.out.println(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE));
         if(this.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE) == 0F) {
             //normale Bombe
 
