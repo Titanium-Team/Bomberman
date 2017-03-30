@@ -19,6 +19,8 @@ import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.*;
 import bomberman.view.engine.components.Button;
 import bomberman.view.engine.components.Label;
+import bomberman.view.engine.components.popups.ChatWindow;
+import bomberman.view.engine.components.popups.PopupWindow;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.utility.Camera;
@@ -67,6 +69,8 @@ public class GameView extends LightingView {
 
 	    this.statPopup = new StatPopup(this);
 	    this.statPopup.showSelf();
+
+	    this.displayError("Fuck off");
     }
 
     /**
@@ -220,20 +224,28 @@ public class GameView extends LightingView {
                                     ITexture texture = null;
                                     switch (((PowerUp) (tiles[i][j].getTileObject())).getPowerUpType()) {
                                         case SPEEDUP:
-                                            texture = ViewManager.getTexture("speedPowerUp.png");
+                                            texture = ViewManager.getTexture("SpeedUp.png");
+                                            break;
+                                        case SPEEDDOWN:
+                                            texture = ViewManager.getTexture("SpeedDown.png");
                                             break;
                                         case FIREUP:
-                                            texture = ViewManager.getTexture("explosionPowerUp.png");
+                                            texture = ViewManager.getTexture("FireUp.png");
                                             break;
                                         case FIREDOWN:
                                             texture = ViewManager.getTexture("firedown.png");
                                             break;
                                         case BOMBUP:
-                                            texture = ViewManager.getTexture("usa.png");
+                                            texture = ViewManager.getTexture("BombUp.png");
                                             break;
                                         case BOMBDOWN:
-                                            texture = ViewManager.getTexture("peace.png");
+                                            texture = ViewManager.getTexture("BombDown.png");
                                             break;
+                                        case POWERBOMB:
+                                            texture = ViewManager.getTexture("PowerBomb.png");
+                                            break;
+                                        case SPIKEBOMB:
+                                            texture = ViewManager.getTexture("SpikeBomb.png");
                                     }
                                     batch.draw(texture, i * this.tileSize, j * this.tileSize, this.tileSize, this.tileSize);
                                 } else if (tiles[i][j].getTileObject() instanceof Explosion) {
@@ -341,11 +353,11 @@ public class GameView extends LightingView {
 
     }
 
-	private class NotificationPopup extends PopupWindow{
+	private class ChatNotificationPopup extends PopupWindow{
 		private Label text;
 		private Button showButton;
 
-		public NotificationPopup( View v, String msg) {
+		public ChatNotificationPopup(View v, String msg) {
 
 			super(LayoutParams.obtain(0.3f, 0.3f, 0.4f, 0.4f), v);
 			this.text = new Label(LayoutParams.obtain(0.2f,0.2f,0.6f,0.4f),v,msg);
@@ -363,7 +375,7 @@ public class GameView extends LightingView {
 	public void receive(String msg,String name){
 		this.chatWindow.addText(msg,name);
 		if(!chatWindow.isShown()){
-			NotificationPopup popup = new NotificationPopup(this,name + ": " + msg);
+			ChatNotificationPopup popup = new ChatNotificationPopup(this,name + ": " + msg);
 			popup.showSelf();
 		}
 	}
