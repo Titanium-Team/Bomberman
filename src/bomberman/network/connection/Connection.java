@@ -1,5 +1,7 @@
 package bomberman.network.connection;
 
+import bomberman.Main;
+import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.objects.Bomb;
 import bomberman.gameplay.utils.Location;
@@ -28,9 +30,13 @@ public abstract class Connection {
     private ConnectionData myData;
     private final KeyPair keyPair;
 
+    private GameplayManager gameplayManager;
+
     private Map<String, Request> requestMap;
 
     public Connection(NetworkController controller) {
+        this.controller = controller;
+
         requestMap = new LinkedHashMap<>();
 
         KeyPair tempKeys = null;
@@ -45,9 +51,6 @@ public abstract class Connection {
         }
 
         keyPair = tempKeys;
-
-
-        this.controller = controller;
 
         listener = new Thread(() -> {
             while (true) {
@@ -90,6 +93,14 @@ public abstract class Connection {
 
     public ConnectionData getMyData() {
         return myData;
+    }
+
+    protected GameplayManager getGameplayManager() {
+        return gameplayManager;
+    }
+
+    public void setGameplayManager(GameplayManager gameplayManager) {
+        this.gameplayManager = gameplayManager;
     }
 
     public void close() {

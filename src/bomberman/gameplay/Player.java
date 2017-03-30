@@ -110,7 +110,7 @@ public abstract class Player {
         return this.gameSession;
     }
 
-    protected void setIndex(int index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 

@@ -3,6 +3,7 @@ package bomberman.network.connection;
 import bomberman.Main;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.ConnectionData;
 import bomberman.network.NetworkController;
@@ -34,6 +35,10 @@ public class Server extends Connection {
 
     public Server(NetworkController networkController, int customPort, String name) throws SocketException {
         super(networkController);
+
+        setGameplayManager(Main.instance.getGameplayManager());
+
+        getGameplayManager().getCurrentSession().setPowerupSpawning(true);
 
         dataConnectionMap = new HashMap<>();
 
@@ -111,7 +116,7 @@ public class Server extends Connection {
                         for (Player p : getController().getNetworkPlayerMap().values()){
                             stringList.add(p.getName());
                         }
-                        stringList.add(Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer().getName());
+                        stringList.add(getGameplayManager().getCurrentSession().getLocalPlayer().getName());
 
                         Main.instance.getViewManager().postOnUIThread(() -> ((LobbyView) Main.instance.getViewManager().getCurrentView()).refreshListView(stringList));
                     }
@@ -152,7 +157,7 @@ public class Server extends Connection {
                     sendToAll("plant§", bombPlant, sender, false, false);
 
                     Bomb bomb = Bomb.fromJson(bombPlant);
-                    Main.instance.getGameplayManager().getCurrentSession().getGameMap().spawn(bomb);
+                    getGameplayManager().getCurrentSession().getGameMap().spawn(bomb);
 
                     sendRecieved(message, dataConnectionMap.get(sender));
                     break;
@@ -214,11 +219,11 @@ public class Server extends Connection {
     }
 
     public void startGame(int mapIndex) {
-        synchronized (Main.instance.getGameplayManager().getCurrentSession()){
+        synchronized (getGameplayManager().getCurrentSession()){
             for (NetworkPlayer player : getController().getNetworkPlayerMap().values()){
-                player.getBoundingBox().setCenter(Main.instance.getGameplayManager().getCurrentSession().getGameMap().getRandomStartPosition());
+                player.getBoundingBox().setCenter(getGameplayManager().getCurrentSession().getGameMap().getRandomStartPosition());
 
-                Main.instance.getGameplayManager().getCurrentSession().addPlayer(player);
+                getGameplayManager().getCurrentSession().addPlayer(player);
             }
         }
 
@@ -229,7 +234,7 @@ public class Server extends Connection {
     }
 
     private void sendUserList(){
-        Player local = Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer();
+        Player local = getGameplayManager().getCurrentSession().getLocalPlayer();
         Collection<NetworkPlayer> networkPlayers = getController().getNetworkPlayerMap().values();
         NetworkPlayer localNetwork = new NetworkPlayer(local.getName(), local.getBoundingBox().getCenter(), getMyData());
 
@@ -244,5 +249,9 @@ public class Server extends Connection {
         for (String s : playerList){
             sendToAll("playerList§", s, getMyData().getNetworkData(), true, false);
         }
+    }
+
+    public void powerUpSpawn(PowerUp powerUp) {
+        sendToAll("powerUpSpawn§", powerUp.toJson(), getMyData().getNetworkData(), false, false);
     }
 }

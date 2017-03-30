@@ -29,7 +29,6 @@ public class Bomb extends TileObject {
     private final double damage;
 
     public Bomb(Player player, Tile parent, float lifespan, double damage) {
-
         super(parent, lifespan);
 
         this.player = player;

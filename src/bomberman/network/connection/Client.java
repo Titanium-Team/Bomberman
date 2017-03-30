@@ -3,6 +3,7 @@ package bomberman.network.connection;
 import bomberman.Main;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
 import bomberman.gameplay.utils.Location;
 import bomberman.network.*;
 import bomberman.view.views.GameView;
@@ -26,6 +27,10 @@ public class Client extends Connection {
 
     public Client(NetworkController controller) throws IOException {
         super(controller);
+
+        setGameplayManager(Main.instance.getGameplayManager());
+
+        Main.instance.getGameplayManager().getCurrentSession().setPowerupSpawning(false);
 
         setSocket(new DatagramSocket());
         getSocket().setBroadcast(true);
@@ -98,20 +103,21 @@ public class Client extends Connection {
 
                     NetworkPlayer player = NetworkPlayer.fromJson(playerString);
 
-                    synchronized (Main.instance.getGameplayManager().getCurrentSession()) {
+                    synchronized (getGameplayManager().getCurrentSession()) {
                         if (player.getConnectionData().getNetworkData().equals(getMyData().getNetworkData())) {
-                            Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer().getBoundingBox().setCenter(player.getBoundingBox().getCenter());
+                            getGameplayManager().getCurrentSession().getLocalPlayer().getBoundingBox().setCenter(player.getBoundingBox().getCenter());
+                            getGameplayManager().getCurrentSession().getLocalPlayer().setIndex(player.getIndex());
                         } else {
                             getController().getNetworkPlayerMap().put(sender, player);
 
-                            Main.instance.getGameplayManager().getCurrentSession().addPlayer(player);
+                            getGameplayManager().getCurrentSession().addPlayer(player);
                         }
                     }
 
                     sendRecieved(message, server);
                     break;
                 case "startGame":
-                    Main.instance.getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(splittedMessage[1]));
+                    getGameplayManager().getCurrentSession().setMapIndex(Integer.parseInt(splittedMessage[1]));
                     Main.instance.getViewManager().postOnUIThread(() -> Main.instance.getViewManager().getCurrentView().changeView(GameView.class));
 
                     sendRecieved(message, server);
@@ -137,7 +143,7 @@ public class Client extends Connection {
                     String bombPlant = splittedMessage[1];
 
                     Bomb bomb = Bomb.fromJson(bombPlant);
-                    Main.instance.getGameplayManager().getCurrentSession().getGameMap().spawn(bomb);
+                    getGameplayManager().getCurrentSession().getGameMap().spawn(bomb);
 
                     sendRecieved(message, server);
                     break;
@@ -150,6 +156,14 @@ public class Client extends Connection {
 
                     break;
 
+                case "powerUpSpawn":
+                    String powerUpSpawn = splittedMessage[1];
+
+                    PowerUp powerUp = PowerUp.fromJson(powerUpSpawn);
+                    getGameplayManager().getCurrentSession().getGameMap().spawn(powerUp);
+
+                    sendRecieved(message, server);
+                    break;
                 case "ok":
                     recieved(splittedMessage[1], sender);
 
@@ -200,7 +214,7 @@ public class Client extends Connection {
     }
 
     public void join(ServerConnectionData data){
-        String username = Main.instance.getGameplayManager().getCurrentSession().getLocalPlayer().getName();
+        String username = getGameplayManager().getCurrentSession().getLocalPlayer().getName();
         send("join§" + data.encrypt(username),data.getNetworkData(),true);
 
         serverList.clear();
