@@ -61,6 +61,7 @@ public class ViewManager {
 
 
             //Tiles
+            loadTexture("BreakableImprovedWall.png");
             loadTexture("wall.png");
             loadTexture("breakableWall.png");
             loadTexture("ground.png");

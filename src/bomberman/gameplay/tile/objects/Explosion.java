@@ -25,7 +25,6 @@ public class Explosion extends TileObject {
         this.owner = owner;
         this.animation = new Animation((Texture) ViewManager.getTexture("explosion.png"), 64, 64, Bomb.EXPLOSION_LIFESPAN / 25f);
 
-
     }
 
     @Override

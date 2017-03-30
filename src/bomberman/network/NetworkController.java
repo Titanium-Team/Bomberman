@@ -100,7 +100,7 @@ public class NetworkController implements Runnable {
             return ((Client) connection).getServerList();
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
     public void refreshServers(RefreshableServerList refreshable){
@@ -145,6 +145,7 @@ public class NetworkController implements Runnable {
 
     public void leave() {
         connection.leave();
+        startClient();
     }
 
     public void setNetworkPlayerMap(Map<NetworkData, NetworkPlayer> networkPlayerMap) {
