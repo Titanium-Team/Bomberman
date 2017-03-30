@@ -7,7 +7,8 @@ import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.Button;
 import bomberman.view.engine.components.LayoutParams;
 import bomberman.view.engine.components.TextField;
-import bomberman.view.engine.components.VerticalView;
+import bomberman.view.engine.components.VerticalList;
+
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,9 +8,6 @@ import org.lwjgl.input.Keyboard;
 
 public class TextField extends ViewComponentClickable {
 
-    public void setText(String text) {
-        this.text = text;
-    }
 
     private enum TextFieldState {
         Focussed, Unfocussed;
@@ -124,4 +121,10 @@ public class TextField extends ViewComponentClickable {
     public String getText() {
         return text;
     }
+
+    public void setText(String text) {
+        this.text = text;
+        this.pointer=text.length();
+    }
+
 }

@@ -17,10 +17,7 @@ import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
 import bomberman.view.engine.components.ChatWindow;
 import bomberman.view.engine.components.LayoutParams;
-import bomberman.view.engine.components.ViewComponent;
 import bomberman.view.engine.components.Button;
-import bomberman.view.engine.components.ClickListener;
-import bomberman.view.engine.components.LayoutParams;
 import bomberman.view.engine.components.PopupWindow;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.ITexture;
@@ -36,20 +33,19 @@ import java.util.*;
  **/
 public class GameView extends LightingView {
 
-	private final ChatWindow chatWindow;
+	private ChatWindow chatWindow;
 	private GameplayManager gameplayManager;
     private float time = 0f;
     private static final Random random = new Random();
     private int tileSize = 50;
     private HashMap<Player, Light> playerLightMap = new HashMap<>();
-    private List<Light> explosions = new ArrayList<>();
 
     private PausePopup pausePopup;
 
     public GameView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
-	    this.chatWindow = new ChatWindow(LayoutParams.obtain(0.8f,0,0.2f,1),this);
-	    this.getRoot().addChild(chatWindow);
+	    this.chatWindow = new ChatWindow(this);
+        chatWindow.showSelf();
 
         this.pausePopup = new PausePopup(this);
 
@@ -236,7 +232,6 @@ public class GameView extends LightingView {
                 }
             }
         }
-	    this.chatWindow.draw(batch);
     }
 
     public void onKeyUp(int key, char c) {
@@ -247,6 +242,14 @@ public class GameView extends LightingView {
                 this.pausePopup.closeSelf();
             } else {
                 this.pausePopup.showSelf();
+            }
+        }else if(key == Keyboard.KEY_T){
+            if(chatWindow.isShown()){
+	            if(!chatWindow.isTextFieldFocused()) {
+		            this.chatWindow.closeSelf();
+	            }
+            }else{
+                this.chatWindow.showSelf();
             }
         }
     }
