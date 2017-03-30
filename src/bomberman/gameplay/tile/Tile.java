@@ -195,23 +195,23 @@ public class Tile {
                     switch (this.treadMillDirection) {
 
                         case NORTH: {
-                            player.getBoundingBox().move(0, .003F * Math.min(deltaTime, 2));
+                            player.getBoundingBox().move(0, .006F * Math.min(deltaTime, 2));
                         }
                         break;
 
                         case WEST: {
-                            player.getBoundingBox().move(-(.003F * Math.min(deltaTime, 2)), 0);
+                            player.getBoundingBox().move(-(.006F * Math.min(deltaTime, 2)), 0);
                         }
                         break;
 
                         case EAST: {
                             System.out.println(deltaTime);
-                            player.getBoundingBox().move(.003F * Math.min(deltaTime, 2), 0);
+                            player.getBoundingBox().move(.006F * Math.min(deltaTime, 2), 0);
                         }
                         break;
 
                         case SOUTH: {
-                            player.getBoundingBox().move(0, -(.003F * Math.min(deltaTime, 2)));
+                            player.getBoundingBox().move(0, -(.006F * Math.min(deltaTime, 2)));
                         }
                         break;
 
