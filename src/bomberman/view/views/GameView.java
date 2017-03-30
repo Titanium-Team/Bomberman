@@ -314,31 +314,32 @@ public class GameView extends LightingView {
         }
     }
 
-	private class StatPopup extends PopupWindow{
+	private class StatPopup extends PopupWindow {
 
-		private Label range, powerup;
-		public StatPopup( View v) {
-			super(LayoutParams.obtain(0,0,0.2f,1), v);
-			this.range = new Label(LayoutParams.obtain(0,0.2f,1,0.1f),v,"Range :" + gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
-			this.addChild(range);
-			powerup=null;
-		}
+        private Label range, powerup;
 
-		@Override
-		public void draw(Batch batch) {
-			super.draw(batch);
-			float max = this.getWidth() * 0.8f;
-			batch.draw(null,this.getX() + 0.1f * this.getWidth(), this.getY() + 0.1f * this.getHeight(),max *((float) gameplayManager.getCurrentSession().getLocalPlayer().getHealth()/gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getMax(PropertyTypes.HEALTH)), 0.1f*this.getHeight(),1,0,0,0.4f);
-			if(gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup()!=null){
-				if(powerup == null){
-					this.powerup = new Label(LayoutParams.obtain(0,0.3f,1,0.1f),this.getView(), "Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
-					this.addChild(powerup);
-					this.getView().requestLayout();
-				}else{
-					powerup.setText("Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
-				}
-			}
-		}
-	}
+        public StatPopup(View v) {
+            super(LayoutParams.obtain(0, 0, 0.2f, 1), v);
+            this.range = new Label(LayoutParams.obtain(0, 0.2f, 1, 0.1f), v, "Range :" + (int) gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
+            this.addChild(range);
+            this.powerup = new Label(LayoutParams.obtain(0, 0.3f, 1, 0.1f), this.getView(),"");
+            this.addChild(powerup);
+            this.getView().requestLayout();
+        }
+
+        @Override
+        public void draw(Batch batch) {
+            super.draw(batch);
+            float max = this.getWidth() * 0.8f;
+            batch.draw(null, this.getX() + 0.1f * this.getWidth(), this.getY() + 0.1f * this.getHeight(), max * ((float) gameplayManager.getCurrentSession().getLocalPlayer().getHealth() / gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getMax(PropertyTypes.HEALTH)), 0.1f * this.getHeight(), 1, 0, 0, 0.4f);
+            if (gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup() != null) {
+                    powerup.setText("Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
+
+            }
+            range.setText("Range :" + (int) gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
+
+        }
+
+    }
 
 }
