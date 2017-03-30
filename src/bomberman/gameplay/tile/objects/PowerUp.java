@@ -98,7 +98,6 @@ public class PowerUp extends TileObject {
                         PropertyTypes.BOMBTYPE,
                         (float)PowerUpTypes.POWERBOMB.value()
                 );
-                System.out.println("picked up powerbomb");
             }
             break;
 
@@ -107,7 +106,6 @@ public class PowerUp extends TileObject {
                         PropertyTypes.BOMBTYPE,
                         (float)PowerUpTypes.SPIKEBOMB.value()
                 );
-                System.out.println("picked up spikebomb");
             }
             break;
 

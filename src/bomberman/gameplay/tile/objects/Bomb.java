@@ -76,7 +76,6 @@ public class Bomb extends TileObject {
 
         for (int i = 1; i < this.range + 1; i++) {
 
-            System.out.println(range + " = range");
             if ((x + i) < this.player.getGameSession().getGameMap().getWidth() && !stopRight) {
                 stopRight = this.createExplosion((x + i), y, EXPLOSION_LIFESPAN);
             }
