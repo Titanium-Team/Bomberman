@@ -450,6 +450,7 @@ public class GameMap implements Cloneable {
 
         }
 
+
         public Builder fillEmpty(TileType tileType) {
             return this.fillEmpty(tileType, TileAbility.NORMAL);
         }
@@ -470,6 +471,24 @@ public class GameMap implements Cloneable {
 
         }
 
+        public Builder fillEmptyRandom(TileType tileType1, TileType tileType2, double chance) {
+
+            assert !(tileType1 == null);
+            assert !(tileType2 == null);
+
+            for (int x = 0; x < this.width(); x++) {
+                for (int y = 0; y < this.height(); y++) {
+                    if (this.tiles[x][y] == null) {
+                        this.at(random.nextDouble() <= chance ? tileType1 : tileType2,x,y);
+                    }
+                }
+            }
+
+            return this;
+
+        }
+
+
         public Builder at(TileType tileType, int x, int y) {
             return this.at(tileType, TileAbility.NORMAL, x, y);
         }
@@ -483,6 +502,40 @@ public class GameMap implements Cloneable {
             return this;
 
         }
+
+        public Builder replace(TileType search, TileAbility tileAbility) {
+
+            assert !(search == null);
+            assert !(tileAbility == null);
+
+            for (int x = 0; x < this.width(); x++) {
+                for (int y = 0; y < this.height(); y++) {
+                    if (this.tiles[x][y].getTileType() == search) {
+                        this.tiles[x][y].setTileAbility(tileAbility);
+                    }
+                }
+            }
+
+            return this;
+        }
+
+        public Builder replace(TileType search, TileType replace, double chance) {
+
+            assert !(search == null);
+            assert !(replace == null);
+
+            for (int x = 0; x < this.width(); x++) {
+                for (int y = 0; y < this.height(); y++) {
+                    if (this.tiles[x][y].getTileType() == search) {
+                        this.tiles[x][y].setTileType(random.nextDouble() <= chance ? replace : search);
+                    }
+                }
+            }
+
+            return this;
+        }
+
+
 
         public Builder teleporter(Location from, Location to) {
 
@@ -535,6 +588,9 @@ public class GameMap implements Cloneable {
                     return TileTypes.WALL_BREAKABLE;
                 case 'I':
                     return TileTypes.WALL_BREAKABLE_IMPROVBED;
+                case 'R':
+                    return random.nextDouble() > 0.9 ? TileTypes.GROUND : TileTypes.WALL_BREAKABLE;
+
 
                 default:
                     throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall), P (PowerUp) " +
