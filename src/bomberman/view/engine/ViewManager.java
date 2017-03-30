@@ -123,7 +123,6 @@ public class ViewManager {
                     int w0 = Toolkit.getDefaultToolkit().getScreenSize().width;
                     int h0 = Toolkit.getDefaultToolkit().getScreenSize().height;
                     setDisplayMode(w0, h0, true);
-                    onResize(w0, h0);
                 } else {
                     setDisplayMode(800, 600, false);
                 }
