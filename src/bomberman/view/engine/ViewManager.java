@@ -42,30 +42,40 @@ public class ViewManager {
 
             clickSound = new Sound(ViewManager.class.getResourceAsStream("/bomberman/resources/sounds/click.wav"));
 
+            //Explosion
             loadTexture("explosion.png");
-            loadTexture("speedPowerUp.png");
-            loadTexture("explosionPowerUp.png");
+
+
+            //Player
             loadTexture("DrunkBeer.png");
             loadTexture("BrownBear.png");
             loadTexture("SwagBear.png");
             loadTexture("YellowBear.png");
+
+
+            //Bombs
+            loadTexture("bomb.png");
+            loadTexture("PowerBomb.png");
+            loadTexture("SpikeBomb.png");
+
+
+
+            //Tiles
             loadTexture("wall.png");
             loadTexture("breakableWall.png");
             loadTexture("ground.png");
-
-            loadTexture("bomb.png");
-
-            loadTexture("firedown.png");
-
             loadTexture("teleport.png");
-
-            loadTexture("George-W-Bush.png");
-
-            loadTexture("usa.png");
-
             loadTexture("arrow.png");
 
-            loadTexture("peace.png");
+
+
+            //PowerUps
+            loadTexture("BombUp.png");
+            loadTexture("BombDown.png");
+            loadTexture("FireUp.png");
+            loadTexture("SpeedUp.png");
+            loadTexture("SpeedDown.png");
+            loadTexture("firedown.png");
 
         } catch (IOException e) {
             e.printStackTrace();
