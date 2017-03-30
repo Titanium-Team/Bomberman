@@ -3,6 +3,7 @@ package bomberman.view.views;
 import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameplayManager;
 import bomberman.gameplay.Player;
+import bomberman.gameplay.properties.PropertyTypes;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.TileAbility;
 import bomberman.gameplay.tile.TileTypes;
@@ -15,10 +16,9 @@ import bomberman.view.engine.Light;
 import bomberman.view.engine.LightingView;
 import bomberman.view.engine.View;
 import bomberman.view.engine.ViewManager;
-import bomberman.view.engine.components.ChatWindow;
-import bomberman.view.engine.components.LayoutParams;
+import bomberman.view.engine.components.*;
 import bomberman.view.engine.components.Button;
-import bomberman.view.engine.components.PopupWindow;
+import bomberman.view.engine.components.Label;
 import bomberman.view.engine.rendering.Batch;
 import bomberman.view.engine.rendering.ITexture;
 import bomberman.view.engine.utility.Camera;
@@ -26,6 +26,7 @@ import bomberman.view.engine.utility.Vector2;
 import net.java.games.input.Component;
 import org.lwjgl.input.Keyboard;
 
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -41,11 +42,12 @@ public class GameView extends LightingView {
     private HashMap<Player, Light> playerLightMap = new HashMap<>();
 
     private PausePopup pausePopup;
+	private StatPopup statPopup;
 
     public GameView(int width, int height, ViewManager viewManager) {
         super(width, height, viewManager);
 	    this.chatWindow = new ChatWindow(this);
-        chatWindow.showSelf();
+
 
         this.pausePopup = new PausePopup(this);
 
@@ -63,6 +65,9 @@ public class GameView extends LightingView {
             addPlayer(gameplayManager.getCurrentSession().getPlayer(i));
         }
         gameplayManager.setGameState(GameplayManager.GameState.IN_GAME);
+
+	    this.statPopup = new StatPopup(this);
+	    this.statPopup.showSelf();
     }
 
     /**
@@ -298,5 +303,32 @@ public class GameView extends LightingView {
             this.addChild(quitGameButton);
         }
     }
+
+	private class StatPopup extends PopupWindow{
+
+		private Label range, powerup;
+		public StatPopup( View v) {
+			super(LayoutParams.obtain(0,0,0.2f,1), v);
+			this.range = new Label(LayoutParams.obtain(0,0.2f,1,0.1f),v,"Range :" + gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS));
+			this.addChild(range);
+			powerup=null;
+		}
+
+		@Override
+		public void draw(Batch batch) {
+			super.draw(batch);
+			float max = this.getWidth() * 0.8f;
+			batch.draw(null,this.getX() + 0.1f * this.getWidth(), this.getY() + 0.1f * this.getHeight(),max *((float) gameplayManager.getCurrentSession().getLocalPlayer().getHealth()/gameplayManager.getCurrentSession().getLocalPlayer().getPropertyRepository().getMax(PropertyTypes.HEALTH)), 0.1f*this.getHeight(),1,0,0,0.4f);
+			if(gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup()!=null){
+				if(powerup == null){
+					this.powerup = new Label(LayoutParams.obtain(0,0.3f,1,0.1f),this.getView(), "Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
+					this.addChild(powerup);
+					this.getView().requestLayout();
+				}else{
+					powerup.setText("Picked up " + gameplayManager.getCurrentSession().getLocalPlayer().getLastPowerup().toString());
+				}
+			}
+		}
+	}
 
 }

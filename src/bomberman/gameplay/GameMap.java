@@ -95,7 +95,13 @@ public class GameMap implements Cloneable {
         for (int x = (int) playerBox.getMin().getX(); x < playerBox.getMax().getX(); x++) {
             for (int y = (int) playerBox.getMin().getY(); y < playerBox.getMax().getY(); y++) {
 
-                Tile tile = this.getTile(x, y).get();
+                Optional<Tile> optional = this.getTile(x, y);
+
+                if(!(optional.isPresent())) {
+                    continue;
+                }
+
+                Tile tile = optional.get();
 
                 if (!(tile.canVisit(player))) {
 
