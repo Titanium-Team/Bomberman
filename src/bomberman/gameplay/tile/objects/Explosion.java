@@ -20,7 +20,6 @@ public class Explosion extends TileObject {
 
     public Explosion(Player owner, Tile parent, float lifespan, double damage) {
         super(parent, lifespan);
-
         this.damage = damage;
         this.owner = owner;
         this.animation = new Animation((Texture) ViewManager.getTexture("explosion.png"), 64, 64, Bomb.EXPLOSION_LIFESPAN / 25f);
@@ -59,7 +58,8 @@ public class Explosion extends TileObject {
     }
 
     public boolean destroyWall() {
-
+        //normale Bombe oder PowerBombe
+        float bombtype= owner.getPropertyRepository().getValue(PropertyTypes.BOMBTYPE);
         if (this.getParent().getTileType().isDestroyable()) {
 
             this.getParent().setHealth(this.getParent().getHealth() - this.damage);
@@ -72,8 +72,11 @@ public class Explosion extends TileObject {
                     this.getParent().spawnPowerup(15);
                 }
             }
+            //returnt true damit die spikebomb abbricht, zerstört jedoch keine unzerstörbare wand
+            if(bombtype != 2 || this.getParent().getTileType().equals(TileTypes.WALL)){
+                return true;
+            }
 
-            return true;
         }
 
         return false;
