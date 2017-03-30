@@ -533,6 +533,8 @@ public class GameMap implements Cloneable {
                     return TileTypes.WALL;
                 case 'B':
                     return TileTypes.WALL_BREAKABLE;
+                case 'I':
+                    return TileTypes.WALL_BREAKABLE_IMPROVBED;
 
                 default:
                     throw new IllegalArgumentException("Unknown pattern char. Allowed: G (Ground), W (Wall), P (PowerUp) " +
