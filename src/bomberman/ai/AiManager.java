@@ -28,18 +28,13 @@ public class AiManager {
     private String[] lastName = new String[] {"","ter","as","helm","bert","on","us","el","les","lk","_Wayne","an","am","ski"};
 
     private final static double wallWeight = 20;
-    private final static int amountOfFirst = 16;
-    private final static int amountOfMiddle = 6;
-    private final static int amountOfLast = 13;
-    private final static int amountOfXtra = 100;
 
     public AiManager(GameSession gameSession, ArrayList<Player> nonAiPlayers) {
 
         this.gameSession = gameSession;
         this.map = gameSession.getGameMap();
         this.random = new Random();
-        updateTime = random.nextFloat();
-        halveUpdateTime = updateTime/2;
+        updateTime = random.nextFloat() / 2;
 
         dangerTiles = new boolean[map.getTiles().length][map.getTiles()[0].length];
 
@@ -79,13 +74,9 @@ public class AiManager {
 
     public void update(float dt) {
         updateTime = -dt;
-        if(updateTime < halveUpdateTime){
-            halveUpdateTime = Float.NEGATIVE_INFINITY;
-            //calcDangerTiles();
-        }
-        if (updateTime < 0) {
+        if(updateTime < 0){
+            calcDangerTiles();
             updateTime = random.nextFloat();
-            halveUpdateTime = updateTime/2;
             players.get(random.nextInt(players.size())).update();
         }
 
@@ -133,27 +124,27 @@ public class AiManager {
     }
 
     private String generateName() {
-        int first = (int) (Math.random() * amountOfFirst);
-        int middle = (int) (Math.random() * 2);
+        int first = random.nextInt(firstName.length);
+        int middle = random.nextInt(2);
         if (middle != 0) {
-            middle = (int) (Math.random() * amountOfMiddle + 1);
+            middle = random.nextInt(middleName.length);
         }
 
-        int last = (int) (Math.random() * 5);
+        int last = random.nextInt(5);
         if (last !=0) {
-            last = (int) (Math.random() * amountOfLast);
+            last = random.nextInt(lastName.length);
         }
-        int xtra = (int) (Math.random() * amountOfXtra);
-        if (xtra > 88 && xtra <= 90){
+        float xtra = random.nextFloat();
+        if(xtra < 0.88f){
+            return (firstName[first] + middleName[middle] + lastName[last]);
+        }else if (xtra < 0.90f){
             return ("ERROR 404");
-        }else if (xtra>90&&xtra<=92){
+        }else if (xtra < 0.92f){
             return ("xX_" + firstName[first] + middleName[middle] + lastName[last] + "_Xx");
-        }else if (xtra>92&&xtra<=94){
+        }else if (xtra < 0.94f){
             return ("oO_" + firstName[first] + middleName[middle] + lastName[last] + "_Oo");
-        }else if (xtra>94&&xtra<=100){
-            xtra = (int) (Math.random()*2017);
-            return (firstName[first] + middleName[middle] + lastName[last] + xtra);
+        }else{
+            return (firstName[first] + middleName[middle] + lastName[last] + random.nextInt(2017));
         }
-        return (firstName[first] + middleName[middle] + lastName[last]);
     }
 }

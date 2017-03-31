@@ -8,8 +8,11 @@ import bomberman.gameplay.GameMap;
 import bomberman.gameplay.GameSession;
 import bomberman.gameplay.Player;
 import bomberman.gameplay.properties.PropertyTypes;
+import bomberman.gameplay.statistic.Statistics;
 import bomberman.gameplay.tile.Tile;
 import bomberman.gameplay.tile.objects.Bomb;
+import bomberman.gameplay.tile.objects.PowerUp;
+import bomberman.gameplay.utils.BoundingBox;
 import bomberman.gameplay.utils.Location;
 import bomberman.view.engine.utility.Vector2;
 
@@ -27,6 +30,7 @@ public class AiPlayer extends Player {
     private boolean ignore;
     private static boolean[][] dangerTiles;
     private AiManager aiManager;
+    private double lastHealth;
 
     private FacingDirection facingDirection;
     private Vector2 moveTo;
@@ -61,6 +65,14 @@ public class AiPlayer extends Player {
         if(!playerRelevances.isEmpty()) {
             int currX = (int) Math.floor(this.getBoundingBox().getCenter().getX());
             int currY = (int) Math.floor(this.getBoundingBox().getCenter().getY());
+            if(lastHealth != getHealth()){
+                if(ignore || dangerTiles[currX][currY]){
+                    planEvade();
+                }else{
+                    findPath();
+                }
+            }
+            lastHealth = getHealth();
             if (moveTo != null) {
                 moveTo(delta);
                 if (moveTo == null) {
@@ -84,7 +96,15 @@ public class AiPlayer extends Player {
                         switch (steps.top().stepType) {
                             case MOVE:
                                 if (ignore || !dangerTiles[((MoveStep)steps.top()).getX()][((MoveStep)steps.top()).getY()]) {
-                                    moveTo = new Vector2(((MoveStep)steps.top()).getX()+0.5f, ((MoveStep)steps.top()).getY()+0.5f);
+                                    if(navigationMap[((MoveStep)steps.top()).getX()][((MoveStep)steps.top()).getY()].getTile().getTileType().isWalkable()) {
+                                        moveTo = new Vector2(((MoveStep) steps.top()).getX() + 0.5f, ((MoveStep) steps.top()).getY() + 0.5f);
+                                    } else {
+                                        if(ignore){
+                                            planEvade();
+                                        }else{
+                                            findPath();
+                                        }
+                                    }
                                 } else {
                                     planEvade();
                                 }
@@ -119,15 +139,46 @@ public class AiPlayer extends Player {
                 }
             }
         }
+
+        BoundingBox boundingBox = this.getBoundingBox();
+
+        for (int x = (int) boundingBox.getMin().getX(); x < boundingBox.getMax().getX(); x++) {
+            for (int y = (int) boundingBox.getMin().getY(); y < boundingBox.getMax().getY(); y++) {
+
+                Tile tile = getGameSession().getGameMap().getTiles()[x][y];
+
+                if (tile.getTileType().isWalkable() && !(tile.getTileObject() == null)) {
+
+                    if (tile.getTileObject() instanceof Bomb) {
+                        continue;
+                    }
+
+                    tile.getTileObject().interact(this);
+                    if (tile.getTileObject() instanceof PowerUp) {
+                        tile.destroyObject();
+                    }
+                }
+            }
+        }
+
+        this.getTile().interact(this);
     }
 
     private void placeBomb(){
         Tile tile = this.getTile();
 
-        Bomb bomb = new Bomb(this, tile, 2, 1);
+        int bombsLeft = (int) this.getPropertyRepository().getValue(PropertyTypes.BOMB_AMOUNT);
 
+        if(tile.getTileObject() instanceof Bomb || bombsLeft <= 0) {
+            return;
+        }
+
+        this.getPropertyRepository().setValue(PropertyTypes.BOMB_AMOUNT, (float) (bombsLeft - 1));
+
+        this.getGameStatistic().update(Statistics.BOMBS_PLANTED, 1);
+
+        Bomb bomb = new Bomb(this, tile, 2, 1);
         getGameSession().getGameMap().spawn(bomb);
-        this.getPropertyRepository().setValue(PropertyTypes.BOMBSDOWN, this.getPropertyRepository().getValue(PropertyTypes.BOMBSDOWN)+1);
         aiManager.bombFound((int)Math.floor(getBoundingBox().getCenter().getX()),(int)Math.floor(getBoundingBox().getCenter().getY()),Math.round(this.getPropertyRepository().getValue(PropertyTypes.BOMB_BLAST_RADIUS)));
         planEvade();
 
@@ -255,6 +306,9 @@ public class AiPlayer extends Player {
 
         while (currX != targetX || currY != targetY) {
             int[] curr = dijsktraStep(currX,currY,true);
+            if(curr == null){
+                break;
+            }
             currX = curr[0];
             currY = curr[1];
         }
@@ -276,6 +330,9 @@ public class AiPlayer extends Player {
 
         while (dangerTiles[currX][currY]) {
             int[] curr = dijsktraStep(currX,currY,false);
+            if(curr == null){
+                break;
+            }
             currX = curr[0];
             currY = curr[1];
         }
@@ -295,19 +352,23 @@ public class AiPlayer extends Player {
         for (int i = Math.max(1, currX - 1); i < Math.min(navigationMap.length-1, currX + 2); i++) {
             updateTile(i,currY,dist,currX,currY,useBombs);
         }
-        currX = -1;
-        currY = -1;
+        int nextX = -1;
+        int nextY = -1;
         for(int i = 0;i < navigationMap.length;i++){
             for(int j = 0; j < navigationMap[i].length;j++){
                 if (!navigationMap[i][j].isMarked()) {
-                    if (currX == -1 || navigationMap[currX][currY].getDist() > navigationMap[i][j].getDist()) {
-                        currX = i;
-                        currY = j;
+                    if (nextX == -1 || navigationMap[nextX][nextY].getDist() > navigationMap[i][j].getDist()) {
+                        nextX = i;
+                        nextY = j;
                     }
                 }
             }
         }
-        return new int[]{currX,currY};
+        if (navigationMap[nextX][nextY].getDist() > 200) {
+            return null;
+        }else {
+            return new int[]{nextX, nextY};
+        }
     }
 
     private void setUnmarked(){

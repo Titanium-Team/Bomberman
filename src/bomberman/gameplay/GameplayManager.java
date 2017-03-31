@@ -131,7 +131,7 @@ public class GameplayManager {
         this.addMap(
                 GameMap.builder()
                         .name("Giant")
-                        .dimension(100, 100)
+                        .dimension(20, 20)
                         .frame(TileTypes.WALL)
                         .fillEmptyRandom(TileTypes.GROUND, TileTypes.WALL_BREAKABLE, 0.85)
                         .replace(TileTypes.WALL_BREAKABLE, TileAbility.SLOW)

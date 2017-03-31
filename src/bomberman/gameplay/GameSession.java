@@ -27,7 +27,7 @@ public class GameSession {
     private boolean powerupSpawning = true;
     private boolean powerupCleaning = false;
 
-    private boolean spawnMissingAIs = false;
+    private boolean spawnMissingAIs = true;
 
 
     public GameSession(GameMap gameMap) {
