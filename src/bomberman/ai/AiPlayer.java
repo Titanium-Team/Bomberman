@@ -30,7 +30,6 @@ public class AiPlayer extends Player {
     private boolean ignore;
     private static boolean[][] dangerTiles;
     private AiManager aiManager;
-    private double lastHealth;
 
     private FacingDirection facingDirection;
     private Vector2 moveTo;
@@ -65,29 +64,28 @@ public class AiPlayer extends Player {
         if(!playerRelevances.isEmpty()) {
             int currX = (int) Math.floor(this.getBoundingBox().getCenter().getX());
             int currY = (int) Math.floor(this.getBoundingBox().getCenter().getY());
-            if(lastHealth != getHealth()){
-                if(ignore || dangerTiles[currX][currY]){
-                    planEvade();
-                }else{
-                    findPath();
-                }
-            }
-            lastHealth = getHealth();
             if (moveTo != null) {
-                moveTo(delta);
-                if (moveTo == null) {
-                    if (!ignore && !dangerTiles[currX][currY] && canBomb()) {
-                        steps = new Stack<>();
-                        placeBomb();
+                if(new Location(moveTo.getX(),moveTo.getY()).distanceTo(this.getBoundingBox().getCenter()) > 2){
+                    if(ignore || dangerTiles[currX][currY]){
+                        planEvade();
                     }else{
-                        if(ignore || dangerTiles[currX][currY]){
-                            planEvade();
-                        }else {
-                            findPath();
+                        findPath();
+                    }
+                }else {
+                    moveTo(delta);
+                    if (moveTo == null) {
+                        if (!ignore && !dangerTiles[currX][currY] && canBomb()) {
+                            steps = new Stack<>();
+                            placeBomb();
+                        } else {
+                            if (ignore || dangerTiles[currX][currY]) {
+                                planEvade();
+                            } else {
+                                findPath();
+                            }
                         }
                     }
                 }
-
             } else {
                 if (!ignore && dangerTiles[currX][currY]) {
                     planEvade();
